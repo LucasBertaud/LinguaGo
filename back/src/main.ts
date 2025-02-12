@@ -8,6 +8,7 @@ async function bootstrap() {
     .setTitle('LinguaGo API')
     .setDescription('The LinguaGo API provides a way to manage your language learning')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
     const documentFactory = () => SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, documentFactory);
