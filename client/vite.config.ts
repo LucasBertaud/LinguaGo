@@ -1,35 +1,47 @@
 import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), VitePWA({
+  plugins: [vue(), tailwindcss(), VitePWA({
     registerType: 'prompt',
-    injectRegister: false,
-
-    pwaAssets: {
-      disabled: false,
-      config: true,
-    },
+    injectRegister: 'auto', 
 
     manifest: {
-      name: 'linguago',
-      short_name: 'linguago',
-      description: 'linguago',
+      name: 'Linguago',
+      short_name: 'Linguago',
+      description: 'Une application linguistique puissante',
       theme_color: '#ffffff',
+      background_color: '#ffffff',
+      display: 'standalone',
+      scope: '/',
+      start_url: '/',
+      icons: [
+        {
+          src: '/icons/192x192.png',
+          sizes: '192x192',
+          type: 'image/png'
+        },
+        {
+          src: '/icons/512x512.png',
+          sizes: '512x512',
+          type: 'image/png'
+        }
+      ]
     },
 
     workbox: {
-      globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+      globPatterns: ['**/*.{js,css,html,svg,png,ico,json}'],
       cleanupOutdatedCaches: true,
       clientsClaim: true,
+      skipWaiting: true,
     },
 
     devOptions: {
-      enabled: false,
+      enabled: true,
       navigateFallback: 'index.html',
-      suppressWarnings: true,
       type: 'module',
     },
   })],
