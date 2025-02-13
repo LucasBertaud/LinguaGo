@@ -33,7 +33,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Patch(':id')
+  @Patch()
   update(@Request() req, @Body() updateUserDto: UpdateUserDto) : Promise<UserModel> {
     return this.userService.update({
       where: { id: Number(req.user?.id) },
@@ -43,7 +43,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Delete(':id')
+  @Delete()
   remove(@Request() req) : Promise<UserModel> {
     return this.userService.remove({ id: Number(req.user?.id) });
   }
