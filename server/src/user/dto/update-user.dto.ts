@@ -1,15 +1,16 @@
-import { Role } from 'src/role/role.enum';
-import { IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsEmail, IsString, IsNotEmpty, Length, MinLength, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateUserDto { 
-    @ApiProperty({ required: true, minLength: 6, maxLength: 255, example: "test@gmail.com"})
+export class UpdateUserDto {
     @IsEmail()
+    @MinLength(6)
+    @MaxLength(255)
+    @ApiProperty({ required: true, minLength: 6, maxLength: 255, example: "test@gmail.com" })
     email: string;
-    @ApiProperty({ required: true, minLength: 8, maxLength: 20, example: "password123" })
+
     @IsString()
+    @IsNotEmpty()
+    @Length(8, 100)
+    @ApiProperty({ required: true, minLength: 8, maxLength: 20, example: "password123" })
     password: string;
-    @ApiProperty({ enum: Role })
-    @IsEnum(Role, { message: "Role must be either ADMIN or USER" })
-    role: Role;
 }
