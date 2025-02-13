@@ -17,5 +17,44 @@ model User {
   id        Int           @default(autoincrement()) @id
   email     String        @unique
   password  String
+  role      Role          @default(USER)
   createdAt DateTime      @default(now())
+}
+
+model ExercisesSerie {
+  id          Int         @default(autoincrement()) @id
+  title       String
+  description String?
+  level       Level
+  exercises   Exercise[]
+  createdAt   DateTime    @default(now())
+}
+
+model Exercise {
+  id          Int             @default(autoincrement()) @id
+  question    String
+  answer      String
+  choices     String[]
+  type        ExerciseType
+  serie       ExercisesSerie  @relation(fields: [serieId], references: [id]) 
+  serieId     Int
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Level {
+  A1
+  A2
+  B1
+  B2
+  C1
+}
+
+enum ExerciseType {
+  MULTIPLE_CHOICE
+  TRANSLATION
+  TRUE_FALSE
 }
