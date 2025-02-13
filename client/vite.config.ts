@@ -45,4 +45,7 @@ export default defineConfig({
       type: 'module',
     },
   })],
+  optimizeDeps: {
+    include: ['js-cookie'],
+  },
 })

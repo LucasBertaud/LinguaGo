@@ -1,12 +1,9 @@
 <template>
-    <div class="bg-background min-h-screen">
-        <Hero />
-        <WhyChoose />
-        <HowItWorks />
-        <Offers />
-        <Testimonials />
-    </div>
-    <Footer />
+    <Hero />
+    <WhyChoose />
+    <HowItWorks />
+    <Offers />
+    <Testimonials />
 </template>
 
 <script setup lang="ts">
@@ -15,5 +12,4 @@ import WhyChoose from '../components/Home/WhyChoose.vue';
 import HowItWorks from '../components/Home/HowItWorks.vue';
 import Offers from '../components/Home/Offers.vue';
 import Testimonials from '../components/Home/Testimonials.vue';
-import Footer from '../components/Footer.vue';
 </script>
