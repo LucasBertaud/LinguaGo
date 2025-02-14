@@ -15,12 +15,12 @@ export class AuthService {
   async signIn(email: string, pass: string): Promise<{ access_token: string, refresh_token: string }> {
     const user = await this.userService.findOne({ email });
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Adresse email ou mot de passe incorrect.');
     }
 
     const isMatch = await bcrypt.compare(pass, user.password);
     if (!isMatch) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Adresse email ou mot de passe incorrect.');
     }
 
     const payload = { id: user.id, email: user.email, role: user.role };
@@ -51,7 +51,7 @@ export class AuthService {
     });
 
     if (!storedToken || storedToken.expiresAt < new Date()) {
-      throw new UnauthorizedException('Refresh token is expired or invalid');
+      throw new UnauthorizedException('Le token de rafraîchissement est expiré ou invalide.');
     }
 
     const payload = { id: storedToken.userId, email: storedToken.user.email, role: storedToken.user.role };

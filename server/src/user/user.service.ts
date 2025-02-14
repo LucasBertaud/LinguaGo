@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { User, Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -8,21 +8,33 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: Prisma.UserCreateInput): Promise<User> {
-    const hash : string = await bcrypt.hash(data.password, 10);
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: data.email },
+    });
+
+    if (existingUser) {
+      throw new BadRequestException('Un utilisateur avec cet email existe déjà.');
+    }
+
+    const hash: string = await bcrypt.hash(data.password, 10);
     return this.prisma.user.create({
       data: {
         email: data.email,
         password: hash,
-      }
-    })
+      },
+    });
   }
 
-  async findOne(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<User | null> {
-    return this.prisma.user.findUnique({
+  async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
     });
+
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé.');
+    }
+
+    return user;
   }
 
   async findAll(params: {
@@ -47,7 +59,26 @@ export class UserService {
     data: Prisma.UserUpdateInput;
   }): Promise<User> {
     const { where, data } = params;
-    const hash : string = await bcrypt.hash(data.password as string, 10);
+
+    const user = await this.prisma.user.findUnique({
+      where,
+    });
+
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé.');
+    }
+
+    if (data.email) {
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email: data.email as string },
+      });
+
+      if (existingUser && existingUser.id !== user.id) {
+        throw new BadRequestException('Un utilisateur avec cet email existe déjà.');
+      }
+    }
+
+    const hash: string = await bcrypt.hash(data.password as string, 10);
     return this.prisma.user.update({
       data: {
         email: data.email,
@@ -58,6 +89,14 @@ export class UserService {
   }
 
   async remove(where: Prisma.UserWhereUniqueInput): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      where,
+    });
+
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé.');
+    }
+
     return this.prisma.user.delete({
       where,
     });

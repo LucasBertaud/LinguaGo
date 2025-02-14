@@ -12,8 +12,8 @@ import { UserEntity } from './entities/user.entity';
 @ApiTags('users')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
-  
+  constructor(private readonly userService: UserService) { }
+
   @Post('/register')
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({ status: 201, description: 'The user has been successfully created.', type: UserEntity })
@@ -23,7 +23,7 @@ export class UserController {
   ): Promise<UserEntity> {
     return this.userService.create(createUserDto);
   }
-  
+
   @Get()
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
@@ -42,7 +42,9 @@ export class UserController {
   @ApiOperation({ summary: 'Get a user by ID' })
   @ApiResponse({ status: 200, description: 'Return the user.', type: UserEntity })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  async findOne(@Param('id') id: string): Promise<UserEntity | null> {
+  async findOne(
+    @Param('id') id: string
+  ): Promise<UserEntity | null> {
     return this.userService.findOne({ id: Number(id) });
   }
 
@@ -52,7 +54,10 @@ export class UserController {
   @ApiOperation({ summary: 'Update the authenticated user' })
   @ApiResponse({ status: 200, description: 'The user has been successfully updated.', type: UserEntity })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  update(@Request() req, @Body() updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  async update(
+    @Request() req, 
+    @Body() updateUserDto: UpdateUserDto
+  ): Promise<UserEntity> {
     return this.userService.update({
       where: { id: Number(req.user?.id) },
       data: updateUserDto,
@@ -65,7 +70,9 @@ export class UserController {
   @ApiOperation({ summary: 'Delete the authenticated user' })
   @ApiResponse({ status: 200, description: 'The user has been successfully deleted.', type: UserEntity })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  remove(@Request() req): Promise<UserEntity> {
+  async remove(
+    @Request() req
+  ): Promise<UserEntity> {
     return this.userService.remove({ id: Number(req.user?.id) });
   }
 }
