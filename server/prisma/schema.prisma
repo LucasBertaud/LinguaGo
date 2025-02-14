@@ -19,6 +19,16 @@ model User {
   password  String
   role      Role          @default(USER)
   createdAt DateTime      @default(now())
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id        Int       @default(autoincrement()) @id
+  token     String
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
 }
 
 model ExercisesSerie {
