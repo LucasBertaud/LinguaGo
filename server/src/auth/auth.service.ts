@@ -23,7 +23,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const payload = { id: user.id, email: user.email };
+    const payload = { id: user.id, email: user.email, role: user.role };
     const access_token = await this.jwtService.signAsync(payload);
     const refresh_token = await this.jwtService.signAsync(payload, { expiresIn: '1d' });
 
@@ -54,7 +54,7 @@ export class AuthService {
       throw new UnauthorizedException('Refresh token is expired or invalid');
     }
 
-    const payload = { id: storedToken.userId, email: storedToken.user.email };
+    const payload = { id: storedToken.userId, email: storedToken.user.email, role: storedToken.user.role };
     const newAccessToken = await this.jwtService.signAsync(payload);
 
     return { access_token: newAccessToken };

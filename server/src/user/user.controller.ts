@@ -6,6 +6,7 @@ import { Roles } from 'src/role/roles.decorator';
 import { Role } from 'src/role/role.enum';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from 'src/role/roles.guard';
 import { UserEntity } from './entities/user.entity';
 
 @ApiTags('users')
@@ -26,7 +27,7 @@ export class UserController {
   @Get()
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'Return all users.', type: [UserEntity] })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
@@ -37,11 +38,11 @@ export class UserController {
   @Get(':id')
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get a user by ID' })
   @ApiResponse({ status: 200, description: 'Return the user.', type: UserEntity })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  findOne(@Param('id') id: string): Promise<UserEntity | null> {
+  async findOne(@Param('id') id: string): Promise<UserEntity | null> {
     return this.userService.findOne({ id: Number(id) });
   }
 

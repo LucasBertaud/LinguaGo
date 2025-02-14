@@ -2,8 +2,6 @@ import { Module, forwardRef } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { PrismaService } from 'src/prisma.service';
-import { RolesGuard } from 'src/role/roles.guard';
-import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
@@ -12,10 +10,6 @@ import { AuthModule } from 'src/auth/auth.module';
   providers: [
     UserService, 
     PrismaService,
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    }
   ],
   exports: [UserService],
 })
