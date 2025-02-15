@@ -31,12 +31,12 @@ model RefreshToken {
   expiresAt DateTime
 }
 
-model Levels {  
+model Level {  
   id              Int               @default(autoincrement()) @id
-  title           Level
+  title           LevelEnum
   subtitle        String
   description     String?
-  winablePoints   Int            @default(0)
+  winablePoints   Int               @default(0)
   exercisesSeries ExercisesSerie[]
 }
 
@@ -46,7 +46,7 @@ model ExercisesSerie {
   description String?
   exercises   Exercise[]
   createdAt   DateTime    @default(now())
-  level       Levels      @relation(fields: [levelId], references: [id])
+  level       Level      @relation(fields: [levelId], references: [id])
   levelId     Int
 }
 
@@ -65,7 +65,7 @@ enum Role {
   ADMIN
 }
 
-enum Level {
+enum LevelEnum {
   A1
   A2
   B1
