@@ -11,7 +11,7 @@ const routes = [
       meta: { requiresAuth: true },
     },
     {
-      path: '/levels/:levelId/exercises',
+      path: '/levels/:level',
       name: 'Exercises',
       component: () => import('../components/ExerciseList.vue'),
       meta: { requiresAuth: true },

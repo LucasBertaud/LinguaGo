@@ -10,14 +10,14 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/role/roles.guard';
 
 @ApiTags('exercises-serie')
-@ApiBearerAuth()
-@Roles(Role.ADMIN)
-@UseGuards(AuthGuard, RolesGuard)
 @Controller('exercises-serie')
 export class ExercisesSerieController {
   constructor(private readonly exercisesSerieService: ExercisesSerieService) {}
 
   @Post()
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Create a new serie of exercices' })
   @ApiResponse({ status: 200, description: 'The exercices serie has been successfully created.', type: ExercisesSerie })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
@@ -42,6 +42,9 @@ export class ExercisesSerieController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Update the exercices serie' })
   @ApiResponse({ status: 200, description: 'The exercices serie has been successfully updated.', type: ExercisesSerie })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
@@ -53,6 +56,9 @@ export class ExercisesSerieController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Delete the exercices serie' })
   @ApiResponse({ status: 200, description: 'The exercices serie has been successfully deleted.', type: ExercisesSerie })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
