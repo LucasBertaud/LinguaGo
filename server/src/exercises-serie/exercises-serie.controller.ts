@@ -1,5 +1,4 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ExercisesSerieService } from './exercises-serie.service';
 import { CreateExercisesSerieDto } from './dto/create-exercises-serie.dto';
 import { UpdateExercisesSerieDto } from './dto/update-exercises-serie.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -8,11 +7,12 @@ import { Role } from 'src/role/role.enum';
 import { ExercisesSerie } from './entities/exercises-serie.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/role/roles.guard';
+import { GenericService } from 'src/utils/generic.service';
 
 @ApiTags('exercises-serie')
 @Controller('exercises-serie')
 export class ExercisesSerieController {
-  constructor(private readonly exercisesSerieService: ExercisesSerieService) {}
+  constructor(private readonly genericService: GenericService<ExercisesSerie>) {}
 
   @Post()
   @ApiBearerAuth()
@@ -22,7 +22,7 @@ export class ExercisesSerieController {
   @ApiResponse({ status: 200, description: 'The exercices serie has been successfully created.', type: ExercisesSerie })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   async create(@Body() createExercisesSerieDto: CreateExercisesSerieDto): Promise<ExercisesSerie> {
-    return this.exercisesSerieService.create(createExercisesSerieDto);
+    return this.genericService.create("exercisesSerie", createExercisesSerieDto);
   }
 
   @Get()
@@ -30,7 +30,11 @@ export class ExercisesSerieController {
   @ApiResponse({ status: 200, description: 'Return all exercices series.', type: [ExercisesSerie] })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   async findAll(): Promise<ExercisesSerie[]> {
-    return this.exercisesSerieService.findAll({});
+    return this.genericService.findAll("exercisesSerie", {
+      include: {
+        exercises: true,
+      }
+    });
   }
 
   @Get(':id')
@@ -38,7 +42,7 @@ export class ExercisesSerieController {
   @ApiResponse({ status: 200, description: 'Return the exercices serie.', type: ExercisesSerie })
   @ApiResponse({ status: 404, description: 'Exercices serie not found.' })
   findOne(@Param('id') id: string): Promise<ExercisesSerie | null> {
-    return this.exercisesSerieService.findOne({ id: Number(id) });
+    return this.genericService.findOne("exercisesSerie", { id: Number(id) });
   }
 
   @Patch(':id')
@@ -49,7 +53,7 @@ export class ExercisesSerieController {
   @ApiResponse({ status: 200, description: 'The exercices serie has been successfully updated.', type: ExercisesSerie })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   update(@Param('id') id: string, @Body() updateExercisesSerieDto: UpdateExercisesSerieDto): Promise<ExercisesSerie> {
-    return this.exercisesSerieService.update({
+    return this.genericService.update("exercisesSerie", {
       where: { id: Number(id) },
       data: updateExercisesSerieDto,
     });
@@ -63,6 +67,6 @@ export class ExercisesSerieController {
   @ApiResponse({ status: 200, description: 'The exercices serie has been successfully deleted.', type: ExercisesSerie })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   remove(@Param('id') id: string): Promise<ExercisesSerie> {
-    return this.exercisesSerieService.remove({ id: Number(id) });
+    return this.genericService.remove("exercisesSerie", { id: Number(id) });
   }
 }

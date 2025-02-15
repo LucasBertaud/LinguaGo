@@ -1,0 +1,5 @@
+export enum ExerciseType {
+    MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
+    TRANSLATION = 'TRANSLATION',
+    TRUE_FALSE = 'TRUE_FALSE',
+  }
