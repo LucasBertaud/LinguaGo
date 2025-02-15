@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/utils/prisma.service';
-import { DtoInterface } from 'src/interface/dto.interface';
 import { EntityName, PrismaModels } from './prisma.models';
 
 @Injectable()
@@ -11,6 +10,7 @@ export class GenericService<T> {
         entityName: string,
         data: PrismaModels[X]['create']
     ): Promise<T> {
+        console.log(entityName, data);
         return this.prisma[entityName].create({
             data,
         });
@@ -40,10 +40,15 @@ export class GenericService<T> {
 
     async findOne<X extends EntityName>(
         entityName: string,
-        where: PrismaModels[X]['where']
+        params: {
+            where: PrismaModels[X]['where'];
+            include?: PrismaModels[X]['include'];
+        },
     ): Promise<T | null> {
+        const { where, include } = params;
         return this.prisma[entityName].findUnique({
-        where,
+            where,
+            include
         });
     }
 

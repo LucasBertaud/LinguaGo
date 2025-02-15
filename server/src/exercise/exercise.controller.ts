@@ -37,7 +37,9 @@ export class ExerciseController {
   @ApiResponse({ status: 200, description: 'Return the exercice.', type: Exercise })
   @ApiResponse({ status: 404, description: 'Exercice not found.' })
   findOne(@Param('id') id: string) {
-    return this.genericService.findOne("exercise", { id: Number(id) });
+    return this.genericService.findOne("exercise", {
+      where: { id: Number(id) },
+    });
   }
 
   @Patch(':id')

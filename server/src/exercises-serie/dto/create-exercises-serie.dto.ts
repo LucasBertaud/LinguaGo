@@ -1,9 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty } from 'class-validator';
-import { DtoInterface } from 'src/interface/dto.interface';
-import { Level } from 'src/level/level.enum';
+import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 
-export class CreateExercisesSerieDto implements DtoInterface {
+export class CreateExercisesSerieDto {
     @ApiProperty({
         type: 'string',
         example: 'Serie 1',
@@ -20,12 +18,11 @@ export class CreateExercisesSerieDto implements DtoInterface {
     @IsString()
     description: string | null;
     @ApiProperty({
-        type: 'string',
-        example: 'A1',
-        description: 'Level of the serie',
-        enum: ['A1', 'A2', 'B1', 'B2', 'C1'],
+        type: 'number',
+        example: 1,
+        description: 'Id of the level',
     })
     @IsNotEmpty()
-    @IsString()
-    level: Level;
+    @IsNumber()
+    levelId: number;
 }

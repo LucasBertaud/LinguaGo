@@ -42,7 +42,12 @@ export class ExercisesSerieController {
   @ApiResponse({ status: 200, description: 'Return the exercices serie.', type: ExercisesSerie })
   @ApiResponse({ status: 404, description: 'Exercices serie not found.' })
   findOne(@Param('id') id: string): Promise<ExercisesSerie | null> {
-    return this.genericService.findOne("exercisesSerie", { id: Number(id) });
+    return this.genericService.findOne("exercisesSerie", { 
+      where: { id: Number(id) },
+      include: {
+        exercises: true,
+      }
+    });
   }
 
   @Patch(':id')

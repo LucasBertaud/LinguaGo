@@ -4,6 +4,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ExercisesSerieModule } from './exercises-serie/exercises-serie.module';
 import { ExerciseModule } from './exercise/exercise.module';
+import { LevelModule } from './level/level.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ExerciseModule } from './exercise/exercise.module';
     AuthModule,
     ExercisesSerieModule,
     ExerciseModule,
+    LevelModule,
   ],
   controllers: [],
   providers: [],
