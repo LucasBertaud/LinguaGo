@@ -1,5 +1,5 @@
 <template>
-    <nav class="bg-primary text-white py-4 fixed top-0 left-0 w-full z-50">
+    <nav class="bg-primary text-white py-4 sticky top-0 w-full z-50">
         <div class="container mx-auto flex justify-between items-center">
             <router-link to="/" class="text-2xl font-bold hover:underline">LinguaGo</router-link>
             <div class="flex space-x-4">

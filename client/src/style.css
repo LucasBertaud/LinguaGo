@@ -4,4 +4,10 @@
     --color-primary: #4a90e2; /* Bleu */
     --color-secondary: #ffc503; /* Jaune */
     --color-black: #151818; /* Texte principal */
+    /* couleur pour niveau d'anglais */
+    --color-A1: #19d43f; /* Vert dynamique */
+    --color-A2: #f7c01d; /* Orange équilibré */
+    --color-B1: #6EC6FF; /* Bleu vif */
+    --color-B2: #A67CFF; /* Violet profond */
+    --color-C1: #E57373; /* Rouge élégant */
 }

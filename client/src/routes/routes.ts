@@ -7,7 +7,7 @@ const routes = [
     {
       path: '/levels',
       name: 'Levels',
-      component: () => import('../components/LevelList.vue'),
+      component: () => import('../views/Levels.vue'),
       meta: { requiresAuth: true },
     },
     {
