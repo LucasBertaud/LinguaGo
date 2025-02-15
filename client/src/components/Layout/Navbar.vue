@@ -1,19 +1,19 @@
 <template>
     <nav class="bg-primary text-white py-4 sticky top-0 w-full z-50">
         <div class="container mx-auto flex justify-between items-center px-4">
-            <router-link to="/" class="text-2xl font-bold">LinguaGo</router-link>
+            <router-link to="/" class="text-2xl font-bold">{{ navbarTexts.logo }}</router-link>
             <div class="hidden md:flex space-x-4">
                 <router-link v-if="!isAuthenticated" to="/login"
                     class="relative flex items-center text-white hover:text-white">
-                    <span class="hover-underline-animation">Connexion</span>
+                    <span class="hover-underline-animation">{{ navbarTexts.links.login }}</span>
                 </router-link>
                 <router-link v-if="isAuthenticated" to="/profile"
                     class="relative flex items-center text-white hover:text-white">
-                    <span class="hover-underline-animation">Profil</span>
+                    <span class="hover-underline-animation">{{ navbarTexts.links.profile }}</span>
                 </router-link>
                 <button v-if="isAuthenticated" @click="logout"
                     class="relative flex items-center text-white hover:text-white cursor-pointer">
-                    <span class="hover-underline-animation">Déconnexion</span>
+                    <span class="hover-underline-animation">{{ navbarTexts.links.logout }}</span>
                 </button>
             </div>
             <button @click="toggleMenu" class="md:hidden flex items-center">
@@ -36,19 +36,19 @@
                 </button>
                 <router-link @click="toggleMenu" to="/"
                     class="block py-2 px-6 text-2xl hover:bg-primary-dark text-center w-full">
-                    🏠 Accueil
+                    {{ navbarTexts.links.home }}
                 </router-link>
                 <router-link v-if="!isAuthenticated" @click="toggleMenu" to="/login"
                     class="block py-2 px-6 text-2xl hover:bg-primary-dark text-center w-full">
-                    🔑 Connexion
+                    {{ navbarTexts.links.login }}
                 </router-link>
                 <router-link v-if="isAuthenticated" @click="toggleMenu" to="/profile"
                     class="block py-2 px-6 text-2xl hover:bg-primary-dark text-center w-full">
-                    👤 Profil
+                    {{ navbarTexts.links.profile }}
                 </router-link>
                 <button v-if="isAuthenticated" @click="logout"
                     class="block w-full text-center py-2 px-6 text-2xl hover:bg-primary-dark">
-                    🚪 Déconnexion
+                    {{ navbarTexts.links.logout }}
                 </button>
             </div>
         </transition>
@@ -59,6 +59,7 @@
 import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import { navbarTexts } from '../../config/content/layout/navbar';
 
 const store = useStore();
 const router = useRouter();
