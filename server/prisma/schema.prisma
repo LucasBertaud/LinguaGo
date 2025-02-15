@@ -31,13 +31,23 @@ model RefreshToken {
   expiresAt DateTime
 }
 
+model Levels {  
+  id              Int               @default(autoincrement()) @id
+  title           Level
+  subtitle        String
+  description     String?
+  winablePoints   Int            @default(0)
+  exercisesSeries ExercisesSerie[]
+}
+
 model ExercisesSerie {
   id          Int         @default(autoincrement()) @id
   title       String
   description String?
-  level       Level
   exercises   Exercise[]
   createdAt   DateTime    @default(now())
+  level       Levels      @relation(fields: [levelId], references: [id])
+  levelId     Int
 }
 
 model Exercise {

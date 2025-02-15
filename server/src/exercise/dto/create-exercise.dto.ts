@@ -1,9 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsInt } from 'class-validator';
 import { ExerciseType } from '../exercise.enum';
-import { DtoInterface } from 'src/interface/dto.interface';
 
-export class CreateExerciseDto implements DtoInterface {
+export class CreateExerciseDto {
     @ApiProperty({
         type: 'string',
         example: 'Comment dit-on "Bonjour" en anglais ?',

@@ -1,9 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty } from 'class-validator';
-import { DtoInterface } from 'src/interface/dto.interface';
 import { Level } from 'src/level/level.enum';
 
-export class CreateExercisesSerieDto implements DtoInterface {
+export class CreateExercisesSerieDto {
     @ApiProperty({
         type: 'string',
         example: 'Serie 1',
