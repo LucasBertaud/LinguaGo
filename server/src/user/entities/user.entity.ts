@@ -4,10 +4,13 @@ export class UserEntity {
   @ApiProperty({ example: 1, description: 'The unique identifier of the user' })
   id: string;
 
+  @ApiProperty({ example: 'user123', description: 'The pseudo of the user' })
+  pseudo: string;
+
   @ApiProperty({ example: 'test@gmail.com', description: 'The email of the user' })
   email: string;
 
-  @ApiProperty({ example: 'password123', description: 'The password of the user' })
+  @ApiProperty({ example: 'Password123!', description: 'The password of the user' })
   password: string;
 
   @ApiProperty({ example: 'USER', description: 'The role of the user' })

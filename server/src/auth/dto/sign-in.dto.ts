@@ -8,6 +8,6 @@ export class SignInDto {
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ description: 'The password of the user', example: 'password123' })
+  @ApiProperty({ description: 'The password of the user', example: 'Password123!' })
   password: string;
 }

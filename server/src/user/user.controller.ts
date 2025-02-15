@@ -24,14 +24,24 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @Get('profile')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Get user profile' })
+  @ApiResponse({ status: 200, description: 'Return the user profile.', type: UserEntity })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  async getProfile(@Request() req): Promise<Partial<UserEntity>> {
+    return this.userService.getProfile({ id: String(req.user?.id) });
+  }
+
   @Get()
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
-  @ApiOperation({ summary: 'Get all users' })
+  @ApiOperation({ summary: 'Get all users (Admin)' })
   @ApiResponse({ status: 200, description: 'Return all users.', type: [UserEntity] })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  async findAll(): Promise<UserEntity[]> {
+  async findAll(): Promise<Partial<UserEntity>[]> {
     return this.userService.findAll({});
   }
 
@@ -39,12 +49,12 @@ export class UserController {
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
-  @ApiOperation({ summary: 'Get a user by ID' })
+  @ApiOperation({ summary: 'Get a user by ID (Admin)' })
   @ApiResponse({ status: 200, description: 'Return the user.', type: UserEntity })
   @ApiResponse({ status: 404, description: 'User not found.' })
   async findOne(
     @Param('id') id: string
-  ): Promise<UserEntity | null> {
+  ): Promise<Partial<UserEntity> | null> {
     return this.userService.findOne({ id: String(id) });
   }
 
@@ -55,9 +65,9 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'The user has been successfully updated.', type: UserEntity })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   async update(
-    @Request() req, 
+    @Request() req,
     @Body() updateUserDto: UpdateUserDto
-  ): Promise<UserEntity> {
+  ): Promise<Partial<UserEntity>> {
     return this.userService.update({
       where: { id: String(req.user?.id) },
       data: updateUserDto,
