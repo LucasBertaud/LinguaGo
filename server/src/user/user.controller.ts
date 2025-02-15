@@ -14,7 +14,7 @@ import { UserEntity } from './entities/user.entity';
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-  @Post('/register')
+  @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({ status: 201, description: 'The user has been successfully created.', type: UserEntity })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
