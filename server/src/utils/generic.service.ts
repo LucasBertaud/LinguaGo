@@ -10,7 +10,6 @@ export class GenericService<T> {
         entityName: string,
         data: PrismaModels[X]['create']
     ): Promise<T> {
-        console.log(entityName, data);
         return this.prisma[entityName].create({
             data,
         });
