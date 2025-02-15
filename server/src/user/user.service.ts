@@ -16,14 +16,6 @@ export class UserService {
       throw new BadRequestException('Un utilisateur avec cet email existe déjà.');
     }
 
-    const existingPseudo = await this.prisma.user.findFirst({
-      where: { pseudo: data.pseudo },
-    });
-
-    if (existingPseudo) {
-      throw new BadRequestException('Un utilisateur avec ce pseudo existe déjà.');
-    }
-
     const hash: string = await bcrypt.hash(data.password, 10);
     return this.prisma.user.create({
       data: {
