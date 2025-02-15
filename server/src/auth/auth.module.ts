@@ -5,7 +5,7 @@ import { AuthController } from './auth.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from 'src/user/user.module';
 import { AuthGuard } from './auth.guard';
-import { PrismaModule } from 'src/prisma.module'; 
+import { PrismaModule } from 'src/utils/prisma.module'; 
 
 @Module({
   imports: [
