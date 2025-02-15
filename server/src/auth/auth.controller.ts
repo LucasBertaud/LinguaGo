@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { AuthGuard } from './auth.guard';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { UserEntity } from '../user/entities/user.entity';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -43,17 +42,5 @@ export class AuthController {
   ) {
     await this.authService.logout(refreshToken);
     return { message: 'User successfully logged out.' };
-  }
-
-  @Get('profile')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @ApiOperation({ summary: 'Get user profile' })
-  @ApiResponse({ status: 200, description: 'Return the user profile.', type: UserEntity })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  getProfile(
-    @Request() req
-  ) {
-    return req.user;
   }
 }

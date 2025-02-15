@@ -16,16 +16,59 @@ export class UserService {
       throw new BadRequestException('Un utilisateur avec cet email existe déjà.');
     }
 
+    const existingPseudo = await this.prisma.user.findFirst({
+      where: { pseudo: data.pseudo },
+    });
+
+    if (existingPseudo) {
+      throw new BadRequestException('Un utilisateur avec ce pseudo existe déjà.');
+    }
+
     const hash: string = await bcrypt.hash(data.password, 10);
     return this.prisma.user.create({
       data: {
+        pseudo: data.pseudo,
         email: data.email,
         password: hash,
       },
     });
   }
 
-  async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User | null> {
+  async getProfile(where: Prisma.UserWhereUniqueInput): Promise<Partial<User>> {
+    const user = await this.prisma.user.findUnique({
+      where,
+      select: {
+        pseudo: true,
+        email: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé.');
+    }
+
+    return user;
+  }
+
+  async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<Partial<User> | null> {
+    const user = await this.prisma.user.findUnique({
+      where: userWhereUniqueInput,
+      select: {
+        pseudo: true,
+        role: true,
+        email: true,
+        createdAt: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé.');
+    }
+
+    return user;
+  }
+
+  async findOneForAuth(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User | null> {
     const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
     });
@@ -43,7 +86,7 @@ export class UserService {
     cursor?: Prisma.UserWhereUniqueInput;
     where?: Prisma.UserWhereInput;
     orderBy?: Prisma.UserOrderByWithRelationInput;
-  }): Promise<User[]> {
+  }): Promise<Partial<User>[]> {
     const { skip, take, cursor, where, orderBy } = params;
     return this.prisma.user.findMany({
       skip,
@@ -51,13 +94,19 @@ export class UserService {
       cursor,
       where,
       orderBy,
+      select: {
+        pseudo: true,
+        role: true,
+        email: true,
+        createdAt: true,
+      },
     });
   }
 
   async update(params: {
     where: Prisma.UserWhereUniqueInput;
-    data: Prisma.UserUpdateInput;
-  }): Promise<User> {
+    data: { pseudo: string };
+  }): Promise<Partial<User>> {
     const { where, data } = params;
 
     const user = await this.prisma.user.findUnique({
@@ -68,23 +117,27 @@ export class UserService {
       throw new NotFoundException('Utilisateur non trouvé.');
     }
 
-    if (data.email) {
-      const existingUser = await this.prisma.user.findUnique({
-        where: { email: data.email as string },
+    if (data.pseudo) {
+      const existingPseudo = await this.prisma.user.findFirst({
+        where: { pseudo: data.pseudo },
       });
 
-      if (existingUser && existingUser.id !== user.id) {
-        throw new BadRequestException('Un utilisateur avec cet email existe déjà.');
+      if (existingPseudo && existingPseudo.id !== user.id) {
+        throw new BadRequestException('Un utilisateur avec ce pseudo existe déjà.');
       }
     }
 
-    const hash: string = await bcrypt.hash(data.password as string, 10);
     return this.prisma.user.update({
       data: {
-        email: data.email,
-        password: hash,
+        pseudo: data.pseudo,
       },
       where,
+      select: {
+        pseudo: true,
+        role: true,
+        email: true,
+        createdAt: true,
+      },
     });
   }
 
