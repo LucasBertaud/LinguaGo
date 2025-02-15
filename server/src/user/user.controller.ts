@@ -45,7 +45,7 @@ export class UserController {
   async findOne(
     @Param('id') id: string
   ): Promise<UserEntity | null> {
-    return this.userService.findOne({ id: Number(id) });
+    return this.userService.findOne({ id: String(id) });
   }
 
   @Patch()
@@ -59,7 +59,7 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto
   ): Promise<UserEntity> {
     return this.userService.update({
-      where: { id: Number(req.user?.id) },
+      where: { id: String(req.user?.id) },
       data: updateUserDto,
     });
   }
@@ -73,6 +73,6 @@ export class UserController {
   async remove(
     @Request() req
   ): Promise<UserEntity> {
-    return this.userService.remove({ id: Number(req.user?.id) });
+    return this.userService.remove({ id: String(req.user?.id) });
   }
 }

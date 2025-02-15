@@ -24,6 +24,6 @@
   
 
 <script setup lang="ts">
-import type Serie from '../../interface/serie.interface';
-defineProps<Serie>()
+import type Level from '../../interface/level.interface';
+defineProps<Level>();
 </script>

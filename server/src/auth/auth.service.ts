@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'src/utils/prisma.service';
 
 @Injectable()
 export class AuthService {
@@ -66,7 +66,7 @@ export class AuthService {
     });
   }
 
-  private async cleanUpOldSessions(userId: number): Promise<void> {
+  private async cleanUpOldSessions(userId: string): Promise<void> {
     const sessions = await this.prisma.refreshToken.findMany({
       where: { userId },
       orderBy: { createdAt: 'asc' },

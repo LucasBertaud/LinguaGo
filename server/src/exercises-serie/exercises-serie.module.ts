@@ -1,17 +1,15 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { ExercisesSerieService } from './exercises-serie.service';
 import { ExercisesSerieController } from './exercises-serie.controller';
-import { PrismaService } from 'src/prisma.service';
-import { RolesGuard } from 'src/role/roles.guard';
-import { APP_GUARD } from '@nestjs/core';
+import { PrismaService } from 'src/utils/prisma.service';
 import { AuthModule } from 'src/auth/auth.module';
+import { GenericService } from 'src/utils/generic.service';
 
 @Module({
   imports: [forwardRef(() => AuthModule)],
   controllers: [ExercisesSerieController],
   providers: [
-    ExercisesSerieService,
     PrismaService,
+    GenericService,
   ],
 })
 export class ExercisesSerieModule {}
