@@ -11,6 +11,7 @@
                 </div>
             </div>
         </div>
+        <LoadingSpinner v-if="isLoading" />
     </div>
 </template>
 
@@ -20,8 +21,10 @@ import { useToast } from 'vue-toastification';
 import Database from '../../utils/database';
 import { profileTexts } from '../../config/content/profile';
 import type { User } from '../../interface/user.interface';
+import LoadingSpinner from '../../components/LoadingSpinner.vue';
 
 const user = ref<User | null>(null);
+const isLoading = ref(true);
 const toast = useToast();
 
 const fetchUserProfile = async () => {
@@ -30,6 +33,8 @@ const fetchUserProfile = async () => {
         user.value = data;
     } catch (error) {
         toast.error(profileTexts.errorMessage);
+    } finally {
+        isLoading.value = false;
     }
 };
 

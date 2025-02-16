@@ -23,7 +23,8 @@
                     <label for="email" class="block text-gray-700">{{ formTexts.emailLabel }}</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24">
+                            <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="128"
+                                height="128" viewBox="0 0 24 24">
                                 <path fill="#000000"
                                     d="M19 4H5a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3m-.67 2L12 10.75L5.67 6ZM19 18H5a1 1 0 0 1-1-1V7.25l7.4 5.55a1 1 0 0 0 .6.2a1 1 0 0 0 .6-.2L20 7.25V17a1 1 0 0 1-1 1" />
                             </svg>
@@ -51,6 +52,7 @@
                     class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 cursor-pointer">{{
                         formTexts.register }}</button>
             </form>
+            <LoadingSpinner v-if="isLoading" />
         </div>
     </div>
 </template>
@@ -60,6 +62,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import Error from '../../components/Form/Error.vue';
+import LoadingSpinner from '../../components/LoadingSpinner.vue';
 import { errorMessages } from '../../config/error/auth/register';
 import { formTexts } from '../../config/form/auth/register';
 import { validateEmail, validatePasswordLength } from '../../utils/validation';
@@ -71,6 +74,7 @@ const password = ref('');
 const pseudoError = ref<string | null>(null);
 const emailError = ref<string | null>(null);
 const passwordError = ref<string | null>(null);
+const isLoading = ref(false);
 const router = useRouter();
 const toast = useToast();
 
@@ -96,6 +100,8 @@ const handleSubmit = async () => {
         return;
     }
 
+    isLoading.value = true;
+
     try {
         const response = await Database.create('user/register', {
             pseudo: pseudo.value,
@@ -110,6 +116,8 @@ const handleSubmit = async () => {
         }
     } catch (error) {
         toast.error(errorMessages.registerFailed);
+    } finally {
+        isLoading.value = false;
     }
 };
 </script>

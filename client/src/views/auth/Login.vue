@@ -39,6 +39,7 @@
       <div class="mt-4 text-center">
         <router-link to="/register" class="text-primary hover:underline">{{ formTexts.registerLink }}</router-link>
       </div>
+      <LoadingSpinner v-if="isLoading" />
     </div>
   </div>
 </template>
@@ -49,6 +50,7 @@ import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { useToast } from 'vue-toastification';
 import Error from '../../components/Form/Error.vue';
+import LoadingSpinner from '../../components/LoadingSpinner.vue';
 import { errorMessages } from '../../config/error/auth/login';
 import { formTexts } from '../../config/form/auth/login';
 import { validateEmail, validatePasswordLength } from '../../utils/validation';
@@ -57,6 +59,7 @@ const email = ref('');
 const password = ref('');
 const emailError = ref<string | null>(null);
 const passwordError = ref<string | null>(null);
+const isLoading = ref(false);
 const router = useRouter();
 const store = useStore();
 const toast = useToast();
@@ -78,6 +81,8 @@ const handleSubmit = async () => {
     return;
   }
 
+  isLoading.value = true;
+
   try {
     await store.dispatch('login', {
       email: email.value,
@@ -87,6 +92,8 @@ const handleSubmit = async () => {
     router.push({ path: '/' });
   } catch (error) {
     toast.error(errorMessages.loginFailed);
+  } finally {
+    isLoading.value = false;
   }
 };
 </script>
