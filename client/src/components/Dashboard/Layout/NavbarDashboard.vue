@@ -39,7 +39,7 @@
         </div>
         <transition name="slide">
             <div v-if="menuOpen"
-                class="fixed inset-0 bg-primary p-4 md:hidden flex flex-col items-center justify-center space-y-6">
+                class="fixed inset-0 bg-primary p-4 md:hidden flex flex-col items-center justify-center space-y-6 z-50">
                 <button @click="toggleMenu" class="absolute top-4 left-4 cursor-pointer">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
