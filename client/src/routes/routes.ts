@@ -5,16 +5,38 @@ const routes = [
       component: () => import('../views/Home.vue'),
     },
     {
-      path: '/levels',
-      name: 'Levels',
-      component: () => import('../views/Levels.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/levels/:level',
-      name: 'Exercises',
-      component: () => import('../components/ExerciseList.vue'),
-      meta: { requiresAuth: true },
+      path: '/dashboard',
+      name: 'Dashboard',
+      meta: { 
+        dashboard: true, 
+        requiresAuth: true, 
+      },
+      redirect: { name: 'DashboardHome' },
+      children: [
+        {
+          path: 'home',
+          name: 'DashboardHome',
+          component: () => import('../views/dashboard/Dashboard.vue'),
+        },
+        {
+          path: 'to-exercise',
+          name: 'ToExercise',
+          component: () => import('../views/dashboard/ToExercise.vue'),
+          redirect: { 
+            name: 'ToExerciseLevel', 
+            params: { 
+              level: 'A1' 
+            }
+          },
+          children: [
+            {
+              path: ':level',
+              name: 'ToExerciseLevel',
+              component: () => import('../views/dashboard/ToExerciseLevel.vue'),
+            }
+          ]
+        }
+      ]
     },
     {
       path: '/login',
