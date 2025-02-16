@@ -15,15 +15,21 @@ export class LevelController {
 
   @Get()
   findAll() {
-    return this.genericService.findAll("level", {
-      include: { exercisesSeries: true },
-    });
+    return this.genericService.findAll("level", {});
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.genericService.findOne("level", {
       where: { id: Number(id) },
+      include: { exercisesSeries: true },
+    });
+  }
+
+  @Get('title/:title')
+  findOneByTitle(@Param('title') title: string) {
+    return this.genericService.findOne("level", {
+      where: { title: String(title) },
       include: { exercisesSeries: true },
     });
   }

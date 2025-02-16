@@ -1,5 +1,40 @@
 <template>
+    <section class="flex flex-wrap m-4 justify-center">
+        <div v-for="exercisesSerie in level?.exercisesSeries" :key="exercisesSerie.id" class="md:w-1/3">
+            <ExercisesSerieCard :id="exercisesSerie.id" :title="exercisesSerie.title" :description="exercisesSerie.description" :level-id="exercisesSerie.levelId" :created-at="exercisesSerie.createdAt" />
+        </div>
+    </section>
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import { defineProps } from 'vue';
+import Database from '../../utils/database';
+import ExercisesSerieCard from '../../components/Dashboard/Card/ExercisesSerieCard.vue';
+import type Level from '../../interface/level.interface';
+
+const props = defineProps<{
+    levelTitle: string;
+}>();
+const route = useRoute();
+const level = ref<Level>();
+
+const fetchLevel = async () => {
+    const response = Database.getOne('level/title', props.levelTitle);
+    response.then((data) => {
+        level.value = data;
+    }).catch((error) => {
+        console.error(error);
+    });
+};
+
+watch(() => route.query, () => {
+    fetchLevel();
+});
+
+onMounted(() => {
+    fetchLevel();
+});
+
 </script>

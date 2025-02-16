@@ -25,12 +25,12 @@ const routes = [
           redirect: { 
             name: 'LevelDetail', 
             params: { 
-              level: 'A1' 
+              levelTitle: 'A1' 
             }
           },
           children: [
             {
-              path: ':level',
+              path: ':levelTitle',
               name: 'LevelDetail',
               props: true,
               component: () => import('../views/dashboard/LevelDetail.vue'),

@@ -9,7 +9,7 @@
     <AsideDashboard />
     <div class="flex-grow text-gray-800 flex flex-col">
         <NavbarDashboard />
-        <main class="p-6 sm:p-10 pb-0 sm:pb-0 space-y-6 rounded-tl-xl bg-gray-100 grow">
+        <main class="p-6 sm:p-10 pb-0 sm:pb-0 space-y-6 rounded-tl-xl bg-white grow">
           <router-view />
         </main>
     </div>

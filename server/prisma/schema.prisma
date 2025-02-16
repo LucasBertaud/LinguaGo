@@ -34,7 +34,7 @@ model RefreshToken {
 
 model Level {  
   id              Int               @default(autoincrement()) @id
-  title           LevelEnum
+  title           LevelEnum         @unique
   subtitle        String
   description     String?
   winablePoints   Int               @default(0)

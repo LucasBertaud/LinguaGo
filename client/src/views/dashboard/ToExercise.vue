@@ -1,7 +1,7 @@
 <template>
     <Title title="S'exercer" subtitle="Exercez-vous à votre rythme et progressez dans votre apprentissage." />
     <section class="text-gray-600 body-font">
-        <div class="container px-5 py-24 mx-auto flex flex-wrap flex-col">
+        <div class="container px-5 py-24 mx-auto flex flex-wrap flex-col pt-4">
             <div class="flex mx-auto flex-wrap mb-6">
                 <router-link 
                     v-for="level in levels" 
