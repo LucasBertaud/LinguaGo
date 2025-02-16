@@ -1,24 +1,25 @@
 import api from '../../utils/api';
 import Cookies from 'js-cookie';
 import { isTokenExpired, clearCookies } from '../../utils/authUtils';
+import type { User } from '../../interface/user.interface';
 
 interface AuthResponse {
   access_token: string;
   refresh_token: string;
-  user: any;
+  payload: User;
 }
 
 interface AuthState {
   token: string | null;
   refreshToken: string | null;
-  user: any | null;
+  user: User | null;
   userLoggedIn: boolean;
 }
 
 const state: AuthState = {
   token: Cookies.get('access') || null,
   refreshToken: Cookies.get('refresh') || null,
-  user: null,
+  user: Cookies.get('user') ? JSON.parse(Cookies.get('user') as string) : null,
   userLoggedIn: !!Cookies.get('access'),
 };
 
@@ -47,13 +48,14 @@ const actions = {
   async login({ commit }: any, { email, password }: { email: string, password: string }) {
     try {
       const response = await api.post<AuthResponse>('/auth/login', { email, password });
-      const { access_token, refresh_token, user } = response.data;
+      const { access_token, refresh_token, payload } = response.data;
       commit('setToken', access_token);
       commit('setRefreshToken', refresh_token);
-      commit('setUser', user);
+      commit('setUser', payload);
       commit('setAuth', true);
       Cookies.set('access', access_token, { secure: true, sameSite: 'strict' });
       Cookies.set('refresh', refresh_token, { secure: true, sameSite: 'strict' });
+      Cookies.set('user', JSON.stringify(payload), { secure: true, sameSite: 'strict' });
     } catch (error) {
       console.error('Login failed:', error);
       throw error;

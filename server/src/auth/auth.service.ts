@@ -3,6 +3,7 @@ import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/utils/prisma.service';
+import AuthPayload from 'src/interface/auth-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +13,7 @@ export class AuthService {
     private prisma: PrismaService,
   ) {}
 
-  async signIn(email: string, pass: string): Promise<{ access_token: string, refresh_token: string }> {
+  async signIn(email: string, pass: string): Promise<{ access_token: string, refresh_token: string, payload: AuthPayload }> {
     const user = await this.userService.findOneForAuth({ email });
     if (!user) {
       throw new UnauthorizedException('Adresse email ou mot de passe incorrect.');
@@ -23,7 +24,12 @@ export class AuthService {
       throw new UnauthorizedException('Adresse email ou mot de passe incorrect.');
     }
 
-    const payload = { id: user.id, email: user.email, role: user.role };
+    const payload: AuthPayload = { 
+      id: user.id, 
+      email: user.email, 
+      role: user.role,
+      pseudo: user.pseudo
+    };
     const access_token = await this.jwtService.signAsync(payload);
     const refresh_token = await this.jwtService.signAsync(payload, { expiresIn: '1d' });
 
@@ -41,6 +47,7 @@ export class AuthService {
     return {
       access_token,
       refresh_token,
+      payload,
     };
   }
 

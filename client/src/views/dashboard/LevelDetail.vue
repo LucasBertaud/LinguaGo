@@ -1,7 +1,7 @@
 <template>
     <section class="flex flex-wrap m-4 justify-center">
-        <div v-for="exercisesSerie in level?.exercisesSeries" :key="exercisesSerie.id" class="md:w-1/3">
-            <ExercisesSerieCard :id="exercisesSerie.id" :title="exercisesSerie.title" :description="exercisesSerie.description" :level-id="exercisesSerie.levelId" :created-at="exercisesSerie.createdAt" />
+        <div v-for="exercisesSerie in level?.exercisesSeries" :key="exercisesSerie.id" class="lg:w-1/2 xl:w-1/3">
+            <ExercisesSerieCard :id="exercisesSerie.id" :title="exercisesSerie.title" :description="exercisesSerie.description" :level-id="exercisesSerie.levelId" :created-at="exercisesSerie.createdAt" :exercises="exercisesSerie.exercises" />
         </div>
     </section>
 </template>

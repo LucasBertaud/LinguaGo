@@ -8,7 +8,7 @@
                     :key="level.id"
                     :to="level.title"
                     class="sm:px-6 py-3 w-1/2 sm:w-auto justify-center sm:justify-start border-b-2 title-font font-medium inline-flex items-center leading-none border-gray-200 hover:text-gray-900 tracking-wider"
-                    active-class="rounded-t bg-gray-100 !border-blue-500 !text-blue-500">
+                    active-class="rounded-t bg-gray-100 !border-primary !text-primary">
                     {{ level.title }} ({{ level.subtitle }})
                 </router-link>
             </div>
