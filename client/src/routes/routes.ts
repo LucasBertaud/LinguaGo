@@ -23,16 +23,17 @@ const routes = [
           name: 'ToExercise',
           component: () => import('../views/dashboard/ToExercise.vue'),
           redirect: { 
-            name: 'ToExerciseLevel', 
+            name: 'LevelDetail', 
             params: { 
-              level: 'A1' 
+              levelTitle: 'A1' 
             }
           },
           children: [
             {
-              path: ':level',
-              name: 'ToExerciseLevel',
-              component: () => import('../views/dashboard/ToExerciseLevel.vue'),
+              path: ':levelTitle',
+              name: 'LevelDetail',
+              props: true,
+              component: () => import('../views/dashboard/LevelDetail.vue'),
             }
           ]
         }
