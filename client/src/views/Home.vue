@@ -4,6 +4,7 @@
     <HowItWorks />
     <Offers />
     <Testimonials />
+    <Footer />
 </template>
 
 <script setup lang="ts">
@@ -12,4 +13,5 @@ import WhyChoose from '../components/Home/WhyChoose.vue';
 import HowItWorks from '../components/Home/HowItWorks.vue';
 import Offers from '../components/Home/Offers.vue';
 import Testimonials from '../components/Home/Testimonials.vue';
+import Footer from '../components/Layout/Footer.vue';
 </script>

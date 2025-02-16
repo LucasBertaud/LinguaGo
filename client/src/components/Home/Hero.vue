@@ -8,7 +8,7 @@
         <p class="text-lg text-gray-200 mb-8">
             {{ heroTexts.description }}
         </p>
-        <router-link to="/levels"
+        <router-link to="/dashboard"
             class="bg-secondary text-black font-bold py-3 px-6 rounded-full shadow-md hover:bg-opacity-90 transition duration-300">
             {{ heroTexts.buttonText }}
         </router-link>
