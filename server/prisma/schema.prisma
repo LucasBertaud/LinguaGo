@@ -14,13 +14,14 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  pseudo       String
-  email        String        @unique
-  password     String
-  role         Role          @default(USER)
-  createdAt    DateTime      @default(now())
-  refreshTokens RefreshToken[]
+  id                  String            @id @default(uuid())
+  pseudo              String
+  email               String            @unique
+  password            String
+  role                Role              @default(USER)
+  createdAt           DateTime          @default(now())
+  refreshTokens       RefreshToken[]
+  completedExercises  UserCompletedExercise[]
 }
 
 model RefreshToken {
@@ -47,18 +48,30 @@ model ExercisesSerie {
   description String?
   exercises   Exercise[]
   createdAt   DateTime    @default(now())
-  level       Level      @relation(fields: [levelId], references: [id])
+  level       Level       @relation(fields: [levelId], references: [id])
   levelId     Int
 }
 
 model Exercise {
-  id          Int             @default(autoincrement()) @id
-  question    String
-  answer      String
-  choices     String[]
-  type        ExerciseType
-  serie       ExercisesSerie  @relation(fields: [serieId], references: [id]) 
-  serieId     Int
+  id              Int               @default(autoincrement()) @id
+  question        String
+  answer          String
+  choices         String[]
+  type            ExerciseType
+  serie           ExercisesSerie    @relation(fields: [serieId], references: [id]) 
+  serieId         Int
+  usersCompleted  UserCompletedExercise[]
+}
+
+model UserCompletedExercise {
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  exercise    Exercise  @relation(fields: [exerciseId], references: [id])
+  exerciseId  Int
+  completedAt DateTime  @default(now())
+  serieId Int
+
+  @@id([userId, exerciseId])
 }
 
 enum Role {

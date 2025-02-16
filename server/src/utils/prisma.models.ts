@@ -5,6 +5,8 @@ import { CreateExercisesSerieDto } from "src/exercises-serie/dto/create-exercise
 import { UpdateExercisesSerieDto } from "src/exercises-serie/dto/update-exercises-serie.dto";
 import { CreateLevelDto } from "src/level/dto/create-level.dto";
 import { UpdateLevelDto } from "src/level/dto/update-level.dto";
+import { CreateUserCompletedExerciseDto } from "src/user-completed-exercise/dto/create-user-completed-exercise.dto";
+import { UpdateUserCompletedExerciseDto } from "src/user-completed-exercise/dto/update-user-completed-exercise.dto";
 
 export type PrismaModels = {
     ExercisesSerie: {
@@ -30,7 +32,15 @@ export type PrismaModels = {
         include: Prisma.LevelInclude;
         create: CreateLevelDto;
         update: UpdateLevelDto;
-    }
+    };
+    UserCompletedExercise: {
+        cursor: Prisma.UserCompletedExerciseWhereUniqueInput;
+        where: Prisma.UserCompletedExerciseWhereInput;
+        orderBy: Prisma.UserCompletedExerciseOrderByWithRelationInput;
+        include: Prisma.UserCompletedExerciseInclude;
+        create: CreateUserCompletedExerciseDto;
+        update: UpdateUserCompletedExerciseDto;
+    };
   };
   
   export type EntityName = keyof PrismaModels;

@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { CreateLevelDto } from './dto/create-level.dto';
 import { UpdateLevelDto } from './dto/update-level.dto';
 import { GenericService } from 'src/utils/generic.service';
 import { Level } from './entities/level.entity';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('level')
 export class LevelController {
@@ -27,10 +29,24 @@ export class LevelController {
   }
 
   @Get('title/:title')
-  findOneByTitle(@Param('title') title: string) {
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  findOneByTitle(@Request() req, @Param('title') title: string) {
     return this.genericService.findOne("level", {
       where: { title: String(title) },
-      include: { exercisesSeries: true },
+      include: { 
+        exercisesSeries: {
+          include: {
+            exercises: {
+              include: {
+                usersCompleted: {
+                  where: { userId: String(req.user?.id) }
+                },
+              }
+            }
+          }
+        } 
+      }
     });
   }
 
