@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { Exercise } from './entities/exercise.entity';
@@ -21,6 +21,7 @@ export class ExerciseController {
   @ApiResponse({ status: 200, description: 'The exercice has been successfully created.', type: Exercise })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   create(@Body() createExerciseDto: CreateExerciseDto) {
+    createExerciseDto.answer = createExerciseDto.answer.toLowerCase().replace(/[.,!?;:'"]/g, '').trim();
     return this.genericService.create("exercise", createExerciseDto);
   }
 
@@ -30,6 +31,23 @@ export class ExerciseController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   findAll() {
     return this.genericService.findAll("exercise", {});
+  }
+
+  @Get('serie/:id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Get all exercices by serie ID' })
+  @ApiResponse({ status: 200, description: 'Return all exercices.', type: [Exercise] })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  findBySerieId(@Request() req, @Param('id') id: string) {
+    return this.genericService.findAll("exercise", {
+      where: { serieId: Number(id) },
+      include: {
+        usersCompleted: {
+          where: { userId: String(req.user?.id) }
+        }
+      }
+    });
   }
 
   @Get(':id')
@@ -64,6 +82,8 @@ export class ExerciseController {
   @ApiResponse({ status: 200, description: 'The exercice has been successfully deleted.', type: Exercise })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   remove(@Param('id') id: string) {
-    return this.genericService.remove("exercise", { id: Number(id) });
+    return this.genericService.remove("exercise", { 
+      where: { id: Number(id) }
+     });
   }
 }

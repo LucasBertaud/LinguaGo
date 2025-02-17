@@ -33,15 +33,26 @@ const routes = [
             path: ':levelTitle',
             name: 'LevelDetail',
             props: true,
-            component: () => import('../views/dashboard/LevelDetail.vue'),
+            component: () => import('../views/dashboard/Level.vue'),
+            redirect: {
+              name: 'Series',
+            },
+            children: [
+              {
+                name: 'Series',
+                path: 'series',
+                props: true,
+                component: () => import('../views/dashboard/Series.vue'),
+              },
+              {
+                name: 'Exercises',
+                path: ':serieId',
+                props: true,
+                component: () => import('../views/dashboard/Exercises.vue'),
+              }
+            ]
           }
         ]
-      },
-      {
-        path: 'exercises/:serieId/:serieTitle',
-        name: 'Exercises',
-        props: true,
-        component: () => import('../views/dashboard/Exercises.vue'),
       },
     ]
   },

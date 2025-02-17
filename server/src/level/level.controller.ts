@@ -60,6 +60,8 @@ export class LevelController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.genericService.remove("level", { id: Number(id) });
+    return this.genericService.remove("level", { 
+      where: { id: Number(id) }
+     });
   }
 }

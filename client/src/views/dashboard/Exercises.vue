@@ -58,17 +58,14 @@ const feedback = ref<string | null>(null);
 const isCorrect = ref<boolean>(false);
 const answered = ref<boolean>(false);
 const allExercisesCompleted = ref<boolean>(false);
+const userId = store.getters.getUser.id;
 
 const fetchExercises = async () => {
     try {
-        const response = await Database.getAll('exercise');
-        const completedExercisesResponse = await Database.getAll('user-completed-exercise', {
-            where: { userId: store.getters.getUser.id, serieId }
-        });
-        const completedExerciseIds = completedExercisesResponse.map((ce: any) => ce.exerciseId);
-        exercises.value = response.filter((exercise: Exercise) => exercise.serieId === serieId && !completedExerciseIds.includes(exercise.id));
-        completedExercises.value = response.filter((exercise: Exercise) => exercise.serieId === serieId && completedExerciseIds.includes(exercise.id));
-        if (exercises.value.length === 0) {
+        const response = await Database.getAll(`exercise/serie/${serieId}`);
+        exercises.value = response;
+        completedExercises.value = response.filter((exercise: Exercise) => exercise.usersCompleted.length > 0);
+        if (exercises.value.length === 0 || completedExercises.value.length === exercises.value.length) {
             allExercisesCompleted.value = true;
         }
     } catch (error) {
@@ -77,31 +74,50 @@ const fetchExercises = async () => {
 };
 
 const checkAnswer = async () => {
-    if (userAnswer.value === currentExercise.value.answer) {
+    const answer = userAnswer.value?.toLowerCase().replace(/[.,!?;:'"]/g, '').trim();
+    if (answer === currentExercise.value.answer) {
         feedback.value = 'Bonne réponse !';
         isCorrect.value = true;
         await markExerciseAsCompleted();
     } else {
         feedback.value = 'Mauvaise réponse. La bonne réponse est : ' + currentExercise.value.answer;
         isCorrect.value = false;
+        await markExerciseAsFailed();
     }
     answered.value = true;
 };
 
 const markExerciseAsCompleted = async () => {
+    const exerciseId = currentExercise.value.id;
+    
+    if(completedExercises.value.find((exercise) => exercise.id === exerciseId)) {
+        return;
+    }
     try {
-        const userId = store.getters.getUser.id; // Récupérez l'ID de l'utilisateur à partir du store Vuex
-        const exerciseId = currentExercise.value.id;
         await Database.create('user-completed-exercise', {
             userId,
             exerciseId,
-            serieId,
+            serieId
         });
-        fetchExercises(); // Rafraîchir les exercices après avoir marqué l'exercice comme complété
+        completedExercises.value.push(currentExercise.value);
     } catch (error) {
         console.error('Erreur lors de l\'enregistrement de la complétion de l\'exercice:', error);
     }
 };
+
+const markExerciseAsFailed = async () => {
+    const exerciseId = currentExercise.value.id;
+    
+    if(!completedExercises.value.find((exercise) => exercise.id === exerciseId)) {
+        return;
+    }
+
+    try {
+        await Database.delete(`user-completed-exercise/${userId}/${exerciseId}`);
+    } catch (error) {
+        console.error('Erreur lors de l\'enregistrement de la complétion de l\'exercice:', error);
+    }
+}
 
 const nextExercise = () => {
     if (currentExerciseIndex.value < exercises.value.length - 1) {
@@ -115,7 +131,7 @@ const nextExercise = () => {
 };
 
 const goToExercises = () => {
-    router.push('/dashboard/to-exercise/A1');
+    router.push(`/dashboard/to-exercise/${route.params.levelTitle}`);
 };
 
 onMounted(() => {

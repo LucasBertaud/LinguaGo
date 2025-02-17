@@ -72,6 +72,8 @@ export class ExercisesSerieController {
   @ApiResponse({ status: 200, description: 'The exercices serie has been successfully deleted.', type: ExercisesSerie })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   remove(@Param('id') id: string): Promise<ExercisesSerie> {
-    return this.genericService.remove("exercisesSerie", { id: Number(id) });
+    return this.genericService.remove("exercisesSerie", {
+      where: { id: Number(id) }
+    });
   }
 }

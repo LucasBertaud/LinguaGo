@@ -5,9 +5,12 @@ export default class Database {
   /**
    * -- General CRUD
    */
-  static async getAll(collection: string, params?: object) {
+  static async getAll(collection: string, params?: object, headers?: object) {
     try {
-      const response = await api.get(`/${collection}`, { params: params });
+      const response = await api.get(`/${collection}`, { 
+        params: params,
+        headers: this.addAuthHeader(headers),
+      });
       return response.data;
     } catch (err) {
       console.log(err);
@@ -51,9 +54,9 @@ export default class Database {
     }
   }
 
-  static async delete(collection: string, id: string) {
+  static async delete(collection: string) {
     try {
-      const { status } = await api.delete(`/${collection}/${id}`, {
+      const { status } = await api.delete(`/${collection}`, {
         headers: this.addAuthHeader(),
       });
       return status;

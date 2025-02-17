@@ -71,7 +71,7 @@ model UserCompletedExercise {
   completedAt DateTime  @default(now())
   serieId Int
 
-  @@id([userId, exerciseId])
+  @@id(name: "idUserCompletedExercise", [userId, exerciseId])
 }
 
 enum Role {

@@ -67,10 +67,13 @@ export class GenericService<T> {
 
     async remove<X extends EntityName>(
         entityName: string,
-        where: PrismaModels[X]['where']
+        params: {
+            where: PrismaModels[X]['where']
+        }
     ): Promise<T> {
+        const { where } = params;
         return this.prisma[entityName].delete({
-        where,
+            where,
         });
     }
 }

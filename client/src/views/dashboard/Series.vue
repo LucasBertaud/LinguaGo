@@ -7,11 +7,11 @@
 </template>
 
 <script setup lang="ts">
+import ExercisesSerieCard from '../../components/Dashboard/Card/ExercisesSerieCard.vue';
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { defineProps } from 'vue';
 import Database from '../../utils/database';
-import ExercisesSerieCard from '../../components/Dashboard/Card/ExercisesSerieCard.vue';
 import type Level from '../../interface/level.interface';
 
 const props = defineProps<{

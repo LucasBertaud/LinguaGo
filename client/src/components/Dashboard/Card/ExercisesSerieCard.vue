@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 cursor-pointer transition hover:scale-105 active:scale-95" @click="navigateToExercises">
+  <div class="p-4 cursor-pointer transition hover:scale-105 active:scale-95 h-full" @click="navigateToExercises">
     <div class="flex rounded-lg h-full bg-gray-100 p-8 flex-col">
       <div class="flex flex-col justify-center items-center mb-3">
         <i class="[&>svg]:w-14 [&>svg]:h-14 mb-4 opacity-15"
@@ -12,8 +12,8 @@
             :style="{ 'width': percentageCompleted + '%' }"></div>
         </div>
       </div>
-      <div class="flex-grow">
-        <p class="leading-relaxed text-base">{{ description }}</p>
+      <div class="flex-grow flex flex-col items-center">
+        <p class="leading-relaxed text-base flex-grow">{{ description }}</p>
         <a class="mt-3 text-primary inline-flex items-center">Commencer la série
           <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             class="w-4 h-4 ml-2" viewBox="0 0 24 24">
@@ -46,7 +46,7 @@ const getPercentageCompleted = async () => {
 const svgContent = ref<string | null>(null);
 
 const navigateToExercises = () => {
-  router.push({ name: 'Exercises', params: { serieId: props.id, serieTitle: props.title } });
+  router.push({ name: 'Exercises', params: { serieId: props.id } });
 };
 
 onMounted(async () => {

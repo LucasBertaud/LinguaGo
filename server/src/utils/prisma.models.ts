@@ -35,7 +35,7 @@ export type PrismaModels = {
     };
     UserCompletedExercise: {
         cursor: Prisma.UserCompletedExerciseWhereUniqueInput;
-        where: Prisma.UserCompletedExerciseWhereInput;
+        where: Prisma.UserCompletedExerciseWhereInput | Prisma.UserCompletedExerciseWhereUniqueInput;
         orderBy: Prisma.UserCompletedExerciseOrderByWithRelationInput;
         include: Prisma.UserCompletedExerciseInclude;
         create: CreateUserCompletedExerciseDto;
