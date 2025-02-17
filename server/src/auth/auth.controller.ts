@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, HttpCode, HttpStatus, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { AuthGuard } from './auth.guard';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Response } from 'express';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -15,22 +16,21 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'User successfully logged in.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   signIn(
-    @Body() signInDto: SignInDto
+    @Body() signInDto: SignInDto,
+    @Res() res: Response
   ) {
-    return this.authService.signIn(signInDto.email, signInDto.password);
+    return this.authService.signIn(signInDto.email, signInDto.password, res);
   }
 
   @Post('refresh')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Refresh access token' })
   @ApiResponse({ status: 200, description: 'Access token successfully refreshed.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   refreshToken(
-    @Body('refresh_token') refreshToken: string
+    @Body('refresh_token') refreshToken: string,
+    @Res() res: Response
   ) {
-    return this.authService.refreshToken(refreshToken);
+    return this.authService.refreshToken(refreshToken, res);
   }
 
   @Post('logout')
@@ -38,9 +38,9 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'User successfully logged out.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async logout(
-    @Body('refresh_token') refreshToken: string
+    @Body('refresh_token') refreshToken: string,
+    @Res() res: Response
   ) {
-    await this.authService.logout(refreshToken);
-    return { message: 'User successfully logged out.' };
+    await this.authService.logout(refreshToken, res);
   }
 }

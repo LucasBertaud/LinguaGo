@@ -4,32 +4,20 @@ import { isTokenExpired, clearCookies } from '../../utils/auth.utils';
 import type { User } from '../../interface/user.interface';
 
 interface AuthResponse {
-  access_token: string;
-  refresh_token: string;
   payload: User;
 }
 
 interface AuthState {
-  token: string | null;
-  refreshToken: string | null;
   user: User | null;
   userLoggedIn: boolean;
 }
 
 const state: AuthState = {
-  token: Cookies.get('access') || null,
-  refreshToken: Cookies.get('refresh') || null,
   user: Cookies.get('user') ? JSON.parse(Cookies.get('user') as string) : null,
-  userLoggedIn: !!Cookies.get('access'),
+  userLoggedIn: !!Cookies.get('user'),
 };
 
 const mutations = {
-  setToken(state: AuthState, token: string) {
-    state.token = token;
-  },
-  setRefreshToken(state: AuthState, refreshToken: string) {
-    state.refreshToken = refreshToken;
-  },
   setUser(state: AuthState, user: any) {
     state.user = user;
   },
@@ -37,8 +25,6 @@ const mutations = {
     state.userLoggedIn = status;
   },
   clearAuthData(state: AuthState) {
-    state.token = null;
-    state.refreshToken = null;
     state.user = null;
     state.userLoggedIn = false;
   },
@@ -48,25 +34,21 @@ const actions = {
   async login({ commit }: any, { email, password }: { email: string, password: string }) {
     try {
       const response = await api.post<AuthResponse>('/auth/login', { email, password });
-      const { access_token, refresh_token, payload } = response.data;
-      commit('setToken', access_token);
-      commit('setRefreshToken', refresh_token);
+      const { payload } = response.data;
       commit('setUser', payload);
       commit('setAuth', true);
-      Cookies.set('access', access_token, { secure: true, sameSite: 'strict' });
-      Cookies.set('refresh', refresh_token, { secure: true, sameSite: 'strict' });
       Cookies.set('user', JSON.stringify(payload), { secure: true, sameSite: 'strict' });
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
     }
   },
-  async refreshToken({ commit, state }: any) {
+  async refreshToken({ commit }: any) {
     try {
-      const response = await api.post<AuthResponse>('/auth/refresh', { refresh_token: state.refreshToken });
-      const { access_token } = response.data;
-      commit('setToken', access_token);
-      Cookies.set('access', access_token, { secure: true, sameSite: 'strict' });
+      const response = await api.post<AuthResponse>('/auth/refresh');
+      const { payload } = response.data;
+      commit('setUser', payload);
+      Cookies.set('user', JSON.stringify(payload), { secure: true, sameSite: 'strict' });
     } catch (error) {
       console.error('Token refresh failed:', error);
       commit('clearAuthData');
@@ -103,9 +85,9 @@ const actions = {
       throw error;
     }
   },
-  async logout({ commit, state }: any) {
+  async logout({ commit }: any) {
     try {
-      await api.post('/auth/logout', { refresh_token: state.refreshToken });
+      await api.post('/auth/logout');
       commit('clearAuthData');
       clearCookies();
     } catch (error) {
@@ -138,13 +120,7 @@ const actions = {
 
 const getters = {
   isAuthenticated(state: AuthState): boolean {
-    return !!state.token;
-  },
-  getToken(state: AuthState): string | null {
-    return state.token;
-  },
-  getRefreshToken(state: AuthState): string | null {
-    return state.refreshToken;
+    return state.userLoggedIn;
   },
   getUser(state: AuthState): any | null {
     return state.user;
