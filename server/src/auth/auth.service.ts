@@ -1,9 +1,10 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Res } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/utils/prisma.service';
 import AuthPayload from 'src/interface/auth-payload.interface';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +14,7 @@ export class AuthService {
     private prisma: PrismaService,
   ) {}
 
-  async signIn(email: string, pass: string): Promise<{ access_token: string, refresh_token: string, payload: AuthPayload }> {
+  async signIn(email: string, pass: string, @Res() res: Response): Promise<void> {
     const user = await this.userService.findOneForAuth({ email });
     if (!user) {
       throw new UnauthorizedException('Adresse email ou mot de passe incorrect.');
@@ -44,14 +45,22 @@ export class AuthService {
     // Supprime les anciennes sessions
     await this.cleanUpOldSessions(user.id);
 
-    return {
-      access_token,
-      refresh_token,
-      payload,
-    };
+    // Définir les cookies HTTP-only
+    res.cookie('access_token', access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Utilisez secure en production
+      sameSite: 'strict',
+    });
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Utilisez secure en production
+      sameSite: 'strict',
+    });
+
+    res.send({ message: 'User successfully logged in.', payload });
   }
 
-  async refreshToken(refreshToken: string): Promise<{ access_token: string }> {
+  async refreshToken(refreshToken: string, @Res() res: Response): Promise<void> {
     const storedToken = await this.prisma.refreshToken.findFirst({
       where: { token: refreshToken },
       include: { user: true },
@@ -64,13 +73,27 @@ export class AuthService {
     const payload = { id: storedToken.userId, email: storedToken.user.email, role: storedToken.user.role };
     const newAccessToken = await this.jwtService.signAsync(payload);
 
-    return { access_token: newAccessToken };
+    // Définir le nouveau cookie HTTP-only pour le token d'accès
+    res.cookie('access_token', newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Utilisez secure en production
+      sameSite: 'strict',
+    });
+
+    res.send({ message: 'Token rafraîchi avec succès' });
   }
 
-  async logout(refreshToken: string): Promise<void> {
+  async logout(refreshToken: string, @Res() res: Response): Promise<void> {
     await this.prisma.refreshToken.deleteMany({
       where: { token: refreshToken },
     });
+
+    // Supprimer les cookies
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
+    res.clearCookie('user');
+
+    res.send({ message: 'Déconnexion réussie' });
   }
 
   private async cleanUpOldSessions(userId: string): Promise<void> {
