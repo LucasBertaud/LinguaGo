@@ -1,12 +1,15 @@
 <template>
     <Title title="S'exercer" subtitle="Exercez-vous à votre rythme et progressez dans votre apprentissage." />
     <section class="text-gray-600 body-font">
-        <div class="container px-5 py-24 mx-auto flex flex-wrap flex-col pt-4">
+        <div class="container py-24 mx-auto flex flex-wrap flex-col pt-4">
             <div class="flex mx-auto flex-wrap mb-6">
                 <router-link 
                     v-for="level in levels" 
                     :key="level.id"
-                    :to="level.title"
+                    :to="{
+                        name: 'LevelDetail',
+                        params: { levelTitle: level.title },
+                    }"
                     class="sm:px-6 py-3 w-1/2 sm:w-auto justify-center sm:justify-start border-b-2 title-font font-medium inline-flex items-center leading-none border-gray-200 hover:text-gray-900 tracking-wider"
                     active-class="rounded-t bg-gray-100 !border-primary !text-primary">
                     {{ level.title }} ({{ level.subtitle }})

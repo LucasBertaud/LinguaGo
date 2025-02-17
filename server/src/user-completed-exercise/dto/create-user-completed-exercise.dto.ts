@@ -10,6 +10,7 @@ export class CreateUserCompletedExerciseDto {
     @IsNotEmpty()
     @IsString()
     userId: string;
+
     @ApiProperty({
         type: 'number',
         example: 1,
@@ -18,4 +19,7 @@ export class CreateUserCompletedExerciseDto {
     @IsNotEmpty()
     @IsInt()
     exerciseId: number;
+    @IsNotEmpty()
+    @IsInt()
+    serieId: number;
 }

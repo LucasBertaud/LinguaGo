@@ -3,6 +3,7 @@ import { CreateUserCompletedExerciseDto } from './dto/create-user-completed-exer
 import { UpdateUserCompletedExerciseDto } from './dto/update-user-completed-exercise.dto';
 import { GenericService } from 'src/utils/generic.service';
 import { UserCompletedExercise } from './entities/user-completed-exercise.entity';
+import { Prisma } from '@prisma/client';
 
 @Controller('user-completed-exercise')
 export class UserCompletedExerciseController {
@@ -21,7 +22,9 @@ export class UserCompletedExerciseController {
   @Get('user/:userId')
   findAllByUser(@Param('userId') userId: string) {
     return this.genericService.findAll("userCompletedExercise", {
-      where: { userId: String(userId) },
+      where: { 
+        userId: String(userId) 
+      },
     });
   }
 
@@ -33,10 +36,15 @@ export class UserCompletedExerciseController {
     });
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.genericService.remove("userCompletedExercise", { 
-      id: Number(id) 
+  @Delete(':userId/:exerciseId')
+  remove(@Param('userId') userId: string, @Param('exerciseId') exerciseId: number) {
+    return this.genericService.remove("userCompletedExercise", {
+      where: {
+        idUserCompletedExercise: {
+          userId: String(userId),
+          exerciseId: Number(exerciseId),
+        }
+      },
     });
   }
 }
