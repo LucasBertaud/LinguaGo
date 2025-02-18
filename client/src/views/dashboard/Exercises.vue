@@ -2,29 +2,19 @@
     <div>
         <h1 class="text-2xl font-bold mb-4">Exercice pour la série {{ serieTitle }}</h1>
         <div v-if="allExercisesCompleted">
-            <p>Vous avez terminé tous les exercices pour cette série.</p>
-            <p>Récapitulatif :</p>
-            <ul>
-                <li v-for="exercise in completedExercises" :key="exercise.id">
-                    {{ exercise.question }} - Réponse : {{ exercise.answer }}
-                </li>
-            </ul>
-            <button @click="goToExercises" class="mt-4 p-2 bg-blue-500 text-white rounded">Retour aux exercices</button>
+            <Summary :completed-exercises="completedExercises" />
         </div>
         <div v-else-if="currentExercise">
             <div class="mb-4 p-4 border rounded">
                 <h2 class="text-xl font-semibold">{{ currentExercise.question }}</h2>
                 <div v-if="currentExercise.type === 'MULTIPLE_CHOICE'">
-                    <div v-for="choice in currentExercise.choices" :key="choice">
-                        <input type="radio" :value="choice" v-model="userAnswer" /> {{ choice }}
-                    </div>
+                    <MultipleChoice :current-exercise="currentExercise" :user-answer="userAnswer" @update:userAnswer="userAnswer = $event"/>
                 </div>
                 <div v-else-if="currentExercise.type === 'TRANSLATION'">
-                    <input type="text" v-model="userAnswer" class="border p-2 w-full" />
+                    <Translation @update:user-answer="userAnswer = $event" />
                 </div>
                 <div v-else-if="currentExercise.type === 'TRUE_FALSE'">
-                    <input type="radio" value="True" v-model="userAnswer" /> True
-                    <input type="radio" value="False" v-model="userAnswer" /> False
+                    <TrueFalse @update:user-answer="userAnswer = $event" />
                 </div>
                 <button @click="checkAnswer" class="mt-4 p-2 bg-blue-500 text-white rounded">Vérifier</button>
                 <p v-if="feedback" :class="{ 'text-green-500': isCorrect, 'text-red-500': !isCorrect }">{{ feedback }}</p>
@@ -39,14 +29,17 @@
 </template>
 
 <script setup lang="ts">
+import Summary from '../../components/Dashboard/Exercises/Summary.vue';
+import MultipleChoice from '../../components/Dashboard/Exercises/MultipleChoice.vue';
 import { ref, onMounted, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import Database from '../../utils/database';
 import type Exercise from '../../interface/exercise.interface';
+import Translation from '../../components/Dashboard/Exercises/Translation.vue';
+import TrueFalse from '../../components/Dashboard/Exercises/TrueFalse.vue';
 
 const route = useRoute();
-const router = useRouter();
 const store = useStore();
 const serieId = parseInt(route.params.serieId as string, 10);
 const serieTitle = route.params.serieTitle as string;
@@ -128,10 +121,6 @@ const nextExercise = () => {
     userAnswer.value = null;
     feedback.value = null;
     answered.value = false;
-};
-
-const goToExercises = () => {
-    router.push(`/dashboard/to-exercise/${route.params.levelTitle}`);
 };
 
 onMounted(() => {
