@@ -1,29 +1,30 @@
 <template>
-    <div>
-        <h1 class="text-2xl font-bold mb-4">Exercice pour la série {{ serieTitle }}</h1>
-        <div v-if="allExercisesCompleted">
-            <Summary :completed-exercises="completedExercises" />
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold mb-6 text-primary">
+            {{ allExercisesCompleted ? 'Résumé des exercices' : `Exercice ${currentExerciseIndex + 1}/${exercises.length}` }}
+        </h1>
+        <div v-if="exercises.length === 0">
+            <p class="text-gray-500">Aucun exercice trouvé pour cette série.</p>
+        </div>
+        <div v-else-if="allExercisesCompleted">
+            <Summary :completed-exercises="completedExercises" :total-exercises="exercises.length" />
         </div>
         <div v-else-if="currentExercise">
-            <div class="mb-4 p-4 border rounded">
-                <h2 class="text-xl font-semibold">{{ currentExercise.question }}</h2>
+            <div class="mb-6 p-6 rounded-lg shadow-xl bg-white">
+                <h2 class="text-2xl font-semibold mb-4">{{ currentExercise.question }}</h2>
                 <div v-if="currentExercise.type === 'MULTIPLE_CHOICE'">
-                    <MultipleChoice :current-exercise="currentExercise" :user-answer="userAnswer" @update:userAnswer="userAnswer = $event"/>
+                    <MultipleChoice :current-exercise="currentExercise" :user-answer="userAnswer"
+                        @update:userAnswer="userAnswer = $event" />
                 </div>
                 <div v-else-if="currentExercise.type === 'TRANSLATION'">
                     <Translation @update:user-answer="userAnswer = $event" />
                 </div>
                 <div v-else-if="currentExercise.type === 'TRUE_FALSE'">
-                    <TrueFalse @update:user-answer="userAnswer = $event" />
+                    <TrueFalse :user-answer="userAnswer" @update:user-answer="userAnswer = $event" />
                 </div>
-                <button @click="checkAnswer" class="mt-4 p-2 bg-blue-500 text-white rounded">Vérifier</button>
-                <p v-if="feedback" :class="{ 'text-green-500': isCorrect, 'text-red-500': !isCorrect }">{{ feedback }}</p>
+                <button @click="checkAnswer"
+                    class="mt-4 p-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition duration-300 cursor-pointer">Vérifier</button>
             </div>
-            <button v-if="answered" @click="nextExercise"
-                class="mt-4 p-2 bg-blue-500 text-white rounded">Suivant</button>
-        </div>
-        <div v-else>
-            <p>Aucun exercice trouvé pour cette série.</p>
         </div>
     </div>
 </template>
@@ -42,7 +43,7 @@ import TrueFalse from '../../components/Dashboard/Exercises/TrueFalse.vue';
 const route = useRoute();
 const store = useStore();
 const serieId = parseInt(route.params.serieId as string, 10);
-const serieTitle = route.params.serieTitle as string;
+const serieTitle = ref(route.query.serieTitle as string);
 const exercises = ref<Exercise[]>([]);
 const completedExercises = ref<Exercise[]>([]);
 const currentExerciseIndex = ref(0);
@@ -68,22 +69,22 @@ const fetchExercises = async () => {
 
 const checkAnswer = async () => {
     const answer = userAnswer.value?.toLowerCase().replace(/[.,!?;:'"]/g, '').trim();
-    if (answer === currentExercise.value.answer) {
-        feedback.value = 'Bonne réponse !';
+    const correctAnswer = currentExercise.value.answer.toLowerCase().replace(/[.,!?;:'"]/g, '').trim();
+    if (answer === correctAnswer) {
         isCorrect.value = true;
         await markExerciseAsCompleted();
     } else {
-        feedback.value = 'Mauvaise réponse. La bonne réponse est : ' + currentExercise.value.answer;
         isCorrect.value = false;
         await markExerciseAsFailed();
     }
     answered.value = true;
+    nextExercise();
 };
 
 const markExerciseAsCompleted = async () => {
     const exerciseId = currentExercise.value.id;
-    
-    if(completedExercises.value.find((exercise) => exercise.id === exerciseId)) {
+
+    if (completedExercises.value.find((exercise) => exercise.id === exerciseId)) {
         return;
     }
     try {
@@ -100,8 +101,8 @@ const markExerciseAsCompleted = async () => {
 
 const markExerciseAsFailed = async () => {
     const exerciseId = currentExercise.value.id;
-    
-    if(!completedExercises.value.find((exercise) => exercise.id === exerciseId)) {
+
+    if (!completedExercises.value.find((exercise) => exercise.id === exerciseId)) {
         return;
     }
 

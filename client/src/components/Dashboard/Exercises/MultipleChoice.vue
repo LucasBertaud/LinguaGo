@@ -1,7 +1,9 @@
 <template>
-    <div v-for="choice in currentExercise.choices" :key="choice">
-        <input type="radio" :id="choice" :value="choice" :checked="choice === userAnswer" @change="updateAnswer(choice)" />
-        <label :for="choice" class="ml-2">{{ choice }}</label>
+    <div v-for="choice in currentExercise.choices" :key="choice" class="mb-2">
+        <input type="radio" :id="choice" :value="choice" :checked="choice === userAnswer" @change="updateAnswer(choice)" class="hidden peer" />
+        <label :for="choice" class="inline-flex items-center justify-between w-full p-3 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer peer-checked:border-primary peer-checked:text-primary hover:bg-gray-100">
+            <span>{{ choice }}</span>
+        </label>
     </div>
 </template>
 
