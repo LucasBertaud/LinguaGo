@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsInt, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateLevelDto {
     @ApiProperty({
@@ -25,4 +25,12 @@ export class CreateLevelDto {
     })
     @IsString()
     description?: string;
+    @ApiProperty({
+        type: 'number',
+        example: 1,
+        description: 'Number of points win when completed exercises in this level',
+    })
+    @IsInt()
+    @IsNotEmpty()
+    pointsPerExo: number;
 }

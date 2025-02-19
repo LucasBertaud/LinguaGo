@@ -1,6 +1,6 @@
 <template>
     <section class="flex flex-wrap m-4 justify-center">
-        <div v-for="exercisesSerie in level?.exercisesSeries" :key="exercisesSerie.id" class="lg:w-1/2 xl:w-1/3">
+        <div v-for="exercisesSerie in level?.exercisesSeries" :key="exercisesSerie.id" class="lg:w-1/2 xl:w-1/3 w-full">
             <ExercisesSerieCard :exercises-serie="exercisesSerie" />
         </div>
     </section>

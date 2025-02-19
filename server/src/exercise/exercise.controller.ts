@@ -25,6 +25,24 @@ export class ExerciseController {
     return this.genericService.create("exercise", createExerciseDto);
   }
 
+  @Post('multiple')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Create a list of new exercises' })
+  @ApiResponse({ status: 200, description: 'The exercices has been successfully created.', type: Exercise })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  createMultiple(@Body() createExerciseDto: CreateExerciseDto[]) {
+    try {
+      createExerciseDto.forEach((exercise) => {
+        exercise.answer = exercise.answer.toLowerCase().replace(/[.,!?;:'"]/g, '').trim();
+      });
+      return this.genericService.createMany("exercise", createExerciseDto);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   @Get()
   @ApiOperation({ summary: 'Get all exercices' })
   @ApiResponse({ status: 200, description: 'Return all exercices.', type: [Exercise] })

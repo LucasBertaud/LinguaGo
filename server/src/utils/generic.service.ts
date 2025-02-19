@@ -15,6 +15,15 @@ export class GenericService<T> {
         });
     }
 
+    async createMany<X extends EntityName>(
+        entityName: string,
+        data: PrismaModels[X]['createMany']
+    ): Promise<T> {
+        return this.prisma[entityName].createMany({
+            data,
+        });
+    }
+
     async findAll<X extends EntityName>(
         entityName: string,
         params: {

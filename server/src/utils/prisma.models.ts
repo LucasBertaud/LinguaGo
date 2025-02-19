@@ -16,6 +16,7 @@ export type PrismaModels = {
         where: Prisma.ExercisesSerieWhereInput;
         orderBy: Prisma.ExercisesSerieOrderByWithRelationInput;
         include: Prisma.ExercisesSerieInclude;
+        createMany: Prisma.ExercisesSerieCreateManyInput;
         create: CreateExercisesSerieDto;
         update: UpdateExercisesSerieDto;
     };
@@ -24,6 +25,7 @@ export type PrismaModels = {
         where: Prisma.ExerciseWhereInput;
         orderBy: Prisma.ExerciseOrderByWithRelationInput;
         include: Prisma.ExerciseInclude;
+        createMany: Prisma.ExerciseCreateManyInput | CreateExerciseDto[];
         create: CreateExerciseDto;
         update: UpdateExerciseDto;
     };
@@ -32,6 +34,7 @@ export type PrismaModels = {
         where: Prisma.LevelWhereInput;
         orderBy: Prisma.LevelOrderByWithRelationInput;
         include: Prisma.LevelInclude;
+        createMany: Prisma.LevelCreateManyInput;
         create: CreateLevelDto;
         update: UpdateLevelDto;
     };
@@ -40,6 +43,7 @@ export type PrismaModels = {
         where: Prisma.UserCompletedExerciseWhereInput | Prisma.UserCompletedExerciseWhereUniqueInput;
         orderBy: Prisma.UserCompletedExerciseOrderByWithRelationInput;
         include: Prisma.UserCompletedExerciseInclude;
+        createMany: Prisma.UserCompletedExerciseCreateManyInput;
         create: CreateUserCompletedExerciseDto;
         update: UpdateUserCompletedExerciseDto;
     };
@@ -48,6 +52,7 @@ export type PrismaModels = {
         where: Prisma.UserFavoriteSerieWhereInput | Prisma.UserFavoriteSerieWhereUniqueInput;
         orderBy: Prisma.UserFavoriteSerieOrderByWithRelationInput;
         include: Prisma.UserFavoriteSerieInclude;
+        createMany: Prisma.UserFavoriteSerieCreateManyInput;
         create: CreateUserFavoriteSerieDto;
         update: UpdateUserFavoriteSerieDto;
     }
