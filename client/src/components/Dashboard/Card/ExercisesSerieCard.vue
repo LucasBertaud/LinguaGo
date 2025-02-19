@@ -2,8 +2,11 @@
   <div class="p-4 cursor-pointer transition hover:scale-105 active:scale-95 h-full" @click="navigateToExercises">
     <div class="flex rounded-lg h-full bg-gray-100 p-8 flex-col">
       <div class="flex flex-col justify-center items-center mb-3">
-        <i class="[&>svg]:w-14 [&>svg]:h-14 mb-4 opacity-15"
-          :class="percentageCompleted == 100 && '[&>svg]:fill-secondary !opacity-100'" v-html="svgContent"></i>
+        <Icon 
+          svg-path="/assets/images/icons/achievement.svg" 
+          :options="{
+            dynamicClasses: `[&>svg]:w-14 [&>svg]:h-14 mb-4 opacity-15 ${percentageCompleted == 100 && '[&>svg]:fill-secondary !opacity-100'}`
+          }" />
         <h2 class="text-gray-900 text-lg title-font font-medium">{{ title }}</h2>
         <p class="text-gray-500 text-sm italic">Réussir {{ exercises.length > 1 ? "les" : "" }} {{ exercises.length }}
           {{ exercises.length > 1 ? "exercices" : "exercice" }} pour compléter la série.</p>
@@ -26,10 +29,11 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { loadSvg } from '../../../utils/loadSvg';
 import type ExercisesSerie from '../../../interface/exercises-serie.interface';
+import Icon from '../../Icon.vue';
 
 const props = defineProps<ExercisesSerie>();
 const percentageCompleted = ref<number>(0);
