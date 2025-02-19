@@ -72,7 +72,6 @@ const getPercentageCompleted = async () => {
 const svgContent = ref<string | null>(null);
 
 const navigateToExercises = () => {
-  console.log(props.exercisesSerie);
   router.push({ name: 'Exercises', params: { 
     serieId: props.exercisesSerie.id,
     levelTitle: props.routerParams?.levelTitle

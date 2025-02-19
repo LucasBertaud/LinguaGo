@@ -23,6 +23,25 @@ model User {
   refreshTokens       RefreshToken[]
   completedExercises  UserCompletedExercise[]
   favoriteSeries      UserFavoriteSerie[]
+  stats               UserStats?
+}
+
+model SiteStats{
+  id                    Int       @id @default(1)
+  totalUsers            Int       @default(0)
+  totalExercises        Int       @default(0)
+  totalSeries           Int       @default(0)
+  totalPoints           Int       @default(0)
+}
+
+model UserStats {
+  id                    Int       @default(autoincrement()) @id
+  userId                String    @unique
+  user                  User      @relation(fields: [userId], references: [id])
+  points                Int       @default(0)
+  successfullExercises  Int       @default(0)
+  failedExercises       Int       @default(0)
+  completedSeries       Int       @default(0)
 }
 
 model RefreshToken {
@@ -39,6 +58,7 @@ model Level {
   title           LevelEnum         @unique
   subtitle        String
   description     String?
+  pointsPerExo    Int               @default(1)
   winablePoints   Int               @default(0)
   exercisesSeries ExercisesSerie[]
 }

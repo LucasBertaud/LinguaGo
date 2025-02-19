@@ -32,7 +32,6 @@ import type ExercisesSerie from '../../interface/exercises-serie.interface';
 const levels = ref<Level[]>();
 
 const carouselConfig = (items: number) => {
-    console.log(items)
     return {
         wrapAround: items > 3 ? true : false,
         breakpoints: {
@@ -53,7 +52,6 @@ const fetchFavorites = async () => {
     try {
         const response = await Database.getAll(`level/favorites`)
         levels.value = response;
-        console.log(response);
     } catch (error) {
         console.error('Erreur lors de la récupération des favoris:', error);
     }

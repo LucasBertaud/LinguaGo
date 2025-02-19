@@ -13,7 +13,7 @@ export default class Database {
       });
       return response.data;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -25,7 +25,7 @@ export default class Database {
       });
       return response.data;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -39,7 +39,7 @@ export default class Database {
         status: response.status
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -50,7 +50,7 @@ export default class Database {
       });
       return response.data;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -61,7 +61,7 @@ export default class Database {
       });
       return status;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
