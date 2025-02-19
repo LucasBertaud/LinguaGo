@@ -20,6 +20,48 @@ export class LevelController {
     return this.genericService.findAll("level", {});
   }
 
+  @Get('favorites')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  findByFavoritesOfUser(@Request() req) {
+    return this.genericService.findAll("level", {
+      where: { 
+        exercisesSeries: {
+          some: {
+            favoriteUsers: {
+              some: {
+                userId: String(req.user?.id)
+              }
+            }
+          }
+        } 
+      },
+      include: { 
+        exercisesSeries: {
+          include: {
+            favoriteUsers: {
+              where: { userId: String(req.user?.id) }
+            },
+            exercises: {
+              include: {
+                usersCompleted: {
+                  where: { userId: String(req.user?.id) }
+                },
+              }
+            }
+          },
+          where: {
+            favoriteUsers: {
+              some: {
+                userId: String(req.user?.id)
+              }
+            }
+          }
+        } 
+      }
+    });
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.genericService.findOne("level", {
@@ -37,6 +79,9 @@ export class LevelController {
       include: { 
         exercisesSeries: {
           include: {
+            favoriteUsers: {
+              where: { userId: String(req.user?.id) }
+            },
             exercises: {
               include: {
                 usersCompleted: {

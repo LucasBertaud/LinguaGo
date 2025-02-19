@@ -1,4 +1,4 @@
-import type UsersCompletedExercise from "./users-completed-exercise.interface";
+import type UsersCompletedExercise from "./user-completed-exercise.interface";
 
 export default interface Exercise {
     id: number;

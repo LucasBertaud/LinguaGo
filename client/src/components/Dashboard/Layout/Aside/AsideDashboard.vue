@@ -18,7 +18,7 @@
       <div class="w-full grow space-y-3 p-4">
         <AsideLink link="/dashboard/home" label="Dashboard" icon="house-heart" />
         <AsideLink link="/dashboard/to-exercise" label="S'exercer" icon="learn" />
-        <AsideLink link="/dashboard/favorites" label="Favoris" icon="star" />
+        <AsideLink link="/dashboard/favorites" label="Mes favoris" icon="star" />
       </div>
       <!-- END Main Navigation -->
 

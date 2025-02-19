@@ -22,6 +22,7 @@ model User {
   createdAt           DateTime          @default(now())
   refreshTokens       RefreshToken[]
   completedExercises  UserCompletedExercise[]
+  favoriteSeries      UserFavoriteSerie[]
 }
 
 model RefreshToken {
@@ -43,13 +44,14 @@ model Level {
 }
 
 model ExercisesSerie {
-  id          Int         @default(autoincrement()) @id
-  title       String
-  description String?
-  exercises   Exercise[]
-  createdAt   DateTime    @default(now())
-  level       Level       @relation(fields: [levelId], references: [id])
-  levelId     Int
+  id            Int         @default(autoincrement()) @id
+  title         String
+  description   String?
+  exercises     Exercise[]
+  createdAt     DateTime    @default(now())
+  level         Level       @relation(fields: [levelId], references: [id])
+  levelId       Int
+  favoriteUsers UserFavoriteSerie[]
 }
 
 model Exercise {
@@ -72,6 +74,16 @@ model UserCompletedExercise {
   serieId Int
 
   @@id(name: "idUserCompletedExercise", [userId, exerciseId])
+}
+
+model UserFavoriteSerie {
+  user        User            @relation(fields: [userId], references: [id])
+  userId      String
+  serie       ExercisesSerie  @relation(fields: [serieId], references: [id])
+  serieId     Int
+  createdAt   DateTime        @default(now())
+
+  @@id(name: "idUserFavoriteSerie", [userId, serieId])
 }
 
 enum Role {

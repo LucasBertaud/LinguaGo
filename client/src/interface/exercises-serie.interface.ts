@@ -1,4 +1,6 @@
 import type Exercise from "./exercise.interface";
+import type Level from "./level.interface";
+import type UserFavoriteSerie from "./user-favorite-serie.interface";
 
 export default interface ExercisesSerie {
     id: number;
@@ -7,4 +9,6 @@ export default interface ExercisesSerie {
     levelId: number;
     createdAt: string;
     exercises: Exercise[];
+    favoriteUsers: UserFavoriteSerie[];
+    level?: Level;
 }
