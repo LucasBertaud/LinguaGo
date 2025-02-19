@@ -2,7 +2,7 @@
   <div 
     v-on:keyup.enter="navigateToExercises"
     tabindex="0"
-    class="relative p-4 focus-visible:scale-105 h-full transition hover:scale-105">
+    class="relative group p-4 focus-visible:scale-105 h-full transition hover:scale-105">
     <FavoriteButton :serie-id="exercisesSerie.id" :user-favorite-serie="userFavoriteSerie" @remove-favorite="onRemoveFavorite" />
     <div 
       class="cursor-pointer transition active:scale-95" 
@@ -52,6 +52,7 @@ import type UserFavoriteSerie from '../../../interface/user-favorite-serie.inter
 
 const props = defineProps<{
   exercisesSerie: ExercisesSerie;
+  routerParams?: { levelTitle: string };
 }>();
 const emit = defineEmits<{
   removeFavorite: [number];
@@ -71,7 +72,11 @@ const getPercentageCompleted = async () => {
 const svgContent = ref<string | null>(null);
 
 const navigateToExercises = () => {
-  router.push({ name: 'Exercises', params: { serieId: props.exercisesSerie.id } });
+  console.log(props.exercisesSerie);
+  router.push({ name: 'Exercises', params: { 
+    serieId: props.exercisesSerie.id,
+    levelTitle: props.routerParams?.levelTitle
+  }});
 };
 
 const onRemoveFavorite = () => {

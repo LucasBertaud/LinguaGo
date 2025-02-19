@@ -2,10 +2,13 @@
     <Title title="Mes favoris" subtitle="Retrouver ici vos séries d'exercices favoris... même hors-ligne !" />
     <section class="flex flex-col" v-for="level in levels" :key="level.id">
         <h2 class="text-2xl font-semibold mb-2">{{ level.title }} ({{ level.subtitle }})</h2>
-        <Carousel v-bind="carouselConfig(level.exercisesSeries.length < 3 ? level.exercisesSeries.length : 3)">
+        <Carousel v-bind="carouselConfig(level.exercisesSeries.length)">
             <Slide v-for="exercisesSerie in level.exercisesSeries" :key="exercisesSerie.id">
                 <div class="p-8">
-                    <ExercisesSerieCard :exercisesSerie="exercisesSerie" @removeFavorite="onRemoveFavorite" />
+                    <ExercisesSerieCard 
+                        :exercisesSerie="exercisesSerie"
+                        :routerParams="{ levelTitle: level.title }"
+                        @removeFavorite="onRemoveFavorite" />
                 </div>
             </Slide>
             <template #addons>
@@ -29,9 +32,20 @@ import type ExercisesSerie from '../../interface/exercises-serie.interface';
 const levels = ref<Level[]>();
 
 const carouselConfig = (items: number) => {
+    console.log(items)
     return {
-        itemsToShow: items >= 3 ? 3 : 1,
-        wrapAround: true,
+        wrapAround: items > 3 ? true : false,
+        breakpoints: {
+            300: {
+                itemsToShow: 1,
+            },
+            900: {
+                itemsToShow: items > 2 ? 2 : items - 1,
+            },
+            1200: {
+                itemsToShow: items > 3 ? 3 : items - 1,
+            },
+        },
     }
 }
 

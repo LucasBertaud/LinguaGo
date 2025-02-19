@@ -1,5 +1,5 @@
 <template>
-    <button class="absolute top-6 right-6">
+    <button class="transition absolute top-6 right-6 z-10">
         <Icon
         v-on:click="handleFavorite"
         v-on:keyup.enter="handleFavorite"
@@ -9,14 +9,13 @@
             dynamicClasses: `
             opacity-20
             transition
-            hover:opacity-50
+            hover:!opacity-50
             focus-visible:opacity-50
             active:[&>svg>*]:fill-red-700
-            z-10
             [&>svg]:w-7 
             [&>svg]:h-auto
             [&>svg>*]:fill-gray-600
-            ${isFavoriteActivate && '[&>svg>*]:fill-red-600 opacity-100'}
+            ${isFavoriteActivate && '[&>svg>*]:fill-red-600 !opacity-100'}
             `,
         }" />
     </button>
