@@ -37,6 +37,9 @@ export class LevelController {
       include: { 
         exercisesSeries: {
           include: {
+            favoriteUsers: {
+              where: { userId: String(req.user?.id) }
+            },
             exercises: {
               include: {
                 usersCompleted: {

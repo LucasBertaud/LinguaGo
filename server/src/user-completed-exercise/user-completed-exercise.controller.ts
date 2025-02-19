@@ -1,9 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { GenericService } from 'src/utils/generic.service';
 import { CreateUserCompletedExerciseDto } from './dto/create-user-completed-exercise.dto';
 import { UpdateUserCompletedExerciseDto } from './dto/update-user-completed-exercise.dto';
-import { GenericService } from 'src/utils/generic.service';
 import { UserCompletedExercise } from './entities/user-completed-exercise.entity';
-import { Prisma } from '@prisma/client';
 
 @Controller('user-completed-exercise')
 export class UserCompletedExerciseController {

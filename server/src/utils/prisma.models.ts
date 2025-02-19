@@ -7,6 +7,8 @@ import { CreateLevelDto } from "src/level/dto/create-level.dto";
 import { UpdateLevelDto } from "src/level/dto/update-level.dto";
 import { CreateUserCompletedExerciseDto } from "src/user-completed-exercise/dto/create-user-completed-exercise.dto";
 import { UpdateUserCompletedExerciseDto } from "src/user-completed-exercise/dto/update-user-completed-exercise.dto";
+import { CreateUserFavoriteSerieDto } from "src/user-favorite-serie/dto/create-user-favorite-serie.dto";
+import { UpdateUserFavoriteSerieDto } from "src/user-favorite-serie/dto/update-user-favorite-serie.dto";
 
 export type PrismaModels = {
     ExercisesSerie: {
@@ -41,6 +43,14 @@ export type PrismaModels = {
         create: CreateUserCompletedExerciseDto;
         update: UpdateUserCompletedExerciseDto;
     };
+    UserFavoriteSerie: {
+        cursor: Prisma.UserFavoriteSerieWhereUniqueInput;
+        where: Prisma.UserFavoriteSerieWhereInput | Prisma.UserFavoriteSerieWhereUniqueInput;
+        orderBy: Prisma.UserFavoriteSerieOrderByWithRelationInput;
+        include: Prisma.UserFavoriteSerieInclude;
+        create: CreateUserFavoriteSerieDto;
+        update: UpdateUserFavoriteSerieDto;
+    }
   };
   
   export type EntityName = keyof PrismaModels;
