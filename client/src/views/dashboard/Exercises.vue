@@ -43,7 +43,6 @@ import TrueFalse from '../../components/Dashboard/Exercises/TrueFalse.vue';
 const route = useRoute();
 const store = useStore();
 const serieId = parseInt(route.params.serieId as string, 10);
-const serieTitle = ref(route.query.serieTitle as string);
 const exercises = ref<Exercise[]>([]);
 const completedExercises = ref<Exercise[]>([]);
 const currentExerciseIndex = ref(0);
