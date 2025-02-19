@@ -24,6 +24,18 @@ export class UserFavoriteSerieController {
       where: { 
         userId: String(userId) 
       },
+      include: {
+        serie: {
+          include: {
+            exercises: {
+              include: {
+                usersCompleted: true
+              }
+            },
+            level: true
+          }
+        }
+      }
     });
   }
 

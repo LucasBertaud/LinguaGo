@@ -32,6 +32,10 @@ import Icon from '../../Icon.vue';
 const props = defineProps<{serieId: number, userFavoriteSerie?: UserFavoriteSerie}>();
 const userId: string = store.getters.getUser.id;
 const isFavoriteActivate = ref<boolean>(props.userFavoriteSerie ? true : false);
+const emit = defineEmits<{
+  removeFavorite: string[];
+}>();
+
 
 const handleFavorite = async () => {
   if (isFavoriteActivate.value) {
@@ -55,11 +59,11 @@ const addFavorite = async () => {
 
 const removeFavorite = async () => {
   try {
-    console.log("inside remove");
-    await Database.delete(`user-favorite-serie/${userId}/${props.userFavoriteSerie?.serieId}`);
+    await Database.delete(`user-favorite-serie/${userId}/${props.serieId}`);
     isFavoriteActivate.value = false;
+    emit('removeFavorite');
   } catch (error) {
     console.error(error);
   }
-}
+};
 </script>

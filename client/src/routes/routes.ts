@@ -54,6 +54,11 @@ const routes = [
           }
         ]
       },
+      {
+        name: 'Favorites',
+        path: 'favorites',
+        component: () => import('../views/dashboard/Favorites.vue'),
+      }
     ]
   },
   {

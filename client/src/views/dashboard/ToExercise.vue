@@ -15,7 +15,7 @@
                     {{ level.title }} ({{ level.subtitle }})
                 </router-link>
             </div>
-            <div class="flex flex-col text-center w-full">
+            <div v-if="levels.length > 0" class="flex flex-col text-center w-full">
                 <router-view></router-view>
             </div>
         </div>
@@ -31,15 +31,16 @@ import type Level from '../../interface/level.interface';
 const levels = ref<Level[]>([]);
 
 const fetchLevels = async () => {
-    const response = Database.getAll('level')
-    response.then((data) => {
-        levels.value = data.map((level: Level) => {
-            return level;
+    try {
+        const response = await Database.getAll('level');
+        levels.value = response.map((level: Level) => {
+                return level;
         });
         levels.value.sort((a, b) => a.title > b.title ? 1 : -1);
-    }).catch((error) => {
-        console.error(error);
-    });
+        console.log(response);
+    } catch (error) {
+        console.error('Erreur lors de la récupération des niveaux:', error);
+    }
 };
 
 onMounted(() => {
