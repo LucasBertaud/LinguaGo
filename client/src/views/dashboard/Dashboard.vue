@@ -50,17 +50,13 @@
             <span class="block text-gray-500">Lections left</span>
         </div>
         </div>
-        <div class="flex items-center p-8 bg-white shadow rounded-lg">
-        <div class="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-teal-600 bg-teal-100 rounded-full mr-6">
-            <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-        </div>
-        <div>
-            <span class="block text-2xl font-bold">139</span>
-            <span class="block text-gray-500">Hours spent on lections</span>
-        </div>
-        </div>
+        <SimpleStatCard 
+        v-if="userStats && time" 
+        color="teal" 
+        icon="clock" 
+        :title="`${time.getBestTimeTitle()} passé sur les exercices`" 
+        :stats="`${time.getBestTimeUnit()}`"
+        icon-classes="[&>svg]:w-6 [&>svg]:h-auto" />
         <div class="row-span-3 bg-white shadow rounded-lg">
         <div class="flex items-center justify-between px-6 py-5 font-semibold border-b border-gray-100">
             <span>Students by average mark</span>
@@ -149,16 +145,19 @@
 import { onMounted, ref } from 'vue';
 import SimpleStatCard from '../../components/Dashboard/Card/SimpleStatCard.vue';
 import Title from '../../components/Dashboard/Layout/Title.vue';
-import Database from '../../utils/database';
+import Database from '../../utils/database.utils';
+import TimeUtils from '../../utils/time.utils';
 import type UserStats from '../../interface/user-stats.interface';
 import type SiteStats from '../../interface/site-stats.interface';
 
 const userStats = ref<UserStats>();
 const siteStats = ref<SiteStats>();
+const time = ref<TimeUtils>();
 
 const fetchUserStats = async () => {
     try {
         const response = await Database.getAll('user-stats/user');
+        time.value = new TimeUtils(response.timeSpentOnExercises);
         userStats.value = response;
     } catch (error) {
         console.error(error);

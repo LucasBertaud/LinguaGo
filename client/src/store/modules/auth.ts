@@ -1,6 +1,6 @@
-import api from '../../utils/api';
+import api from '../../utils/api.utils';
 import Cookies from 'js-cookie';
-import { isTokenExpired, clearCookies } from '../../utils/authUtils';
+import { isTokenExpired, clearCookies } from '../../utils/auth.utils';
 import type { User } from '../../interface/user.interface';
 
 interface AuthResponse {

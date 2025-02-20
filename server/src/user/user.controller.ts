@@ -34,6 +34,17 @@ export class UserController {
     return this.userService.getProfile({ id: String(req.user?.id) });
   }
 
+  @Get('test')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Get user profile' })
+  @ApiResponse({ status: 200, description: 'Return the user profile.', type: UserEntity })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  async test(@Request() req): Promise<Partial<UserEntity>> {
+    console.log('test');
+    return this.userService.getProfile({ id: String(req.user?.id) });
+  }
+  
   @Get()
   @ApiBearerAuth()
   @Roles(Role.ADMIN)

@@ -2,6 +2,7 @@
 
 @theme {
     --color-primary: #4a90e2; /* Bleu */
+    --color-primary-light: #cde9ff; /* Bleu clair */
     --color-secondary: #ffc503; /* Jaune */
     --color-black: #151818; /* Texte principal */
     /* couleur pour niveau d'anglais */

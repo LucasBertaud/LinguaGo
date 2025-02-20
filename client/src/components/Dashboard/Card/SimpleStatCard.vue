@@ -41,6 +41,10 @@ const iconColor: Record<string, { background: string; text: string }> = {
     red: {
         background: "bg-red-100",
         text: "text-red-600",
+    },
+    teal: {
+        background: "bg-teal-100",
+        text: "text-teal-600",
     }
 }
 </script>

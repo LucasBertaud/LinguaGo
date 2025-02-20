@@ -53,7 +53,7 @@ import Error from '../../components/Form/Error.vue';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
 import { errorMessages } from '../../config/error/auth/login';
 import { formTexts } from '../../config/form/auth/login';
-import { validateEmail, validatePasswordLength } from '../../utils/validation';
+import { validateEmail, validatePasswordLength } from '../../utils/validation.utils';
 
 const email = ref('');
 const password = ref('');

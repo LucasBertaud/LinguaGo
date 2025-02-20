@@ -27,7 +27,7 @@ import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import type Exercise from '../../../interface/exercise.interface';
 import confetti from 'canvas-confetti';
-import Database from '../../../utils/database';
+import Database from '../../../utils/database.utils';
 import type UserCompletedExercisesSerie from '../../../interface/user-completed-exercises-serie.interface';
 
 const router = useRouter();

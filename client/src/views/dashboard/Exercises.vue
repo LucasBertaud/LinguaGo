@@ -1,8 +1,11 @@
 <template>
-    <div class="container mx-auto p-4">
-        <h1 class="text-3xl font-bold mb-6 text-primary">
-            {{ allExercisesCompleted ? 'Résumé des exercices' : `Exercice ${currentExerciseIndex + 1}/${exercises.length}` }}
-        </h1>
+    <div class="container mx-auto p-4" v-if="exercisesFetched">
+        <div class="flex flex-row items-center mb-6 justify-between mx-4">
+            <h2 class="text-2xl font-bold text-primary">
+                {{ allExercisesCompleted ? 'Résumé des exercices' : `Exercice ${currentExerciseIndex + 1}/${exercises.length}` }}
+            </h2>
+            <Timer v-if="!allExercisesCompleted" />
+        </div>
         <div v-if="exercises.length === 0">
             <p class="text-gray-500">Aucun exercice trouvé pour cette série.</p>
         </div>
@@ -13,7 +16,9 @@
         </div>
         <div v-else-if="currentExercise">
             <div class="mb-6 p-6 rounded-lg shadow-xl bg-white">
-                <h2 class="text-2xl font-semibold mb-4">{{ currentExercise.question }}</h2>
+                <div class="flex flex-row">
+                    <h3 class="text-1xl font-semibold mb-4">{{ currentExerciseIndex + 1 }}. {{ currentExercise.question }}</h3>
+                </div>
                 <div v-if="currentExercise.type === 'MULTIPLE_CHOICE'">
                     <MultipleChoice :current-exercise="currentExercise" :user-answer="userAnswer"
                         @update:userAnswer="userAnswer = $event" />
@@ -37,10 +42,11 @@ import MultipleChoice from '../../components/Dashboard/Exercises/MultipleChoice.
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import Database from '../../utils/database';
+import Database from '../../utils/database.utils';
 import type Exercise from '../../interface/exercise.interface';
 import Translation from '../../components/Dashboard/Exercises/Translation.vue';
 import TrueFalse from '../../components/Dashboard/Exercises/TrueFalse.vue';
+import Timer from '../../components/Dashboard/Exercises/Timer.vue';
 
 const route = useRoute();
 const store = useStore();
@@ -54,6 +60,7 @@ const isCorrect = ref<boolean>(false);
 const answered = ref<boolean>(false);
 const allExercisesCompleted = ref<boolean>(false);
 const userId = store.getters.getUser.id;
+const exercisesFetched = ref<boolean>(false);
 
 const fetchExercises = async () => {
     try {
@@ -63,6 +70,7 @@ const fetchExercises = async () => {
         if (exercises.value.length === 0 || completedExercises.value.length === exercises.value.length) {
             allExercisesCompleted.value = true;
         }
+        exercisesFetched.value = true;
     } catch (error) {
         console.error('Erreur lors de la récupération des exercices:', error);
     }

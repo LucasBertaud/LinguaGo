@@ -47,6 +47,25 @@ export class UserStatsController {
     });
   }
 
+  @Patch("/time-spent-on-exercises")
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Increment time spent on exercises in user stats.' })
+  @ApiResponse({ status: 200, description: 'Return the user stats.', type: UserStat })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  incrementTimeSpentOnExercises(@Request() req, @Body() body) {
+    return this.genericService.update("userStats", {
+      data: {
+        timeSpentOnExercises: {
+          increment: body.timeSpent
+        },
+      },
+      where: {
+        userId: String(req.user?.id)
+      }
+    });
+  }
+
   @Delete()
   @ApiBearerAuth()
   @UseGuards(AuthGuard)

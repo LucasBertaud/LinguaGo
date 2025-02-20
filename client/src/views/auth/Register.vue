@@ -65,8 +65,8 @@ import Error from '../../components/Form/Error.vue';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
 import { errorMessages } from '../../config/error/auth/register';
 import { formTexts } from '../../config/form/auth/register';
-import { validateEmail, validatePasswordLength } from '../../utils/validation';
-import Database from '../../utils/database';
+import { validateEmail, validatePasswordLength } from '../../utils/validation.utils';
+import Database from '../../utils/database.utils';
 
 const pseudo = ref('');
 const email = ref('');

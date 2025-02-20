@@ -1,5 +1,5 @@
 <template>
-    <aside id="page-sidebar" class="hidden sm:flex sm:flex-col bg-primary" x-bind:class="{
+    <aside id="page-sidebar" class="hidden sm:flex sm:flex-col bg-primary top-0 sticky max-h-screen" x-bind:class="{
     'ltr:-translate-x-full rtl:translate-x-full': !mobileSidebarOpen,
     'translate-x-0': mobileSidebarOpen,
   }" aria-label="Main Sidebar Navigation">

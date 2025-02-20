@@ -43,6 +43,7 @@ model UserStats {
   successfullExercises  Int       @default(0)
   failedExercises       Int       @default(0)
   completedSeries       Int       @default(0)
+  timeSpentOnExercises  Int       @default(0)
 }
 
 model RefreshToken {

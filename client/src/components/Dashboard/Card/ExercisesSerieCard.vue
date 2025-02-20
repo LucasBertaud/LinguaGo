@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { loadSvg } from '../../../utils/loadSvg';
+import { loadSvg } from '../../../utils/loadSvg.utils';
 import Icon from '../../Icon.vue';
 import FavoriteButton from '../Button/FavoriteButton.vue';
 import store from '../../../store';

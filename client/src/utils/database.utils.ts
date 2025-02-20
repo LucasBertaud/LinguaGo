@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "./api.utils";
 import Cookies from 'js-cookie';
 
 export default class Database {

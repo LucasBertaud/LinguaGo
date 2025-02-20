@@ -5,4 +5,5 @@ export default interface UserStats {
     successfullExercises: number;
     failedExercises: number;
     completedSeries: number;
+    timeSpentOnExercises: number;
 }
