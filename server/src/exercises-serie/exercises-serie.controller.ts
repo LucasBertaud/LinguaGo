@@ -2,11 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { CreateExercisesSerieDto } from './dto/create-exercises-serie.dto';
 import { UpdateExercisesSerieDto } from './dto/update-exercises-serie.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Roles } from 'src/role/roles.decorator';
-import { Role } from 'src/role/role.enum';
+import { Roles } from 'src/user/role/roles.decorator';
+import { Role } from 'src/user/role/role.enum';
 import { ExercisesSerie } from './entities/exercises-serie.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { RolesGuard } from 'src/role/roles.guard';
+import { RolesGuard } from 'src/user/role/roles.guard';
 import { GenericService } from 'src/utils/generic.service';
 
 @ApiTags('exercises-serie')

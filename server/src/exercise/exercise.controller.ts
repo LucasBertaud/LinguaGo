@@ -3,10 +3,10 @@ import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { Exercise } from './entities/exercise.entity';
 import { GenericService } from 'src/utils/generic.service';
-import { Roles } from 'src/role/roles.decorator';
-import { Role } from 'src/role/role.enum';
+import { Roles } from 'src/user/role/roles.decorator';
+import { Role } from 'src/user/role/role.enum';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { RolesGuard } from 'src/role/roles.guard';
+import { RolesGuard } from 'src/user/role/roles.guard';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('exercise')
@@ -62,7 +62,18 @@ export class ExerciseController {
       where: { serieId: Number(id) },
       include: {
         usersCompleted: {
-          where: { userId: String(req.user?.id) }
+          where: { 
+            userId: String(req.user?.id) 
+          }
+        },
+        serie: {
+          select: {
+            completedUsers: {
+              where: {
+                userId: String(req.user?.id)
+              }
+            }
+          }
         }
       }
     });

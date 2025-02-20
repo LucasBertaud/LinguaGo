@@ -7,7 +7,9 @@
             <p class="text-gray-500">Aucun exercice trouvé pour cette série.</p>
         </div>
         <div v-else-if="allExercisesCompleted">
-            <Summary :completed-exercises="completedExercises" :total-exercises="exercises.length" />
+            <Summary :completed-exercises="completedExercises" :total-exercises="exercises.length"
+            :serie-id="serieId"
+            :user-id="userId" />
         </div>
         <div v-else-if="currentExercise">
             <div class="mb-6 p-6 rounded-lg shadow-xl bg-white">
@@ -101,6 +103,8 @@ const markExerciseAsCompleted = async () => {
 const markExerciseAsFailed = async () => {
     const exerciseId = currentExercise.value.id;
 
+    incrementFailedExercises();
+
     if (!completedExercises.value.find((exercise) => exercise.id === exerciseId)) {
         return;
     }
@@ -111,6 +115,14 @@ const markExerciseAsFailed = async () => {
         console.error('Erreur lors de l\'enregistrement de la complétion de l\'exercice:', error);
     }
 }
+
+const incrementFailedExercises = async () => {
+    try {
+        await Database.patch('user-stats/failed-exercises');
+    } catch (error) {
+        console.error('Erreur lors de l\'enregistrement de l\'échec de l\'exercice:', error);
+    }
+};
 
 const nextExercise = () => {
     if (currentExerciseIndex.value < exercises.value.length - 1) {

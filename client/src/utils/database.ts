@@ -54,6 +54,18 @@ export default class Database {
     }
   }
 
+  static async patch(collection: string, item?: object, params?: object) {
+    try {
+      const response = await api.patch(`/${collection}`, item, {
+        params: params,
+        headers: this.addAuthHeader(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   static async delete(collection: string) {
     try {
       const { status } = await api.delete(`/${collection}`, {
