@@ -3,10 +3,10 @@ import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { Exercise } from './entities/exercise.entity';
 import { GenericService } from 'src/utils/generic.service';
-import { Roles } from 'src/role/roles.decorator';
-import { Role } from 'src/role/role.enum';
+import { Roles } from 'src/user/role/roles.decorator';
+import { Role } from 'src/user/role/role.enum';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { RolesGuard } from 'src/role/roles.guard';
+import { RolesGuard } from 'src/user/role/roles.guard';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('exercise')
@@ -23,6 +23,24 @@ export class ExerciseController {
   create(@Body() createExerciseDto: CreateExerciseDto) {
     createExerciseDto.answer = createExerciseDto.answer.toLowerCase().replace(/[.,!?;:'"]/g, '').trim();
     return this.genericService.create("exercise", createExerciseDto);
+  }
+
+  @Post('multiple')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Create a list of new exercises' })
+  @ApiResponse({ status: 200, description: 'The exercices has been successfully created.', type: Exercise })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  createMultiple(@Body() createExerciseDto: CreateExerciseDto[]) {
+    try {
+      createExerciseDto.forEach((exercise) => {
+        exercise.answer = exercise.answer.toLowerCase().replace(/[.,!?;:'"]/g, '').trim();
+      });
+      return this.genericService.createMany("exercise", createExerciseDto);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   @Get()
@@ -44,7 +62,18 @@ export class ExerciseController {
       where: { serieId: Number(id) },
       include: {
         usersCompleted: {
-          where: { userId: String(req.user?.id) }
+          where: { 
+            userId: String(req.user?.id) 
+          }
+        },
+        serie: {
+          select: {
+            completedUsers: {
+              where: {
+                userId: String(req.user?.id)
+              }
+            }
+          }
         }
       }
     });

@@ -13,7 +13,7 @@ export default class Database {
       });
       return response.data;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -25,7 +25,7 @@ export default class Database {
       });
       return response.data;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -39,7 +39,7 @@ export default class Database {
         status: response.status
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -50,7 +50,19 @@ export default class Database {
       });
       return response.data;
     } catch (err) {
-      console.log(err);
+      console.error(err);
+    }
+  }
+
+  static async patch(collection: string, item?: object, params?: object) {
+    try {
+      const response = await api.patch(`/${collection}`, item, {
+        params: params,
+        headers: this.addAuthHeader(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -61,7 +73,7 @@ export default class Database {
       });
       return status;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 

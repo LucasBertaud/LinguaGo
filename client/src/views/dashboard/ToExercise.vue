@@ -37,7 +37,6 @@ const fetchLevels = async () => {
                 return level;
         });
         levels.value.sort((a, b) => a.title > b.title ? 1 : -1);
-        console.log(response);
     } catch (error) {
         console.error('Erreur lors de la récupération des niveaux:', error);
     }

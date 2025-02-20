@@ -17,13 +17,21 @@ export class UserService {
     }
 
     const hash: string = await bcrypt.hash(data.password, 10);
-    return this.prisma.user.create({
+    const user: User = await this.prisma.user.create({
       data: {
         pseudo: data.pseudo,
         email: data.email,
         password: hash,
       },
     });
+
+    await this.prisma.userStats.create({
+      data: {
+        userId: user.id,
+      }
+    });
+
+    return user;
   }
 
   async getProfile(where: Prisma.UserWhereUniqueInput): Promise<Partial<User>> {

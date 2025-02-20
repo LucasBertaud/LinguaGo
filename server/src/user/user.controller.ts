@@ -2,11 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request }
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Roles } from 'src/role/roles.decorator';
-import { Role } from 'src/role/role.enum';
+import { Roles } from 'src/user/role/roles.decorator';
+import { Role } from 'src/user/role/role.enum';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { RolesGuard } from 'src/role/roles.guard';
+import { RolesGuard } from 'src/user/role/roles.guard';
 import { UserEntity } from './entities/user.entity';
 
 @ApiTags('users')

@@ -27,11 +27,13 @@ import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import type Exercise from '../../../interface/exercise.interface';
 import confetti from 'canvas-confetti';
+import Database from '../../../utils/database';
+import type UserCompletedExercisesSerie from '../../../interface/user-completed-exercises-serie.interface';
 
 const router = useRouter();
 const route = useRoute();
 
-const props = defineProps<{ completedExercises: Exercise[], totalExercises: number }>();
+const props = defineProps<{ completedExercises: Exercise[], totalExercises: number, serieId: number, userId: string }>();
 
 const correctAnswersCount = computed(() => {
     return props.completedExercises.length;
@@ -45,6 +47,17 @@ const goToExercises = () => {
     router.push(`/dashboard/to-exercise/${route.params.levelTitle}`);
 };
 
+const stampInDatabase = async () => {
+    try {
+        await Database.create("user-completed-exercises-serie", {
+            userId: props.userId,
+            serieId: props.serieId
+        });
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 onMounted(() => {
     if (allCorrect.value) {
         confetti({
@@ -52,6 +65,15 @@ onMounted(() => {
             spread: 70,
             origin: { x: 0.54, y: 0.5 }
         });
+
+        const firstExercise: Exercise | undefined = props.completedExercises[0];
+        if(!firstExercise) return;
+
+        const UserCompletedExercisesSerie: UserCompletedExercisesSerie[] | undefined = firstExercise.serie?.completedUsers;
+        if(UserCompletedExercisesSerie != undefined) {
+            const isAlreadyCompleted = UserCompletedExercisesSerie.length > 0;
+            if(!isAlreadyCompleted) stampInDatabase();
+        }
     }
 });
 </script>

@@ -5,7 +5,7 @@
     class="relative group p-4 focus-visible:scale-105 h-full transition hover:scale-105">
     <FavoriteButton :serie-id="exercisesSerie.id" :user-favorite-serie="userFavoriteSerie" @remove-favorite="onRemoveFavorite" />
     <div 
-      class="cursor-pointer transition active:scale-95" 
+      class="cursor-pointer transition active:scale-95 h-full" 
       @click="navigateToExercises">
       <div class="flex rounded-lg h-full bg-gray-100 p-8 flex-col">
         <div class="flex flex-col justify-center items-center mb-3">
@@ -72,7 +72,6 @@ const getPercentageCompleted = async () => {
 const svgContent = ref<string | null>(null);
 
 const navigateToExercises = () => {
-  console.log(props.exercisesSerie);
   router.push({ name: 'Exercises', params: { 
     serieId: props.exercisesSerie.id,
     levelTitle: props.routerParams?.levelTitle

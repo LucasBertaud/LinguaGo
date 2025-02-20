@@ -5,8 +5,11 @@ import { AuthModule } from './auth/auth.module';
 import { ExercisesSerieModule } from './exercises-serie/exercises-serie.module';
 import { ExerciseModule } from './exercise/exercise.module';
 import { LevelModule } from './level/level.module';
-import { UserCompletedExerciseModule } from './user-completed-exercise/user-completed-exercise.module';
-import { UserFavoriteSerieModule } from './user-favorite-serie/user-favorite-serie.module';
+import { UserCompletedExerciseModule } from './user/user-completed-exercise/user-completed-exercise.module';
+import { UserFavoriteSerieModule } from './user/user-favorite-serie/user-favorite-serie.module';
+import { UserStatsModule } from './user/user-stats/user-stats.module';
+import { SiteStatsModule } from './site-stats/site-stats.module';
+import { UserCompletedExercisesSerieModule } from './user/user-completed-exercises-serie/user-completed-exercises-serie.module';
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import { UserFavoriteSerieModule } from './user-favorite-serie/user-favorite-ser
     LevelModule,
     UserCompletedExerciseModule,
     UserFavoriteSerieModule,
+    UserStatsModule,
+    SiteStatsModule,
+    UserCompletedExercisesSerieModule,
   ],
   controllers: [],
   providers: [],
