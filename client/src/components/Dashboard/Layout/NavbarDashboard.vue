@@ -74,7 +74,7 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import { profileTexts } from '../../../config/content/profile';
-import Database from '../../../utils/database';
+import Database from '../../../utils/database.utils';
 import type { User } from '../../../interface/user.interface';
 import { navbarTexts } from '../../../config/content/layout/navbar';
 

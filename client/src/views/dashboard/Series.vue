@@ -10,7 +10,7 @@
 import ExercisesSerieCard from '../../components/Dashboard/Card/ExercisesSerieCard.vue';
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import Database from '../../utils/database';
+import Database from '../../utils/database.utils';
 import type Level from '../../interface/level.interface';
 
 const props = defineProps<{

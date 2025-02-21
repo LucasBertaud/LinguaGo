@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { loadSvg } from '../utils/loadSvg';
+import { loadSvg } from '../utils/loadSvg.utils';
 
 interface Props {
     svgPath: string;

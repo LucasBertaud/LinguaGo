@@ -22,7 +22,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import Title from '../../components/Dashboard/Layout/Title.vue';
-import Database from '../../utils/database';
+import Database from '../../utils/database.utils';
 import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 import ExercisesSerieCard from '../../components/Dashboard/Card/ExercisesSerieCard.vue';

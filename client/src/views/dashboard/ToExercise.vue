@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import Title from '../../components/Dashboard/Layout/Title.vue';
-import Database from '../../utils/database';
+import Database from '../../utils/database.utils';
 import type Level from '../../interface/level.interface';
 
 const levels = ref<Level[]>([]);

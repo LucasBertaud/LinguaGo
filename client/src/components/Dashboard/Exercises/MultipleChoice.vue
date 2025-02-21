@@ -10,12 +10,10 @@
 <script setup lang="ts">
 import type Exercise from '../../../interface/exercise.interface';
 
-const props = defineProps<{ 
+defineProps<{ 
     currentExercise: Exercise,
     userAnswer: string | null 
 }>();
-
-console.log(props.currentExercise)
 
 const emit = defineEmits(['update:userAnswer']);
 

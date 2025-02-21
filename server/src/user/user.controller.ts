@@ -33,7 +33,7 @@ export class UserController {
   async getProfile(@Request() req): Promise<Partial<UserEntity>> {
     return this.userService.getProfile({ id: String(req.user?.id) });
   }
-
+  
   @Get()
   @ApiBearerAuth()
   @Roles(Role.ADMIN)

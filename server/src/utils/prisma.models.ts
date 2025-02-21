@@ -21,6 +21,7 @@ export type PrismaModels = {
         createMany: Prisma.ExercisesSerieCreateManyInput;
         create: CreateExercisesSerieDto;
         update: UpdateExercisesSerieDto;
+        _sum: Prisma.ExercisesSerieSumAggregateInputType;
     };
     Exercise: {
         cursor: Prisma.ExerciseWhereUniqueInput;
@@ -30,6 +31,7 @@ export type PrismaModels = {
         createMany: Prisma.ExerciseCreateManyInput | CreateExerciseDto[];
         create: CreateExerciseDto;
         update: UpdateExerciseDto;
+        _sum: Prisma.ExercisesSerieSumAggregateInputType;
     };
     Level: {
         cursor: Prisma.LevelWhereUniqueInput;
@@ -39,15 +41,17 @@ export type PrismaModels = {
         createMany: Prisma.LevelCreateManyInput;
         create: CreateLevelDto;
         update: UpdateLevelDto;
+        _sum: Prisma.LevelSumAggregateInputType;
     };
     UserCompletedExercise: {
         cursor: Prisma.UserCompletedExerciseWhereUniqueInput;
         where: Prisma.UserCompletedExerciseWhereInput | Prisma.UserCompletedExerciseWhereUniqueInput;
-        orderBy: Prisma.UserCompletedExerciseOrderByWithRelationInput;
+        orderBy: Prisma.UserCompletedExerciseOrderByWithRelationInput | Prisma.UserCompletedExerciseOrderByWithAggregationInput;
         include: Prisma.UserCompletedExerciseInclude;
         createMany: Prisma.UserCompletedExerciseCreateManyInput;
         create: CreateUserCompletedExerciseDto;
         update: UpdateUserCompletedExerciseDto;
+        _sum: Prisma.UserCompletedExerciseSumAggregateInputType;
     };
     UserFavoriteSerie: {
         cursor: Prisma.UserFavoriteSerieWhereUniqueInput;
@@ -57,6 +61,7 @@ export type PrismaModels = {
         createMany: Prisma.UserFavoriteSerieCreateManyInput;
         create: CreateUserFavoriteSerieDto;
         update: UpdateUserFavoriteSerieDto;
+        _sum: Prisma.UserFavoriteSerieSumAggregateInputType;
     };
     UserStats: {
         cursor: Prisma.UserStatsWhereUniqueInput;
@@ -66,6 +71,7 @@ export type PrismaModels = {
         createMany: Prisma.UserStatsCreateManyInput;
         create: Prisma.UserStatsCreateInput;
         update: Prisma.UserStatsUpdateInput;
+        _sum: Prisma.UserStatsSumAggregateInputType;
     };
     SiteStats: {
         cursor: Prisma.SiteStatsWhereUniqueInput;
@@ -75,6 +81,7 @@ export type PrismaModels = {
         createMany: Prisma.SiteStatsCreateManyInput;
         create: Prisma.SiteStatsCreateInput;
         update: Prisma.SiteStatsUpdateInput;
+        _sum: Prisma.SiteStatsSumAggregateInputType;
     };
     UserCompletedExercisesSerie: {
         cursor: Prisma.UserCompletedExercisesSerieWhereUniqueInput;
@@ -84,6 +91,7 @@ export type PrismaModels = {
         createMany: Prisma.UserCompletedExercisesSerieCreateManyInput;
         create: CreateUserCompletedExercisesSerieDto;
         update: UpdateUserCompletedExercisesSerieDto;
+        _sum: Prisma.UserCompletedExercisesSerieSumAggregateInputType;
     }
   };
   

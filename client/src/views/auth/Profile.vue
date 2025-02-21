@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useToast } from 'vue-toastification';
-import Database from '../../utils/database';
+import Database from '../../utils/database.utils';
 import { profileTexts } from '../../config/content/profile';
 import type { User } from '../../interface/user.interface';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';

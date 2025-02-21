@@ -1,5 +1,5 @@
 <template>
-    <aside id="page-sidebar" class="hidden sm:flex sm:flex-col bg-primary" x-bind:class="{
+    <aside id="page-sidebar" class="hidden sm:flex sm:flex-col bg-primary top-0 sticky max-h-screen" x-bind:class="{
     'ltr:-translate-x-full rtl:translate-x-full': !mobileSidebarOpen,
     'translate-x-0': mobileSidebarOpen,
   }" aria-label="Main Sidebar Navigation">
@@ -16,7 +16,7 @@
 
       <!-- Main Navigation -->
       <div class="w-full grow space-y-3 p-4">
-        <AsideLink link="/dashboard/home" label="Dashboard" icon="house-heart" />
+        <AsideLink link="/dashboard/home" label="Accueil" icon="house-heart" />
         <AsideLink link="/dashboard/to-exercise" label="S'exercer" icon="learn" />
         <AsideLink link="/dashboard/favorites" label="Mes favoris" icon="star" />
       </div>

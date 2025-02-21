@@ -43,6 +43,8 @@ model UserStats {
   successfullExercises  Int       @default(0)
   failedExercises       Int       @default(0)
   completedSeries       Int       @default(0)
+  timeSpentOnExercises  Int       @default(0)
+  level                 LevelEnum @default(A1)
 }
 
 model RefreshToken {
@@ -93,7 +95,8 @@ model UserCompletedExercise {
   exercise    Exercise  @relation(fields: [exerciseId], references: [id])
   exerciseId  Int
   completedAt DateTime  @default(now())
-  serieId Int
+  serieId     Int
+  pointsWon   Int       @default(1)
 
   @@id(name: "idUserCompletedExercise", [userId, exerciseId])
 }

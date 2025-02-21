@@ -27,7 +27,7 @@ import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import type Exercise from '../../../interface/exercise.interface';
 import confetti from 'canvas-confetti';
-import Database from '../../../utils/database';
+import Database from '../../../utils/database.utils';
 import type UserCompletedExercisesSerie from '../../../interface/user-completed-exercises-serie.interface';
 
 const router = useRouter();
@@ -51,7 +51,7 @@ const stampInDatabase = async () => {
     try {
         await Database.create("user-completed-exercises-serie", {
             userId: props.userId,
-            serieId: props.serieId
+            serieId: props.serieId,
         });
     } catch (error) {
         console.error(error);

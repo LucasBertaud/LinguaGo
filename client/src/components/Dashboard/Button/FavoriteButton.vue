@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import Database from '../../../utils/database';
+import Database from '../../../utils/database.utils';
 import store from '../../../store';
 import { ref } from 'vue';
 import type UserFavoriteSerie from '../../../interface/user-favorite-serie.interface';
