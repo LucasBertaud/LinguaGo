@@ -2,13 +2,22 @@
     <Title title="Accueil" />
     <section class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
         <SimpleStatCard 
+            v-if="userStats" 
+            color="pink" 
+            icon="mortarboard" 
+            :title="`Niveau actuel`" 
+            :stats="`${userStats.level}`"
+            icon-classes="[&>svg]:w-6 [&>svg]:h-auto" 
+        />
+        <SimpleStatCard 
             v-if="userStats && siteStats" 
             color="yellow" 
             icon="point-outline" 
             :title="`${userStats.points > 1 ? 'Points gagnés' : 'Point gagné'}`" 
             :stats="`${userStats.points} / ${siteStats.totalPoints}`" 
-            icon-classes="[&>svg>*]:stroke-current [&>svg]:w-7 [&>svg]:h-auto" />
-            <SimpleStatCard 
+            icon-classes="[&>svg>*]:stroke-current [&>svg]:w-7 [&>svg]:h-auto" 
+        />
+        <SimpleStatCard 
             v-if="userStats && siteStats" 
             color="blue" 
             icon="book-open" 
@@ -24,6 +33,9 @@
             :stats="`${userStats.completedSeries} / ${siteStats.totalSeries}`"
             icon-classes="[&>svg]:w-6 [&>svg]:h-auto [&>svg>*]:fill-current" 
         />
+    </section>
+    <section class="grid md:grid-cols-2 xl:grid-cols-4 xl:grid-rows-3 xl:grid-flow-col gap-6">
+        <ExercisesCompletedPerDaysStats />
         <SimpleStatCard 
             v-if="userStats && siteStats" 
             color="red" 
@@ -32,17 +44,7 @@
             :stats="`${userStats.failedExercises}`"
             icon-classes="[&>svg]:w-7 [&>svg]:h-auto [&>svg>*]:fill-current"
         />
-    </section>
-    <section class="grid md:grid-cols-2 xl:grid-cols-4 xl:grid-rows-3 xl:grid-flow-col gap-6">
-        <ExercisesCompletedPerDaysStats />
         <SimpleStatCard 
-            v-if="userStats" 
-            color="pink" 
-            icon="mortarboard" 
-            :title="`Niveau actuel`" 
-            :stats="`${userStats.level}`"
-            icon-classes="[&>svg]:w-6 [&>svg]:h-auto" />
-            <SimpleStatCard 
             v-if="userStats && timeStats" 
             color="teal" 
             icon="clock" 
