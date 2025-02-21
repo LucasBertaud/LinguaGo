@@ -46,6 +46,28 @@ export class GenericService<T> {
         });
     }
 
+    async groupBy<X extends EntityName>(
+        entityName: string,
+        params: {
+            by: string | string[];
+            take?: number;
+            _sum?: PrismaModels[X]['_sum'];
+            where?: PrismaModels[X]['where'];
+            include?: PrismaModels[X]['include'];
+            orderBy?: PrismaModels[X]['orderBy'];
+        }
+    ): Promise<T[] | null> {
+        const { by, where, include, orderBy, take, _sum } = params;
+        return this.prisma[entityName].groupBy({
+            by,
+            where,
+            include,
+            orderBy,
+            take,
+            _sum
+        });
+    }
+
     async findOne<X extends EntityName>(
         entityName: string,
         params: {

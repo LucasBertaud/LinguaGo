@@ -62,9 +62,12 @@ const allExercisesCompleted = ref<boolean>(false);
 const userId = store.getters.getUser.id;
 const exercisesFetched = ref<boolean>(false);
 
+let pointsPerExo: number = 1;
+
 const fetchExercises = async () => {
     try {
         const response = await Database.getAll(`exercise/serie/${serieId}`);
+        pointsPerExo = response[0].serie.level.pointsPerExo;
         exercises.value = response;
         completedExercises.value = response.filter((exercise: Exercise) => exercise.usersCompleted.length > 0);
         if (exercises.value.length === 0 || completedExercises.value.length === exercises.value.length) {
@@ -92,7 +95,7 @@ const checkAnswer = async () => {
 
 const markExerciseAsCompleted = async () => {
     const exerciseId = currentExercise.value.id;
-
+    
     if (completedExercises.value.find((exercise) => exercise.id === exerciseId)) {
         return;
     }
@@ -100,7 +103,8 @@ const markExerciseAsCompleted = async () => {
         await Database.create('user-completed-exercise', {
             userId,
             exerciseId,
-            serieId
+            serieId,
+            pointsWon: pointsPerExo,
         });
         completedExercises.value.push(currentExercise.value);
     } catch (error) {

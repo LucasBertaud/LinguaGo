@@ -23,4 +23,13 @@ export class CreateUserCompletedExerciseDto {
     @IsNotEmpty()
     @IsInt()
     serieId: number;
+
+    @ApiProperty({
+        type: 'number',
+        example: 1,
+        description: 'Points won by the user',
+    })
+    @IsNotEmpty()
+    @IsInt()
+    pointsWon: number;
 }

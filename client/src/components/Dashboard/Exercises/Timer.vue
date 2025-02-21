@@ -21,7 +21,6 @@ const startTimer = async (): Promise<void> => {
     if(!timer) {
         timer = setInterval(() => {
             seconds.value++;
-            console.log('Timer:', seconds.value);
         }, 1000);
     }
 }
@@ -35,7 +34,7 @@ const stopTimer = async (): Promise<void> => {
 }
 
 const saveTimer = async (): Promise<void> => {
-    if(seconds.value > 10){
+    if(seconds.value > 5){
         Database.patch('user-stats/time-spent-on-exercises', { timeSpent: seconds.value });
     }
 }

@@ -1,4 +1,4 @@
-export default class TimeUtils {
+export default class TimeStatsUtils {
     public seconds: number;
 
     constructor(seconds: number) {

@@ -51,7 +51,7 @@ const stampInDatabase = async () => {
     try {
         await Database.create("user-completed-exercises-serie", {
             userId: props.userId,
-            serieId: props.serieId
+            serieId: props.serieId,
         });
     } catch (error) {
         console.error(error);

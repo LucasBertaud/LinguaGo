@@ -68,6 +68,11 @@ export class ExerciseController {
         },
         serie: {
           select: {
+            level: {
+              select: {
+                pointsPerExo: true
+              }
+            },
             completedUsers: {
               where: {
                 userId: String(req.user?.id)

@@ -6,4 +6,5 @@ export default interface UserStats {
     failedExercises: number;
     completedSeries: number;
     timeSpentOnExercises: number;
+    level: string;
 }
