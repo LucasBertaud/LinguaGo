@@ -23,16 +23,6 @@ export class UserController {
   ): Promise<UserEntity> {
     return this.userService.create(createUserDto);
   }
-
-  @Get('profile')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @ApiOperation({ summary: 'Get user profile' })
-  @ApiResponse({ status: 200, description: 'Return the user profile.', type: UserEntity })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  async getProfile(@Request() req): Promise<Partial<UserEntity>> {
-    return this.userService.getProfile({ id: String(req.user?.id) });
-  }
   
   @Get()
   @ApiBearerAuth()

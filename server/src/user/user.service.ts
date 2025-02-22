@@ -34,22 +34,6 @@ export class UserService {
     return user;
   }
 
-  async getProfile(where: Prisma.UserWhereUniqueInput): Promise<Partial<User>> {
-    const user = await this.prisma.user.findUnique({
-      where,
-      select: {
-        pseudo: true,
-        email: true,
-      },
-    });
-
-    if (!user) {
-      throw new NotFoundException('Utilisateur non trouvé.');
-    }
-
-    return user;
-  }
-
   async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<Partial<User> | null> {
     const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
