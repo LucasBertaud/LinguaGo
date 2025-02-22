@@ -2,54 +2,48 @@
     <Title title="Accueil" />
     <section class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
         <SimpleStatCard 
-            v-if="userStats" 
             color="pink" 
             icon="mortarboard" 
-            :title="`Niveau actuel`" 
-            :stats="`${userStats.level}`"
+            title="Niveau actuel" 
+            :stats="userStats?.level || '0'"
             icon-classes="[&>svg]:w-6 [&>svg]:h-auto" 
         />
         <SimpleStatCard 
-            v-if="userStats && siteStats" 
             color="yellow" 
             icon="point-outline" 
-            :title="`${userStats.points > 1 ? 'Points gagnés' : 'Point gagné'}`" 
-            :stats="`${userStats.points} / ${siteStats.totalPoints}`" 
+            :title="`${(userStats?.points || 0) > 1 ? 'Points gagnés' : 'Point gagné'}`" 
+            :stats="`${userStats?.points || 0} / ${siteStats?.totalPoints || 0}`" 
             icon-classes="[&>svg>*]:stroke-current [&>svg]:w-7 [&>svg]:h-auto" 
         />
         <SimpleStatCard 
-            v-if="userStats && siteStats" 
             color="blue" 
             icon="book-open" 
-            :title="`${userStats.successfullExercises > 1 ? 'Exercises réussis' : 'Exercise réussi'}`" 
-            :stats="`${userStats.successfullExercises} / ${siteStats.totalExercises}`"
+            :title="`${(userStats?.successfullExercises || 0) > 1 ? 'Exercises réussis' : 'Exercise réussi'}`" 
+            :stats="`${userStats?.successfullExercises || 0} / ${siteStats?.totalExercises || 0}`"
             icon-classes="[&>svg]:w-6 [&>svg]:h-auto" 
         />
         <SimpleStatCard 
-            v-if="userStats && siteStats" 
             color="green" 
             icon="completed" 
-            :title="`${userStats.completedSeries > 1 ? 'Séries complétés' : 'Série complété'}`" 
-            :stats="`${userStats.completedSeries} / ${siteStats.totalSeries}`"
+            :title="`${(userStats?.completedSeries || 0) > 1 ? 'Séries complétées' : 'Série complétée'}`" 
+            :stats="`${userStats?.completedSeries || 0} / ${siteStats?.totalSeries || 0}`"
             icon-classes="[&>svg]:w-6 [&>svg]:h-auto [&>svg>*]:fill-current" 
         />
     </section>
-    <section class="grid md:grid-cols-2 xl:grid-cols-4 xl:grid-rows-3 xl:grid-flow-col gap-6">
+    <section class="grid md:grid-cols-2 xl:grid-cols-4 xl:grid-rows-3 xl:grid-flow-col gap-6 mb-6">
         <ExercisesCompletedPerDaysStats />
         <SimpleStatCard 
-            v-if="userStats && siteStats" 
             color="red" 
             icon="fail" 
-            :title="`${userStats.failedExercises > 1 ? 'Exercises échoués' : 'Exercise échoué'}`" 
-            :stats="`${userStats.failedExercises}`"
+            :title="`${(userStats?.failedExercises || 0) > 1 ? 'Exercises échoués' : 'Exercise échoué'}`" 
+            :stats="`${userStats?.failedExercises || 0}`"
             icon-classes="[&>svg]:w-7 [&>svg]:h-auto [&>svg>*]:fill-current"
         />
         <SimpleStatCard 
-            v-if="userStats && timeStats" 
             color="teal" 
             icon="clock" 
-            :title="`${timeStats.getBestTimeTitle()} passé sur les exercices`" 
-            :stats="`${timeStats.getBestTimeUnit()}`"
+            :title="`${timeStats?.getBestTimeTitle() || 'Temps'} passé sur les exercices`" 
+            :stats="`${timeStats?.getBestTimeUnit() || '0'}`"
             icon-classes="[&>svg]:w-6 [&>svg]:h-auto" 
         />
         <TopUsersOfWeekStats />
