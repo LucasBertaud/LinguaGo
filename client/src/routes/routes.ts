@@ -71,12 +71,6 @@ const routes = [
     name: 'Register',
     component: () => import('../views/auth/Register.vue'),
   },
-  {
-    path: '/profile',
-    name: 'Profile',
-    component: () => import('../views/auth/Profile.vue'),
-    meta: { requiresAuth: true },
-  },
 ];
 
 export default routes;

@@ -7,11 +7,11 @@
             </svg>
         </button>
         <div class="flex flex-shrink-0 items-center ml-auto">
-            <button class="cursor-pointer group inline-flex items-center p-2 hover:bg-gray-100 focus:bg-gray-100 rounded-lg">
+            <button @click="openProfileModal" class="cursor-pointer group inline-flex items-center p-2 hover:bg-gray-100 focus:bg-gray-100 rounded-lg">
                 <span class="sr-only">User Menu</span>
                 <div class="hidden md:flex md:flex-col md:items-end md:leading-tight">
-                    <span class="font-semibold text-white group-hover:text-slate-600 group-focus:text-slate-600">{{ user?.pseudo }}</span>
-                    <span class="text-sm text-gray-300 group-hover:text-gray-500 group-focus:text-gray-500">{{ user?.email }}</span>
+                    <span class="font-semibold text-white group-hover:text-slate-600 group-focus:text-slate-600">{{ userInfo?.pseudo }}</span>
+                    <span class="text-sm text-gray-300 group-hover:text-gray-500 group-focus:text-gray-500">{{ userInfo?.email }}</span>
                 </div>
                 <span class="h-12 w-12 ml-2 sm:ml-3 mr-2 bg-gray-100 rounded-full overflow-hidden">
                     <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="user profile photo" class="h-full w-full object-cover">
@@ -66,25 +66,28 @@
             </div>
         </transition>
     </header>
+    <UserProfileModal 
+        :is-open="isProfileModalOpen"
+        @close="closeProfileModal"
+    />
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import { useToast } from 'vue-toastification';
-import { profileTexts } from '../../../config/content/profile';
-import Database from '../../../utils/database.utils';
-import type { User } from '../../../interface/user.interface';
 import { navbarTexts } from '../../../config/content/layout/navbar';
+import type { User } from '../../../interface/user.interface';
+import UserProfileModal from '../../Modal/UserProfileModal.vue';
 
 const store = useStore();
 const router = useRouter();
-const user = ref<User>();
-const toast = useToast();
 const menuOpen = ref(false);
 
 const isAuthenticated = computed(() => store.getters.isAuthenticated);
+const userInfo = computed(() => store.getters.getUser);
+
+const isProfileModalOpen = ref(false);
 
 const logout = async () => {
     await store.dispatch('logout');
@@ -96,18 +99,13 @@ const toggleMenu = () => {
     menuOpen.value = !menuOpen.value;
 };
 
-const fetchUserProfile = async () => {
-    try {
-        const data = await Database.getOne('user', 'profile');
-        user.value = data;
-    } catch (error) {
-        toast.error(profileTexts.errorMessage);
-    }
+const openProfileModal = () => {
+    isProfileModalOpen.value = true;
 };
 
-onMounted(() => {
-    fetchUserProfile();
-});
+const closeProfileModal = () => {
+    isProfileModalOpen.value = false;
+};
 </script>
 
 <style scoped>
