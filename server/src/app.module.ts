@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
@@ -13,6 +13,7 @@ import { UserCompletedExercisesSerieModule } from './user/user-completed-exercis
 import { PushModule } from './notifications/push/push.module';
 import { SubscriptionsModule } from './notifications/subscriptions/subscriptions.module';
 import { AvatarModule } from './avatar/avatar.module';
+import { AuthMiddleware } from './auth/auth.middleware';
 
 @Module({
   imports: [
@@ -36,4 +37,10 @@ import { AvatarModule } from './avatar/avatar.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes('*');
+  }
+}

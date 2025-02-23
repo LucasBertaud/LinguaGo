@@ -13,7 +13,7 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
     private prisma: PrismaService,
-  ) {}
+  ) { }
 
   async signIn(email: string, pass: string, @Res() res: Response): Promise<void> {
     const user = await this.userService.findOneForAuth({ email });
@@ -26,9 +26,9 @@ export class AuthService {
       throw new UnauthorizedException('Adresse email ou mot de passe incorrect.');
     }
 
-    const payload: AuthPayload = { 
-      id: user.id, 
-      email: user.email, 
+    const payload: AuthPayload = {
+      id: user.id,
+      email: user.email,
       role: user.role,
       pseudo: user.pseudo,
       firstTimeConnection: user.firstTimeConnection
@@ -49,7 +49,7 @@ export class AuthService {
     // Supprime les anciennes sessions
     await this.cleanUpOldSessions(user.id);
 
-    // Définir les cookies HTTP-only
+    // Défini les cookies HTTP-only
     res.cookie('access_token', access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Utilisez secure en production
@@ -64,7 +64,28 @@ export class AuthService {
     res.send({ message: 'User successfully logged in.', payload });
   }
 
+  async getCurrentUser(userId: string): Promise<any> {
+    const user = await this.userService.findOne({ id: userId });
+    if (!user) {
+      throw new UnauthorizedException('Utilisateur non trouvé');
+    }
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        pseudo: user.pseudo,
+        createdAt: user.createdAt
+      }
+    };
+  }
+
   async refreshToken(refreshToken: string, @Res() res: Response): Promise<void> {
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token non fourni');
+    }
+
     const storedToken = await this.prisma.refreshToken.findFirst({
       where: { token: refreshToken },
       include: { user: true },
@@ -81,16 +102,33 @@ export class AuthService {
       AuthService: storedToken.user.pseudo,
       firstTimeConnection: storedToken.user.firstTimeConnection
     };
+    
     const newAccessToken = await this.jwtService.signAsync(payload);
+    const newRefreshToken = await this.jwtService.signAsync(payload, { expiresIn: '1d' });
 
-    // Définir le nouveau cookie HTTP-only pour le token d'accès
+    await this.prisma.refreshToken.update({
+      where: { id: storedToken.id },
+      data: {
+        token: newRefreshToken,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      },
+    });
+
     res.cookie('access_token', newAccessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Utilisez secure en production
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+    });
+    res.cookie('refresh_token', newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
     });
 
-    res.send({ message: 'Token rafraîchi avec succès' });
+    res.send({
+      message: 'Token rafraîchi avec succès',
+      payload
+    });
   }
 
   async firstTimeConnected(userId: string): Promise<User> {
@@ -105,14 +143,28 @@ export class AuthService {
   }
 
   async logout(refreshToken: string, @Res() res: Response): Promise<void> {
-    await this.prisma.refreshToken.deleteMany({
-      where: { token: refreshToken },
+    if (refreshToken) {
+      await this.prisma.refreshToken.deleteMany({
+        where: { token: refreshToken },
+      });
+    }
+
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
     });
 
-    // Supprimer les cookies
-    res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
-    res.clearCookie('user');
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+
+    res.clearCookie('user', {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
 
     res.send({ message: 'Déconnexion réussie' });
   }
