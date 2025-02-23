@@ -1,6 +1,5 @@
 import api from '../../utils/api';
 import Cookies from 'js-cookie';
-import { isTokenExpired, clearCookies } from '../../utils/authUtils';
 import type { User } from '../../interface/user.interface';
 
 interface AuthResponse {
@@ -37,56 +36,34 @@ const actions = {
       const { payload } = response.data;
       commit('setUser', payload);
       commit('setAuth', true);
-      Cookies.set('user', JSON.stringify(payload), { secure: true, sameSite: 'strict' });
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
     }
   },
-  async refreshToken({ commit }: any) {
-    try {
-      const response = await api.post<AuthResponse>('/auth/refresh');
-      const { payload } = response.data;
-      commit('setUser', payload);
-      Cookies.set('user', JSON.stringify(payload), { secure: true, sameSite: 'strict' });
-    } catch (error) {
-      console.error('Token refresh failed:', error);
-      commit('clearAuthData');
-      clearCookies();
-      throw error;
-    }
-  },
+  
   async logout({ commit }: any) {
     try {
       await api.post('/auth/logout');
       commit('clearAuthData');
-      clearCookies();
     } catch (error) {
       console.error('Logout failed:', error);
       throw error;
     }
   },
-  async initLogin({ dispatch, commit, state }: any) {
-    const token = state.token;
-    let isLoggedIn = false;
-
-    if (token && !isTokenExpired(token)) {
-      isLoggedIn = true;
-    } else {
-      const refresh = state.refreshToken;
-      if (refresh) {
-        try {
-          await dispatch('refreshToken');
-          isLoggedIn = true;
-        } catch (error) {
-          commit('clearAuthData');
-        }
-      }
+  
+  async initLogin({ commit }: any) {
+    try {
+      const response = await api.get('/auth/me');
+      const { user } = response.data;
+      commit('setUser', user);
+      commit('setAuth', true);
+      return true;
+    } catch (error) {
+      commit('clearAuthData');
+      return false;
     }
-
-    commit('setAuth', isLoggedIn);
-    return isLoggedIn;
-  },
+  }
 };
 
 const getters = {
