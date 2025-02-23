@@ -19,4 +19,5 @@ export function isTokenExpired(token: string): boolean {
 export function clearCookies() {
   Cookies.remove('access');
   Cookies.remove('refresh');
+  Cookies.remove('user');
 }

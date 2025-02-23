@@ -25,6 +25,14 @@ model User {
   favoriteSeries      UserFavoriteSerie[]
   completedSeries     UserCompletedExercisesSerie[]
   stats               UserStats?
+  avatarId            Int?
+  avatar              Avatar?           @relation(fields: [avatarId], references: [id])
+}
+
+model Avatar {
+  id        Int      @id @default(autoincrement())
+  svg       String
+  users     User[]
 }
 
 model SiteStats{

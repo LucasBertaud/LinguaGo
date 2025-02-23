@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class UserEntity {
+export class UserEntity { 
   @ApiProperty({ example: 1, description: 'The unique identifier of the user' })
   id: string;
 
@@ -18,4 +18,7 @@ export class UserEntity {
 
   @ApiProperty({ example: '2023-01-01T00:00:00.000Z', description: 'The date the user was created' })
   createdAt: Date;
+
+  @ApiProperty({ example: 1, description: 'The ID of the user\'s avatar' })
+  avatarId: number | null;
 }

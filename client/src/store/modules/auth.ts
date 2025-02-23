@@ -74,6 +74,35 @@ const actions = {
       throw error;
     }
   },
+  async updateUser({ commit, state }: any, userData: any) {
+    try {
+      const updatedUser = {
+        id: state.user?.id,
+        email: userData.email,
+        role: userData.role,
+        pseudo: userData.pseudo,
+        avatarId: userData.avatarId,
+      };
+
+      commit('setUser', updatedUser);
+
+      Cookies.set('user', JSON.stringify(updatedUser), {
+        secure: true,
+        sameSite: 'strict'
+      });
+
+      const currentToken = Cookies.get('access');
+      if (currentToken) {
+        Cookies.set('access', currentToken, {
+          secure: true,
+          sameSite: 'strict'
+        });
+      }
+    } catch (error) {
+      console.error('Update user failed:', error);
+      throw error;
+    }
+  },
   async logout({ commit, state }: any) {
     try {
       await api.post('/auth/logout', { refresh_token: state.refreshToken });

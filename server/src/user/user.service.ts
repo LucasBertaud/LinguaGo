@@ -1,11 +1,16 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'src/utils/prisma.service';
-import { User, Prisma } from '@prisma/client';
+import { User, Prisma, Avatar } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserAvatarDto } from './dto/update-user-avatar.dto';
+
+type UserWithAvatar = User & {
+  avatar: Avatar | null;
+};
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(data: Prisma.UserCreateInput): Promise<User> {
     const existingUser = await this.prisma.user.findUnique({
@@ -17,11 +22,22 @@ export class UserService {
     }
 
     const hash: string = await bcrypt.hash(data.password, 10);
+
+    const avatars = await this.prisma.avatar.findMany();
+
+    if (avatars.length === 0) {
+      throw new Error('Aucun avatar disponible.');
+    }
+
+    // Sélectionne un avatar par défaut au hasard
+    const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
+
     const user: User = await this.prisma.user.create({
       data: {
         pseudo: data.pseudo,
         email: data.email,
         password: hash,
+        avatarId: randomAvatar.id,
       },
     });
 
@@ -52,16 +68,19 @@ export class UserService {
     return user;
   }
 
-  async findOneForAuth(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User | null> {
+  async findOneForAuth(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<UserWithAvatar> {
     const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
+      include: {
+        avatar: true
+      }
     });
 
     if (!user) {
       throw new NotFoundException('Utilisateur non trouvé.');
     }
 
-    return user;
+    return user as UserWithAvatar;
   }
 
   async findAll(params: {
@@ -84,6 +103,26 @@ export class UserService {
         email: true,
         createdAt: true,
       },
+    });
+  }
+
+  async updateAvatar(params: {
+    where: Prisma.UserWhereUniqueInput;
+    data: UpdateUserAvatarDto;
+  }): Promise<Partial<User>> {
+    const { where, data } = params;
+
+    return this.prisma.user.update({
+      data: {
+        avatarId: data.avatarId,
+      },
+      where,
+      select: {
+        pseudo: true,
+        role: true,
+        email: true,
+        createdAt: true,
+      }
     });
   }
 

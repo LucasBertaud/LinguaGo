@@ -10,6 +10,7 @@ import { UserFavoriteSerieModule } from './user/user-favorite-serie/user-favorit
 import { UserStatsModule } from './user/user-stats/user-stats.module';
 import { SiteStatsModule } from './site-stats/site-stats.module';
 import { UserCompletedExercisesSerieModule } from './user/user-completed-exercises-serie/user-completed-exercises-serie.module';
+import { AvatarModule } from './avatar/avatar.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UserCompletedExercisesSerieModule } from './user/user-completed-exercis
     UserStatsModule,
     SiteStatsModule,
     UserCompletedExercisesSerieModule,
+    AvatarModule,
   ],
   controllers: [],
   providers: [],
