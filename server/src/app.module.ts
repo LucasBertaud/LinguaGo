@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
@@ -9,7 +9,7 @@ import { UserCompletedExerciseModule } from './user/user-completed-exercise/user
 import { UserFavoriteSerieModule } from './user/user-favorite-serie/user-favorite-serie.module';
 import { UserStatsModule } from './user/user-stats/user-stats.module';
 import { SiteStatsModule } from './site-stats/site-stats.module';
-import { UserCompletedExercisesSerieModule } from './user/user-completed-exercises-serie/user-completed-exercises-serie.module';
+import { AuthMiddleware } from './auth/auth.middleware';
 
 @Module({
   imports: [
@@ -25,9 +25,14 @@ import { UserCompletedExercisesSerieModule } from './user/user-completed-exercis
     UserFavoriteSerieModule,
     UserStatsModule,
     SiteStatsModule,
-    UserCompletedExercisesSerieModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes('*');
+  }
+}
