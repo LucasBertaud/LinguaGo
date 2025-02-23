@@ -5,4 +5,5 @@ export default interface AuthPayload {
     email: string
     pseudo: string
     role: $Enums.Role
+    firstTimeConnection: boolean
 }

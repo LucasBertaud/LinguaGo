@@ -4,6 +4,7 @@ import { GenericService } from 'src/utils/generic.service';
 import { PrismaService } from 'src/utils/prisma.service';
 
 @Module({
+  imports: [],
   controllers: [SiteStatsController],
   providers: [GenericService, PrismaService],
 })

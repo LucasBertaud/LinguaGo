@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, HttpCode, HttpStatus, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpCode, HttpStatus, UseGuards, Request, Patch } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { AuthGuard } from './auth.guard';
@@ -18,6 +18,19 @@ export class AuthController {
     @Body() signInDto: SignInDto
   ) {
     return this.authService.signIn(signInDto.email, signInDto.password);
+  }
+
+  @Patch('first-time-connected')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'First time connected' })
+  @ApiResponse({ status: 200, description: 'First time connected successfully.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  firstTimeConnected(
+    @Request() req
+  ) {
+    return this.authService.firstTimeConnected(req.user.id);
   }
 
   @Post('refresh')

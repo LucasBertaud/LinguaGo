@@ -2,6 +2,8 @@ import api from '../../utils/api.utils';
 import Cookies from 'js-cookie';
 import { isTokenExpired, clearCookies } from '../../utils/auth.utils';
 import type { User } from '../../interface/user.interface';
+import { subscriberService } from '../../services/subscriber.service';
+import Database from '../../utils/database.utils';
 
 interface AuthResponse {
   access_token: string;
@@ -87,9 +89,14 @@ const actions = {
   async initLogin({ dispatch, commit, state }: any) {
     const token = state.token;
     let isLoggedIn = false;
-
+    const isUserFirstConnection = state.user.firstTimeConnection;
+    if(!isUserFirstConnection){
+      console.log('First time connected');
+      await Database.update('auth/first-time-connected', '', {});
+    }
     if (token && !isTokenExpired(token)) {
       isLoggedIn = true;
+      subscriberService.subscribe();
     } else {
       const refresh = state.refreshToken;
       if (refresh) {

@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/utils/prisma.service';
 import AuthPayload from 'src/interface/auth-payload.interface';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -28,7 +29,8 @@ export class AuthService {
       id: user.id, 
       email: user.email, 
       role: user.role,
-      pseudo: user.pseudo
+      pseudo: user.pseudo,
+      firstTimeConnection: user.firstTimeConnection
     };
     const access_token = await this.jwtService.signAsync(payload);
     const refresh_token = await this.jwtService.signAsync(payload, { expiresIn: '1d' });
@@ -61,10 +63,27 @@ export class AuthService {
       throw new UnauthorizedException('Le token de rafraîchissement est expiré ou invalide.');
     }
 
-    const payload = { id: storedToken.userId, email: storedToken.user.email, role: storedToken.user.role };
+    const payload = { 
+      id: storedToken.userId, 
+      email: storedToken.user.email, 
+      role: storedToken.user.role,
+      AuthService: storedToken.user.pseudo,
+      firstTimeConnection: storedToken.user.firstTimeConnection
+    };
     const newAccessToken = await this.jwtService.signAsync(payload);
 
     return { access_token: newAccessToken };
+  }
+
+  async firstTimeConnected(userId: string): Promise<User> {
+    return await this.prisma.user.update({
+      where: { 
+        id: userId
+      },
+      data: {
+        firstTimeConnection: true
+      }
+    })
   }
 
   async logout(refreshToken: string): Promise<void> {

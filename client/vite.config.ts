@@ -6,9 +6,11 @@ import vue from '@vitejs/plugin-vue'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), tailwindcss(), VitePWA({
-    registerType: 'prompt',
-    injectRegister: 'auto', 
-
+    registerType: 'autoUpdate',
+    injectRegister: false, 
+    filename: 'service-worker.ts',
+    srcDir: 'src',
+    strategies: 'injectManifest',
     manifest: {
       name: 'Linguago',
       short_name: 'Linguago',
