@@ -78,7 +78,7 @@ export default class Database {
   }
 
   private static addAuthHeader(headers: object = {}) {
-    const token = Cookies.get('access');
+    const token = Cookies.get('access_token');
     if (token) {
       return { ...headers, Authorization: `Bearer ${token}` };
     }
