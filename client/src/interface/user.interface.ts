@@ -3,4 +3,8 @@ export interface User {
     pseudo: string;
     email: string;
     role: string;
+    avatar?: {
+        id: number;
+        svg: string;
+    } | null;
 }

@@ -12,6 +12,7 @@ import { SiteStatsModule } from './site-stats/site-stats.module';
 import { UserCompletedExercisesSerieModule } from './user/user-completed-exercises-serie/user-completed-exercises-serie.module';
 import { PushModule } from './notifications/push/push.module';
 import { SubscriptionsModule } from './notifications/subscriptions/subscriptions.module';
+import { AvatarModule } from './avatar/avatar.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { SubscriptionsModule } from './notifications/subscriptions/subscriptions
     UserCompletedExercisesSerieModule,
     PushModule,
     SubscriptionsModule,
+    AvatarModule,
   ],
   controllers: [],
   providers: [],

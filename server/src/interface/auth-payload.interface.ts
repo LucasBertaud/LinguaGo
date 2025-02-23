@@ -6,4 +6,5 @@ export default interface AuthPayload {
     pseudo: string
     role: $Enums.Role
     firstTimeConnection: boolean
+    avatarId?: number
 }

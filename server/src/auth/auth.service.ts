@@ -31,7 +31,9 @@ export class AuthService {
       role: user.role,
       pseudo: user.pseudo,
       firstTimeConnection: user.firstTimeConnection
+      avatarId: user.avatarId || undefined
     };
+
     const access_token = await this.jwtService.signAsync(payload);
     const refresh_token = await this.jwtService.signAsync(payload, { expiresIn: '1d' });
 
@@ -58,7 +60,7 @@ export class AuthService {
       where: { token: refreshToken },
       include: { user: true },
     });
-
+  
     if (!storedToken || storedToken.expiresAt < new Date()) {
       throw new UnauthorizedException('Le token de rafraîchissement est expiré ou invalide.');
     }
@@ -71,7 +73,7 @@ export class AuthService {
       firstTimeConnection: storedToken.user.firstTimeConnection
     };
     const newAccessToken = await this.jwtService.signAsync(payload);
-
+  
     return { access_token: newAccessToken };
   }
 

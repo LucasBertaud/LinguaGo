@@ -16,11 +16,21 @@
                             <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
                                 <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Mon Profil</h3>
                                 <div class="flex flex-col space-y-4">
-                                    <div class="flex items-center justify-center mb-4">
-                                        <div class="h-20 w-20 rounded-full overflow-hidden bg-gray-100">
-                                            <img src="https://randomuser.me/api/portraits/women/68.jpg"
-                                                alt="Profile picture" class="h-full w-full object-cover">
+                                    <div class="flex flex-col items-center justify-center mb-4">
+                                        <div class="h-20 w-20 rounded-full overflow-hidden bg-gray-100 mb-2">
+                                            <div v-if="avatarSvg" v-html="sanitizedSvg"
+                                                class="h-20 w-20 flex items-center justify-center">
+                                            </div>
                                         </div>
+                                        <button @click="openAvatarSelection"
+                                            class="text-sm text-primary hover:text-primary-dark transition-colors duration-200 flex items-center gap-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                            Modifier l'avatar
+                                        </button>
                                     </div>
                                     <div class="space-y-2">
                                         <p class="text-sm text-gray-500 text-center sm:text-left ml-2">Pseudo</p>
@@ -71,15 +81,17 @@
             </div>
         </div>
     </Transition>
+    <AvatarSelectionModal :is-open="isAvatarSelectionOpen" @close="closeAvatarSelection" @update="close" />
     <LoadingSpinner v-if="isLoading" />
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
+import DOMPurify from 'dompurify';
 import { useToast } from 'vue-toastification';
 import Database from '../../utils/database.utils';
-import Cookies from 'js-cookie';
+import AvatarSelectionModal from './AvatarSelectionModal.vue';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
 
 const props = defineProps<{
@@ -94,9 +106,20 @@ const store = useStore();
 const toast = useToast();
 const isLoading = ref(false);
 const userInfo = computed(() => store.getters.getUser);
+const avatarSvg = ref('');
 
 const isEditing = ref(false);
 const editedPseudo = ref('');
+
+const isAvatarSelectionOpen = ref(false);
+
+const openAvatarSelection = () => {
+    isAvatarSelectionOpen.value = true;
+};
+
+const closeAvatarSelection = () => {
+    isAvatarSelectionOpen.value = false;
+};
 
 const toggleEdit = async () => {
     if (isEditing.value) {
@@ -107,12 +130,9 @@ const toggleEdit = async () => {
             });
 
             if (response) {
-                const updatedUser = {
-                    ...userInfo.value,
-                    pseudo: editedPseudo.value
-                };
-
-                await store.commit('setUser', updatedUser);
+                // Mise à jour du store ET du cookie d'authentification
+                await store.dispatch('updateUser', response);
+                
                 toast.success('Pseudo mis à jour avec succès');
                 isEditing.value = false;
             }
@@ -126,6 +146,33 @@ const toggleEdit = async () => {
         isEditing.value = true;
     }
 };
+
+const loadAvatar = async () => {
+  if (userInfo.value?.avatarId) {
+    try {
+      const avatar = await Database.getOne('avatar', userInfo.value.avatarId.toString());
+      if (avatar) {
+        avatarSvg.value = avatar.svg;
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement de l\'avatar:', error);
+      toast.error('Erreur lors du chargement de l\'avatar');
+    }
+  }
+};
+
+watch(() => userInfo.value?.avatarId, (newAvatarId) => {
+  if (newAvatarId) {
+    loadAvatar();
+  } else {
+    avatarSvg.value = '';
+  }
+}, { immediate: true });
+
+const sanitizedSvg = computed(() => {
+  if (!avatarSvg.value) return '';
+  return DOMPurify.sanitize(avatarSvg.value);
+});
 
 const close = () => {
     isEditing.value = false;
