@@ -1,10 +1,10 @@
 <template>
     <div class="min-h-screen flex items-center justify-center bg-gray-100 bg-cover bg-center">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md mx-4">
-            <h1 class="text-4xl font-bold mb-6 text-center text-primary">{{ formTexts.register }}</h1>
+            <h1 class="text-4xl font-bold mb-6 text-center text-primary">Inscription</h1>
             <form @submit.prevent="handleSubmit">
                 <div class="mb-4">
-                    <label for="pseudo" class="block text-gray-700">{{ formTexts.pseudoLabel }}</label>
+                    <label for="pseudo" class="block text-gray-700">Pseudo</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="128"
@@ -20,7 +20,7 @@
                     <Error :error="pseudoError" />
                 </div>
                 <div class="mb-4">
-                    <label for="email" class="block text-gray-700">{{ formTexts.emailLabel }}</label>
+                    <label for="email" class="block text-gray-700">Adresse email</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="128"
@@ -35,7 +35,7 @@
                     <Error :error="emailError" />
                 </div>
                 <div class="mb-6">
-                    <label for="password" class="block text-gray-700">{{ formTexts.passwordLabel }}</label>
+                    <label for="password" class="block text-gray-700">Mot de passe</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
@@ -49,9 +49,13 @@
                     <Error :error="passwordError" />
                 </div>
                 <button type="submit"
-                    class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 cursor-pointer">{{
-                        formTexts.register }}</button>
+                    class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 cursor-pointer">Inscription</button>
             </form>
+            <div class="mt-4 text-center">
+                <router-link to="/login" class="text-primary hover:underline">
+                    Déjà inscrit ? Connectez-vous
+                </router-link>
+            </div>
             <LoadingSpinner v-if="isLoading" />
         </div>
     </div>
@@ -63,8 +67,6 @@ import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import Error from '../../components/Form/Error.vue';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
-import { errorMessages } from '../../config/error/auth/register';
-import { formTexts } from '../../config/form/auth/register';
 import { validateEmail, validatePasswordLength } from '../../utils/validation.utils';
 import Database from '../../utils/database.utils';
 
@@ -84,19 +86,19 @@ const handleSubmit = async () => {
     passwordError.value = null;
 
     if (!pseudo.value) {
-        pseudoError.value = errorMessages.invalidPseudo;
+        pseudoError.value = "Le pseudo est requis.";
     }
 
     if (!validateEmail(email.value)) {
-        emailError.value = errorMessages.invalidEmail;
+        emailError.value = "L'adresse email n'est pas valide.";
     }
 
     if (!validatePasswordLength(password.value)) {
-        passwordError.value = errorMessages.shortPassword;
+        passwordError.value = "Le mot de passe doit contenir au moins 10 caractères.";
     }
 
     if (pseudoError.value || emailError.value || passwordError.value) {
-        toast.error(errorMessages.fixErrors);
+        toast.error("Veuillez corriger les erreurs avant de continuer.");
         return;
     }
 
@@ -109,13 +111,13 @@ const handleSubmit = async () => {
             password: password.value,
         });
         if (response && response.status === 201) {
-            toast.success(formTexts.registerSuccess);
+            toast.success('Inscription réussie !');
             router.push({ path: '/login' });
         } else {
-            toast.error(errorMessages.registerFailed);
+            toast.error("L'inscription a échoué. Veuillez réessayer.");
         }
     } catch (error) {
-        toast.error(errorMessages.registerFailed);
+        toast.error("L'inscription a échoué. Veuillez réessayer.");
     } finally {
         isLoading.value = false;
     }

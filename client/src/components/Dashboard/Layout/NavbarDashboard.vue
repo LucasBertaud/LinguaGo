@@ -31,7 +31,8 @@
             </button>
             <div class="border-l pl-3 ml-3 space-x-1">
                 <NotificationButton />
-                <button v-if="isAuthenticated" @click="logout" class="relative p-2 text-white hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-100 focus:text-gray-600 rounded-full cursor-pointer">
+                <button v-if="isAuthenticated" @click="logout"
+                    class="relative p-2 text-white hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-100 focus:text-gray-600 rounded-full cursor-pointer">
                     <span class="sr-only">Déconnexion</span>
                     <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -52,19 +53,19 @@
                 </button>
                 <router-link @click="toggleMenu" to="/"
                     class="block py-2 px-6 text-white text-2xl hover:bg-primary-dark text-center w-full">
-                    {{ navbarTexts.links.home }}
+                    🏠 Accueil
                 </router-link>
                 <router-link v-if="!isAuthenticated" @click="toggleMenu" to="/login"
                     class="block py-2 px-6 text-white text-2xl hover:bg-primary-dark text-center w-full">
-                    {{ navbarTexts.links.login }}
+                    🔑 Connexion
                 </router-link>
                 <router-link v-if="isAuthenticated" @click="toggleMenu" to="/profile"
                     class="block py-2 px-6 text-white text-2xl hover:bg-primary-dark text-center w-full">
-                    {{ navbarTexts.links.profile }}
+                    👤 Profil
                 </router-link>
                 <button v-if="isAuthenticated" @click="logout"
                     class="block w-full text-white text-center py-2 px-6 text-2xl hover:bg-primary-dark">
-                    {{ navbarTexts.links.logout }}
+                    🚪 Déconnexion
                 </button>
             </div>
         </transition>
@@ -78,7 +79,6 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import DOMPurify from 'dompurify';
 import Database from '../../../utils/database.utils';
-import { navbarTexts } from '../../../config/content/layout/navbar';
 import NotificationButton from '../Button/NotificationButton.vue';
 import type { User } from '../../../interface/user.interface';
 import UserProfileModal from '../../Modal/UserProfileModal.vue';
