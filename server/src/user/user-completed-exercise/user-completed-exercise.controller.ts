@@ -23,7 +23,11 @@ export class UserCompletedExerciseController {
 
   @Get('top-users-of-week')
   async findAllByTopUsersOfWeek() {
-    const response: { pseudo: string; pointsWon: number; }[] = [];
+    const response: { pseudo: string; pointsWon: number; avatar: {
+      svg: string;
+      id: number;
+    } | undefined;
+    }[] = [];
 
     const UsersCompletedExercises = await this.genericService.groupBy("userCompletedExercise", {
       by: ["userId"],
@@ -54,6 +58,7 @@ export class UserCompletedExerciseController {
       response.push({
           pseudo: String(user.pseudo),
           pointsWon: UserCompletedExercises._sum.pointsWon,
+          avatar: user.avatar || undefined,
       });
   }
     

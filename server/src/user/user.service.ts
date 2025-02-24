@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { PrismaService } from 'src/utils/prisma.service';
 import { User, Prisma, Avatar } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { UpdateUserAvatarDto } from './dto/update-user-avatar.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 type UserWithAvatar = User & {
   avatar: Avatar | null;
@@ -50,15 +50,15 @@ export class UserService {
     return user;
   }
 
-  async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<Partial<User> | null> {
+  async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<Partial<UserWithAvatar> | null> {
     const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
-      select: {
-        pseudo: true,
-        role: true,
-        email: true,
-        createdAt: true,
+      omit: {
+        password: true,
       },
+      include: {
+        avatar: true
+      }
     });
 
     if (!user) {
@@ -106,61 +106,39 @@ export class UserService {
     });
   }
 
-  async updateAvatar(params: {
-    where: Prisma.UserWhereUniqueInput;
-    data: UpdateUserAvatarDto;
-  }): Promise<Partial<User>> {
-    const { where, data } = params;
-
-    return this.prisma.user.update({
-      data: {
-        avatarId: data.avatarId,
-      },
-      where,
-      select: {
-        pseudo: true,
-        role: true,
-        email: true,
-        createdAt: true,
-      }
-    });
-  }
-
   async update(params: {
     where: Prisma.UserWhereUniqueInput;
-    data: { pseudo: string };
+    data: UpdateUserDto;
   }): Promise<Partial<User>> {
     const { where, data } = params;
-
+  
     const user = await this.prisma.user.findUnique({
       where,
     });
-
+  
     if (!user) {
       throw new NotFoundException('Utilisateur non trouvé.');
     }
-
+  
     if (data.pseudo) {
       const existingPseudo = await this.prisma.user.findFirst({
         where: { pseudo: data.pseudo },
       });
-
+  
       if (existingPseudo && existingPseudo.id !== user.id) {
         throw new BadRequestException('Un utilisateur avec ce pseudo existe déjà.');
       }
     }
-
+  
     return this.prisma.user.update({
       data: {
-        pseudo: data.pseudo,
+        ...(data.pseudo && { pseudo: data.pseudo }),
+        ...(data.avatarId && { avatarId: data.avatarId }),
       },
       where,
-      select: {
-        pseudo: true,
-        role: true,
-        email: true,
-        createdAt: true,
-      },
+      include: {
+        avatar: true
+      }
     });
   }
 

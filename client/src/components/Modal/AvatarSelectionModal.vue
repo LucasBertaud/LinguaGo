@@ -13,13 +13,13 @@
                         <h3 class="text-lg font-medium text-gray-900 mb-4">Choisir un avatar</h3>
                         <div class="max-h-[60vh] overflow-y-auto">
                             <div class="grid grid-cols-3 gap-4 p-4">
-                                <div v-for="avatar in avatars" :key="avatar.id" @click="selectAvatar(avatar.id)"
+                                <button v-for="avatar in avatars" :key="avatar.id" @click="selectAvatar(avatar.id)"
                                     class="flex items-center justify-center cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 border border-gray-200"
                                     :class="{ 'bg-primary/10 border-primary': avatar.id === userInfo?.avatarId }">
-                                    <div class="h-20 w-20 flex items-center justify-center"
+                                    <div class="flex items-center justify-center [&>svg]:h-20 [&>svg]:w-20"
                                         v-html="sanitizeAvatar(avatar.svg)">
                                     </div>
-                                </div>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -58,8 +58,8 @@ const userInfo = computed(() => store.getters.getUser);
 const loadAvatars = async () => {
     try {
         isLoading.value = true;
-        const response = await Database.getAll('avatar');  // Using getAll as defined in database.utils.ts
-        if (response) {  // response is directly the data due to your utils implementation
+        const response = await Database.getAll('avatar');
+        if (response) { 
             avatars.value = response;
             console.log('Avatars loaded:', avatars.value);
         }
@@ -72,15 +72,15 @@ const loadAvatars = async () => {
 };
 
 const selectAvatar = async (avatarId: number) => {
+    console.log('Selected avatar:', avatarId);
     try {
         isLoading.value = true;
-        const response = await Database.patch('user/update-avatar', { avatarId });
+        const response = await Database.patch('user', { avatarId });
 
         if (response) {
             console.log('Response from server:', response);
 
-            // Mise à jour du store ET du cookie d'authentification
-            await store.dispatch('updateUser', response);
+            store.commit('setUser', response);
 
             toast.success('Avatar mis à jour avec succès');
             emit('update');
