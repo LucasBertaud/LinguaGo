@@ -22,18 +22,7 @@ model User {
   completedSeries     UserCompletedExercisesSerie[]
   favoriteSeries      UserFavoriteSerie[]
   stats               UserStats?
-<<<<<<< HEAD
-  avatarId            Int?
-  avatar              Avatar?           @relation(fields: [avatarId], references: [id])
-}
-
-model Avatar {
-  id        Int      @id @default(autoincrement())
-  svg       String
-  users     User[]
-=======
   notification        Notification?
->>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
 }
 
 model Notification {
