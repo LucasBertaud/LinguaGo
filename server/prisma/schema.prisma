@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,17 +8,21 @@ datasource db {
 }
 
 model User {
-  id                  String            @id @default(uuid())
+  id                  String                        @id @default(uuid())
   pseudo              String
-  email               String            @unique
+  email               String                        @unique
   password            String
-  role                Role              @default(USER)
-  createdAt           DateTime          @default(now())
+  role                Role                          @default(USER)
+  createdAt           DateTime                      @default(now())
+  avatarId            Int?
+  firstTimeConnection Boolean                       @default(true)
   refreshTokens       RefreshToken[]
+  avatar              Avatar?                       @relation(fields: [avatarId], references: [id])
   completedExercises  UserCompletedExercise[]
-  favoriteSeries      UserFavoriteSerie[]
   completedSeries     UserCompletedExercisesSerie[]
+  favoriteSeries      UserFavoriteSerie[]
   stats               UserStats?
+<<<<<<< HEAD
   avatarId            Int?
   avatar              Avatar?           @relation(fields: [avatarId], references: [id])
 }
@@ -33,100 +31,117 @@ model Avatar {
   id        Int      @id @default(autoincrement())
   svg       String
   users     User[]
+=======
+  notification        Notification?
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
 }
 
-model SiteStats{
-  id                    Int       @id @default(1)
-  totalUsers            Int       @default(0)
-  totalExercises        Int       @default(0)
-  totalSeries           Int       @default(0)
-  totalPoints           Int       @default(0)
+model Notification {
+  id           Int     @id @default(autoincrement())
+  userId       String  @unique
+  user         User    @relation(fields: [userId], references: [id])
+  isActivate   Boolean @default(true)
+  subscription Json
+}
+
+model Avatar {
+  id    Int    @id @default(autoincrement())
+  svg   String
+  users User[]
+}
+
+model SiteStats {
+  id             Int @id @default(1)
+  totalUsers     Int @default(0)
+  totalExercises Int @default(0)
+  totalSeries    Int @default(0)
+  totalPoints    Int @default(0)
 }
 
 model UserStats {
-  id                    Int       @default(autoincrement()) @id
-  userId                String    @unique
-  user                  User      @relation(fields: [userId], references: [id])
-  points                Int       @default(0)
-  successfullExercises  Int       @default(0)
-  failedExercises       Int       @default(0)
-  completedSeries       Int       @default(0)
-  timeSpentOnExercises  Int       @default(0)
-  level                 LevelEnum @default(A1)
+  id                   Int       @id @default(autoincrement())
+  userId               String    @unique
+  points               Int       @default(0)
+  successfullExercises Int       @default(0)
+  failedExercises      Int       @default(0)
+  completedSeries      Int       @default(0)
+  timeSpentOnExercises Int       @default(0)
+  level                LevelEnum @default(A1)
+  user                 User      @relation(fields: [userId], references: [id])
 }
 
 model RefreshToken {
-  id        String    @id @default(uuid())
+  id        String   @id @default(uuid())
   token     String
   userId    String
-  user      User      @relation(fields: [userId], references: [id])
-  createdAt DateTime  @default(now())
+  createdAt DateTime @default(now())
   expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id])
 }
 
-model Level {  
-  id              Int               @default(autoincrement()) @id
-  title           LevelEnum         @unique
+model Level {
+  id              Int              @id @default(autoincrement())
+  title           LevelEnum        @unique
   subtitle        String
   description     String?
-  pointsPerExo    Int               @default(1)
-  winablePoints   Int               @default(0)
+  winablePoints   Int              @default(0)
+  pointsPerExo    Int              @default(1)
   exercisesSeries ExercisesSerie[]
 }
 
 model ExercisesSerie {
-  id            Int         @default(autoincrement()) @id
-  title         String
-  description   String?
-  exercises     Exercise[]
-  createdAt     DateTime    @default(now())
-  level         Level       @relation(fields: [levelId], references: [id])
-  levelId       Int
-  favoriteUsers UserFavoriteSerie[]
+  id             Int                           @id @default(autoincrement())
+  title          String
+  description    String?
+  createdAt      DateTime                      @default(now())
+  levelId        Int
+  exercises      Exercise[]
+  level          Level                         @relation(fields: [levelId], references: [id])
   completedUsers UserCompletedExercisesSerie[]
+  favoriteUsers  UserFavoriteSerie[]
 }
 
 model Exercise {
-  id              Int               @default(autoincrement()) @id
-  question        String
-  answer          String
-  choices         String[]
-  type            ExerciseType
-  serie           ExercisesSerie    @relation(fields: [serieId], references: [id]) 
-  serieId         Int
-  usersCompleted  UserCompletedExercise[]
+  id             Int                     @id @default(autoincrement())
+  question       String
+  answer         String
+  choices        String[]
+  type           ExerciseType
+  serieId        Int
+  serie          ExercisesSerie          @relation(fields: [serieId], references: [id])
+  usersCompleted UserCompletedExercise[]
 }
 
 model UserCompletedExercise {
-  user        User      @relation(fields: [userId], references: [id])
   userId      String
-  exercise    Exercise  @relation(fields: [exerciseId], references: [id])
   exerciseId  Int
-  completedAt DateTime  @default(now())
+  completedAt DateTime @default(now())
   serieId     Int
-  pointsWon   Int       @default(1)
+  pointsWon   Int      @default(1)
+  exercise    Exercise @relation(fields: [exerciseId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
 
-  @@id(name: "idUserCompletedExercise", [userId, exerciseId])
+  @@id([userId, exerciseId], name: "idUserCompletedExercise")
 }
 
 model UserFavoriteSerie {
-  user        User            @relation(fields: [userId], references: [id])
-  userId      String
-  serie       ExercisesSerie  @relation(fields: [serieId], references: [id])
-  serieId     Int
-  createdAt   DateTime        @default(now())
+  userId    String
+  serieId   Int
+  createdAt DateTime       @default(now())
+  serie     ExercisesSerie @relation(fields: [serieId], references: [id])
+  user      User           @relation(fields: [userId], references: [id])
 
-  @@id(name: "idUserFavoriteSerie", [userId, serieId])
+  @@id([userId, serieId], name: "idUserFavoriteSerie")
 }
 
 model UserCompletedExercisesSerie {
-  user        User      @relation(fields: [userId], references: [id])
-  userId      String
-  serieId Int
+  userId         String
+  serieId        Int
+  completedAt    DateTime       @default(now())
   exercisesSerie ExercisesSerie @relation(fields: [serieId], references: [id])
-  completedAt DateTime  @default(now())
+  user           User           @relation(fields: [userId], references: [id])
 
-  @@id(name: "idUserCompletedExercisesSerie", [userId, serieId])
+  @@id([userId, serieId], name: "idUserCompletedExercisesSerie")
 }
 
 enum Role {

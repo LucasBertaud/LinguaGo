@@ -4,6 +4,10 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/utils/prisma.service';
 import AuthPayload from 'src/interface/auth-payload.interface';
+<<<<<<< HEAD
+=======
+import { User } from '@prisma/client';
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
 import { Response } from 'express';
 
 @Injectable()
@@ -30,6 +34,10 @@ export class AuthService {
       email: user.email,
       role: user.role,
       pseudo: user.pseudo,
+<<<<<<< HEAD
+=======
+      firstTimeConnection: user.firstTimeConnection,
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
       avatarId: user.avatarId || undefined
     };
 
@@ -69,6 +77,7 @@ export class AuthService {
     }
 
     return {
+<<<<<<< HEAD
       user: {
         id: user.id,
         email: user.email,
@@ -76,6 +85,9 @@ export class AuthService {
         pseudo: user.pseudo,
         createdAt: user.createdAt
       }
+=======
+      user
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
     };
   }
 
@@ -93,6 +105,7 @@ export class AuthService {
       throw new UnauthorizedException('Le token de rafraîchissement est expiré ou invalide.');
     }
 
+<<<<<<< HEAD
     const payload = {
       id: storedToken.user.id,
       email: storedToken.user.email,
@@ -103,6 +116,19 @@ export class AuthService {
     const newAccessToken = await this.jwtService.signAsync(payload);
     const newRefreshToken = await this.jwtService.signAsync(payload, { expiresIn: '1d' });
 
+=======
+    const payload = { 
+      id: storedToken.userId, 
+      email: storedToken.user.email, 
+      role: storedToken.user.role,
+      AuthService: storedToken.user.pseudo,
+      firsttimeconnection: storedToken.user.firstTimeConnection
+    };
+    
+    const newAccessToken = await this.jwtService.signAsync(payload);
+    const newRefreshToken = await this.jwtService.signAsync(payload, { expiresIn: '1d' });
+
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
     await this.prisma.refreshToken.update({
       where: { id: storedToken.id },
       data: {
@@ -128,6 +154,20 @@ export class AuthService {
     });
   }
 
+<<<<<<< HEAD
+=======
+  async firstTimeConnected(userId: string): Promise<User> {
+    return await this.prisma.user.update({
+      where: { 
+        id: userId
+      },
+      data: {
+        firstTimeConnection: false
+      }
+    })
+  }
+
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
   async logout(refreshToken: string, @Res() res: Response): Promise<void> {
     if (refreshToken) {
       await this.prisma.refreshToken.deleteMany({

@@ -1,12 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Body, Patch, UseGuards, Request } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Roles } from 'src/user/role/roles.decorator';
-import { Role } from 'src/user/role/role.enum';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { RolesGuard } from 'src/user/role/roles.guard';
 import { UserEntity } from './entities/user.entity';
 import { UpdateUserAvatarDto } from './dto/update-user-avatar.dto';
 
@@ -25,6 +22,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+<<<<<<< HEAD
   @Get()
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
@@ -62,6 +60,8 @@ export class UserController {
     });
   }
 
+=======
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
   @Patch()
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
@@ -76,17 +76,5 @@ export class UserController {
       where: { id: String(req.user?.id) },
       data: updateUserDto,
     });
-  }
-
-  @Delete()
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @ApiOperation({ summary: 'Delete the authenticated user' })
-  @ApiResponse({ status: 200, description: 'The user has been successfully deleted.', type: UserEntity })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  async remove(
-    @Request() req
-  ): Promise<UserEntity> {
-    return this.userService.remove({ id: String(req.user?.id) });
   }
 }

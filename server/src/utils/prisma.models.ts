@@ -3,8 +3,8 @@ import { CreateExerciseDto } from "src/exercise/dto/create-exercise.dto";
 import { UpdateExerciseDto } from "src/exercise/dto/update-exercise.dto";
 import { CreateExercisesSerieDto } from "src/exercises-serie/dto/create-exercises-serie.dto";
 import { UpdateExercisesSerieDto } from "src/exercises-serie/dto/update-exercises-serie.dto";
-import { CreateLevelDto } from "src/level/dto/create-level.dto";
-import { UpdateLevelDto } from "src/level/dto/update-level.dto";
+import { CreateNotificationDto } from "src/notifications/dto/create-notification.dto";
+import { UpdateNotificationDto } from "src/notifications/dto/update-notification.dto";
 import { CreateUserCompletedExerciseDto } from "src/user/user-completed-exercise/dto/create-user-completed-exercise.dto";
 import { UpdateUserCompletedExerciseDto } from "src/user/user-completed-exercise/dto/update-user-completed-exercise.dto";
 import { CreateUserCompletedExercisesSerieDto } from "src/user/user-completed-exercises-serie/dto/create-user-completed-exercises-serie.dto";
@@ -39,8 +39,8 @@ export type PrismaModels = {
         orderBy: Prisma.LevelOrderByWithRelationInput;
         include: Prisma.LevelInclude;
         createMany: Prisma.LevelCreateManyInput;
-        create: CreateLevelDto;
-        update: UpdateLevelDto;
+        create: Prisma.LevelCreateInput;
+        update: Prisma.LevelUpdateInput;
         _sum: Prisma.LevelSumAggregateInputType;
     };
     UserCompletedExercise: {
@@ -92,7 +92,17 @@ export type PrismaModels = {
         create: CreateUserCompletedExercisesSerieDto;
         update: UpdateUserCompletedExercisesSerieDto;
         _sum: Prisma.UserCompletedExercisesSerieSumAggregateInputType;
-    }
+    };
+    Notification: {
+        cursor: Prisma.NotificationWhereUniqueInput;
+        where: Prisma.NotificationWhereInput | Prisma.NotificationWhereUniqueInput;
+        orderBy: Prisma.NotificationOrderByWithRelationInput;
+        include: Prisma.NotificationInclude;
+        createMany: Prisma.NotificationCreateManyInput;
+        create: CreateNotificationDto;
+        update: UpdateNotificationDto;
+        _sum: Prisma.NotificationSumAggregateInputType;
+    };
   };
   
   export type EntityName = keyof PrismaModels;

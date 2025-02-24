@@ -7,7 +7,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
             </svg>
         </button>
+<<<<<<< HEAD
         <div class="flex flex-shrink-0 items-center ml-auto">
+=======
+        <div class="flex flex-shrink-0 items-center ml-auto p-2">
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
             <button @click="openProfileModal"
                 class="cursor-pointer group inline-flex items-center p-2 hover:bg-gray-100 focus:bg-gray-100 rounded-lg">
                 <span class="sr-only">User Menu</span>
@@ -30,6 +34,7 @@
                 </svg>
             </button>
             <div class="border-l pl-3 ml-3 space-x-1">
+<<<<<<< HEAD
                 <button
                     class="relative p-2 text-white hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-100 focus:text-gray-600 rounded-full cursor-pointer">
                     <span class="sr-only">Notifications</span>
@@ -42,6 +47,10 @@
                 </button>
                 <button v-if="isAuthenticated" @click="logout"
                     class="relative p-2 text-white hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-100 focus:text-gray-600 rounded-full cursor-pointer">
+=======
+                <NotificationButton />
+                <button v-if="isAuthenticated" @click="logout" class="relative p-2 text-white hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-100 focus:text-gray-600 rounded-full cursor-pointer">
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
                     <span class="sr-only">Déconnexion</span>
                     <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -89,6 +98,11 @@ import { useRouter } from 'vue-router';
 import DOMPurify from 'dompurify';
 import Database from '../../../utils/database.utils';
 import { navbarTexts } from '../../../config/content/layout/navbar';
+<<<<<<< HEAD
+=======
+import NotificationButton from '../Button/NotificationButton.vue';
+import type { User } from '../../../interface/user.interface';
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
 import UserProfileModal from '../../Modal/UserProfileModal.vue';
 
 const store = useStore();

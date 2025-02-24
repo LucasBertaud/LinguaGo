@@ -1,6 +1,8 @@
 import api from '../../utils/api.utils';
 import Cookies from 'js-cookie';
 import type { User } from '../../interface/user.interface';
+import { subscriberService } from '../../services/subscriber.service';
+import Database from '../../utils/database.utils';
 
 interface AuthResponse {
   payload: User;
@@ -34,6 +36,18 @@ const actions = {
     try {
       const response = await api.post<AuthResponse>('/auth/login', { email, password });
       const { payload } = response.data;
+<<<<<<< HEAD
+=======
+      if(payload.firstTimeConnection){
+        const subscription = JSON.stringify(await subscriberService.subscribe());
+        Database.create("notification", {
+          userId: payload.id,
+          isActivate: true,
+          subscription: subscription
+        });
+        Database.patch("auth/first-time-connected").then(_ => payload.firstTimeConnection = false);
+      }
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
       commit('setUser', payload);
       commit('setAuth', true);
     } catch (error) {

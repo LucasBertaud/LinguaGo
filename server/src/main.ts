@@ -1,8 +1,12 @@
-import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
+<<<<<<< HEAD
+=======
+import * as webpush from 'web-push';
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
@@ -24,6 +28,13 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
     transform: true,
   }));
+
+  // Configure webpush
+  webpush.setVapidDetails(
+    `mailto:${process.env.DOMAIN_EMAIL}`,
+    process.env.VAPID_PUBLIC_KEY as string,
+    process.env.VAPID_PRIVATE_KEY as string,
+  );
 
   const config = new DocumentBuilder()
     .setTitle('LinguaGo API')

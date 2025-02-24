@@ -1,10 +1,15 @@
 <template>
     <Title title="Mes favoris" subtitle="Retrouver ici vos séries d'exercices favoris... même hors-ligne !" />
-    <section class="flex flex-col" v-for="level in levels" :key="level.id">
+    
+    <div v-if="!levels || levels.length === 0" class="py-5">
+        <p class="text-gray-500 text-lg italic">Vous n'avez pas encore de favoris</p>
+    </div>
+
+    <section v-else class="flex flex-col" v-for="level in levels" :key="level.id">
         <h2 class="text-2xl font-semibold mb-2">{{ level.title }} ({{ level.subtitle }})</h2>
         <Carousel v-bind="carouselConfig(level.exercisesSeries.length)">
             <Slide v-for="exercisesSerie in level.exercisesSeries" :key="exercisesSerie.id">
-                <div class="p-8">
+                <div class="p-2">
                     <ExercisesSerieCard 
                         :exercisesSerie="exercisesSerie"
                         :routerParams="{ levelTitle: level.title }"

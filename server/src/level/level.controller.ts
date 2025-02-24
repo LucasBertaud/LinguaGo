@@ -1,21 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
-import { CreateLevelDto } from './dto/create-level.dto';
-import { UpdateLevelDto } from './dto/update-level.dto';
+import { Controller, Get, Param, UseGuards, Request } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { GenericService } from 'src/utils/generic.service';
 import { Level } from './entities/level.entity';
-import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 
+@ApiTags('Levels')
 @Controller('level')
 export class LevelController {
-  constructor(private readonly genericService: GenericService<Level>) {}
-
-  @Post()
-  create(@Body() createLevelDto: CreateLevelDto) {
-    return this.genericService.create("level", createLevelDto);
-  }
+  constructor(private readonly genericService: GenericService<Level>) { }
 
   @Get()
+  @ApiOperation({ summary: 'Get all levels', description: 'Retrieves all available levels' })
+  @ApiResponse({ status: 200, description: 'List of all levels', type: [Level] })
   findAll() {
     return this.genericService.findAll("level", {});
   }
@@ -23,9 +19,19 @@ export class LevelController {
   @Get('favorites')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
+  @ApiOperation({
+    summary: 'Get user favorites',
+    description: 'Retrieves all levels containing series marked as favorites by the authenticated user'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of favorite levels with their series and exercises',
+    type: [Level]
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   findByFavoritesOfUser(@Request() req) {
     return this.genericService.findAll("level", {
-      where: { 
+      where: {
         exercisesSeries: {
           some: {
             favoriteUsers: {
@@ -34,9 +40,9 @@ export class LevelController {
               }
             }
           }
-        } 
+        }
       },
-      include: { 
+      include: {
         exercisesSeries: {
           include: {
             favoriteUsers: {
@@ -57,12 +63,16 @@ export class LevelController {
               }
             }
           }
-        } 
+        }
       }
     });
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get level by ID' })
+  @ApiParam({ name: 'id', description: 'Level ID', type: 'number' })
+  @ApiResponse({ status: 200, description: 'The level', type: Level })
+  @ApiResponse({ status: 404, description: 'Level not found' })
   findOne(@Param('id') id: string) {
     return this.genericService.findOne("level", {
       where: { id: Number(id) },
@@ -73,10 +83,18 @@ export class LevelController {
   @Get('title/:title')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
+  @ApiOperation({
+    summary: 'Get level by title',
+    description: 'Retrieves a level by its title including series and exercises with user progress'
+  })
+  @ApiParam({ name: 'title', description: 'Level title', type: 'string' })
+  @ApiResponse({ status: 200, description: 'The level with details', type: Level })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Level not found' })
   findOneByTitle(@Request() req, @Param('title') title: string) {
     return this.genericService.findOne("level", {
       where: { title: String(title) },
-      include: { 
+      include: {
         exercisesSeries: {
           include: {
             favoriteUsers: {
@@ -90,23 +108,8 @@ export class LevelController {
               }
             }
           }
-        } 
+        }
       }
     });
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLevelDto: UpdateLevelDto) {
-    return this.genericService.update("level", {
-      where: { id: Number(id) },
-      data: updateLevelDto,
-    });
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.genericService.remove("level", { 
-      where: { id: Number(id) }
-     });
   }
 }

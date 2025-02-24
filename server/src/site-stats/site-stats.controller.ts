@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { GenericService } from 'src/utils/generic.service';
 import { SiteStat } from './entities/site-stat.entity';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
