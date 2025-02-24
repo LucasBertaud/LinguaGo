@@ -20,6 +20,10 @@ export class CreateUserCompletedExerciseDto {
     @IsInt()
     exerciseId: number;
     
+    @ApiProperty({
+        example: 1,
+        description: 'Id of the exercise series'
+    })
     @IsNotEmpty()
     @IsInt()
     serieId: number;

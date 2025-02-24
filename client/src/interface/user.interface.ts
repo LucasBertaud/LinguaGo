@@ -8,4 +8,5 @@ export interface User {
         svg: string;
     } | null;
     avatarId?: number | null;
+    firstTimeConnection: boolean;
 }

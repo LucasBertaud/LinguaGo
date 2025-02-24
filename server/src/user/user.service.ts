@@ -83,29 +83,6 @@ export class UserService {
     return user as UserWithAvatar;
   }
 
-  async findAll(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.UserWhereUniqueInput;
-    where?: Prisma.UserWhereInput;
-    orderBy?: Prisma.UserOrderByWithRelationInput;
-  }): Promise<Partial<User>[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.user.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-      select: {
-        pseudo: true,
-        role: true,
-        email: true,
-        createdAt: true,
-      },
-    });
-  }
-
   async update(params: {
     where: Prisma.UserWhereUniqueInput;
     data: UpdateUserDto;
@@ -139,20 +116,6 @@ export class UserService {
       include: {
         avatar: true
       }
-    });
-  }
-
-  async remove(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    const user = await this.prisma.user.findUnique({
-      where,
-    });
-
-    if (!user) {
-      throw new NotFoundException('Utilisateur non trouvé.');
-    }
-
-    return this.prisma.user.delete({
-      where,
     });
   }
 }

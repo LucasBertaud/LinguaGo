@@ -31,7 +31,7 @@ export class AuthService {
       email: user.email,
       role: user.role,
       pseudo: user.pseudo,
-      firstTimeConnection: user.firstTimeConnection
+      firstTimeConnection: user.firstTimeConnection,
       avatarId: user.avatarId || undefined
     };
 
@@ -94,7 +94,7 @@ export class AuthService {
       email: storedToken.user.email, 
       role: storedToken.user.role,
       AuthService: storedToken.user.pseudo,
-      firstTimeConnection: storedToken.user.firstTimeConnection
+      firsttimeconnection: storedToken.user.firstTimeConnection
     };
     
     const newAccessToken = await this.jwtService.signAsync(payload);
@@ -131,7 +131,7 @@ export class AuthService {
         id: userId
       },
       data: {
-        firstTimeConnection: true
+        firstTimeConnection: false
       }
     })
   }

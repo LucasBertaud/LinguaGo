@@ -61,7 +61,6 @@ const loadAvatars = async () => {
         const response = await Database.getAll('avatar');
         if (response) { 
             avatars.value = response;
-            console.log('Avatars loaded:', avatars.value);
         }
     } catch (error) {
         console.error('Error loading avatars:', error);

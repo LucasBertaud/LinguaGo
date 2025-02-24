@@ -1,12 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Body, Patch, UseGuards, Request } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Roles } from 'src/user/role/roles.decorator';
-import { Role } from 'src/user/role/role.enum';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { RolesGuard } from 'src/user/role/roles.guard';
 import { UserEntity } from './entities/user.entity';
 
 @ApiTags('users')
@@ -24,30 +21,6 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @Get()
-  @ApiBearerAuth()
-  @Roles(Role.ADMIN)
-  @UseGuards(AuthGuard, RolesGuard)
-  @ApiOperation({ summary: 'Get all users (Admin)' })
-  @ApiResponse({ status: 200, description: 'Return all users.', type: [UserEntity] })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  async findAll(): Promise<Partial<UserEntity>[]> {
-    return this.userService.findAll({});
-  }
-
-  @Get(':id')
-  @ApiBearerAuth()
-  @Roles(Role.ADMIN)
-  @UseGuards(AuthGuard, RolesGuard)
-  @ApiOperation({ summary: 'Get a user by ID (Admin)' })
-  @ApiResponse({ status: 200, description: 'Return the user.', type: UserEntity })
-  @ApiResponse({ status: 404, description: 'User not found.' })
-  async findOne(
-    @Param('id') id: string
-  ): Promise<Partial<UserEntity> | null> {
-    return this.userService.findOne({ id: String(id) });
-  }
-
   @Patch()
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
@@ -62,17 +35,5 @@ export class UserController {
       where: { id: String(req.user?.id) },
       data: updateUserDto,
     });
-  }
-
-  @Delete()
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @ApiOperation({ summary: 'Delete the authenticated user' })
-  @ApiResponse({ status: 200, description: 'The user has been successfully deleted.', type: UserEntity })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  async remove(
-    @Request() req
-  ): Promise<UserEntity> {
-    return this.userService.remove({ id: String(req.user?.id) });
   }
 }

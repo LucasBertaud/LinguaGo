@@ -1,5 +1,5 @@
 <template>
-    <Popper arrow>
+    <Popper arrow class="mr-4">
         <button class="relative p-2 text-white hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-100 focus:text-gray-600 rounded-full cursor-pointer">
             <span class="sr-only">Notifications</span>
             <span class="absolute top-0 right-0 h-2 w-2 mt-1 mr-2 bg-red-500 rounded-full"></span>
@@ -37,6 +37,6 @@ const handleCheckbox = async () => {
 }
 
 onMounted(() => {
-    subscriberService.isPermissionGranted().then(value => isPermissionGranted.value = value);
+    //subscriberService.isPermissionGranted().then(value => isPermissionGranted.value = value);
 })
 </script>

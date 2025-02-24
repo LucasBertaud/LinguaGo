@@ -13,6 +13,7 @@ import { UserCompletedExercisesSerieModule } from './user/user-completed-exercis
 import { PushModule } from './notifications/push/push.module';
 import { SubscriptionsModule } from './notifications/subscriptions/subscriptions.module';
 import { AvatarModule } from './avatar/avatar.module';
+import { NotificationModule } from './notifications/notification.module';
 import { AuthMiddleware } from './auth/auth.middleware';
 
 @Module({
@@ -33,6 +34,7 @@ import { AuthMiddleware } from './auth/auth.middleware';
     PushModule,
     SubscriptionsModule,
     AvatarModule,
+    NotificationModule,
   ],
   controllers: [],
   providers: [],

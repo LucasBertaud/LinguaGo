@@ -2,12 +2,14 @@ import Database from "../utils/database.utils";
 import { serviceWorkerManager } from "./service-worker-manager";
 
 class SubscriberService {
-    public async subscribe(): Promise<void> {
+    public async subscribe(): Promise<Object | void> {
         const registration: ServiceWorkerRegistration = await serviceWorkerManager.getRegistration();
         if (!registration) {
             return;
         }
-        if(!await this.isPermissionGranted()) return;
+        
+        const permission = await Notification.requestPermission();
+        if(!permission && permission != "granted") return;
 
         let sub = await registration.pushManager.getSubscription();
         if (!sub) {
@@ -30,15 +32,8 @@ class SubscriberService {
             keys: subData.keys,
             expirationTime: subData.expirationTime,
         });
-    }
 
-    public async isPermissionGranted(): Promise<boolean> {
-        const permission = await Notification.requestPermission();
-        if(permission != "granted") return false;
-        
-        // check database if permission is granted
-
-        return true;
+        return subData;
     }
 }
 
