@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { UserEntity } from './entities/user.entity';
+import { UpdateUserAvatarDto } from './dto/update-user-avatar.dto';
 
 @ApiTags('users')
 @Controller('user')
@@ -21,6 +22,46 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+<<<<<<< HEAD
+  @Get()
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Get all users (Admin)' })
+  @ApiResponse({ status: 200, description: 'Return all users.', type: [UserEntity] })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  async findAll(): Promise<Partial<UserEntity>[]> {
+    return this.userService.findAll({});
+  }
+
+  @Get(':id')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({ summary: 'Get a user by ID (Admin)' })
+  @ApiResponse({ status: 200, description: 'Return the user.', type: UserEntity })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  async findOne(
+    @Param('id') id: string
+  ): Promise<Partial<UserEntity> | null> {
+    return this.userService.findOne({ id: String(id) });
+  }
+
+  @Patch('update-avatar')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  async updateAvatar(
+    @Request() req,
+    @Body() updateUserAvatarDto: UpdateUserAvatarDto
+  ): Promise<Partial<UserEntity>> {
+    return this.userService.updateAvatar({
+      where: { id: String(req.user.id) },
+      data: updateUserAvatarDto
+    });
+  }
+
+=======
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
   @Patch()
   @ApiBearerAuth()
   @UseGuards(AuthGuard)

@@ -7,9 +7,14 @@
             <div class="overflow-y-auto" v-if="topUsersOfWeek && topUsersOfWeek.length > 0">
                 <ul class="space-y-6">
                     <li class="flex items-center" v-for="user in topUsersOfWeek" :key="user.pseudo">
+<<<<<<< HEAD
+                        <div class="h-10 w-10 mr-3 bg-gray-100 rounded-full overflow-hidden">
+                            <img src="https://randomuser.me/api/portraits/women/82.jpg" alt="Annette Watson profile picture">
+=======
                         <div class="h-10 w-10 mr-3 rounded-full overflow-hidden flex items-center justify-center"
                              v-if="user.avatar?.svg"
                              v-html="sanitizeAvatar(user.avatar.svg)">
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
                         </div>
                         <p class="text-gray-600">{{ user.pseudo }}</p>
                         <p class="ml-auto font-semibold">{{ user.pointsWon }} pts</p>

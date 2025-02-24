@@ -10,10 +10,14 @@ import { UserFavoriteSerieModule } from './user/user-favorite-serie/user-favorit
 import { UserStatsModule } from './user/user-stats/user-stats.module';
 import { SiteStatsModule } from './site-stats/site-stats.module';
 import { UserCompletedExercisesSerieModule } from './user/user-completed-exercises-serie/user-completed-exercises-serie.module';
+<<<<<<< HEAD
+import { AvatarModule } from './avatar/avatar.module';
+=======
 import { PushModule } from './notifications/push/push.module';
 import { SubscriptionsModule } from './notifications/subscriptions/subscriptions.module';
 import { AvatarModule } from './avatar/avatar.module';
 import { NotificationModule } from './notifications/notification.module';
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
 import { AuthMiddleware } from './auth/auth.middleware';
 
 @Module({
@@ -31,10 +35,14 @@ import { AuthMiddleware } from './auth/auth.middleware';
     UserStatsModule,
     SiteStatsModule,
     UserCompletedExercisesSerieModule,
+<<<<<<< HEAD
+    AvatarModule,
+=======
     PushModule,
     SubscriptionsModule,
     AvatarModule,
     NotificationModule,
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
   ],
   controllers: [],
   providers: [],

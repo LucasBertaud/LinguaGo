@@ -36,6 +36,8 @@ const actions = {
     try {
       const response = await api.post<AuthResponse>('/auth/login', { email, password });
       const { payload } = response.data;
+<<<<<<< HEAD
+=======
       if(payload.firstTimeConnection){
         const subscription = JSON.stringify(await subscriberService.subscribe());
         Database.create("notification", {
@@ -45,6 +47,7 @@ const actions = {
         });
         Database.patch("auth/first-time-connected").then(_ => payload.firstTimeConnection = false);
       }
+>>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
       commit('setUser', payload);
       commit('setAuth', true);
     } catch (error) {
