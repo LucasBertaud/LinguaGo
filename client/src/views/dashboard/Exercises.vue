@@ -1,6 +1,6 @@
 <template>
     <div class="container mx-auto p-4" v-if="exercisesFetched">
-        <div class="flex flex-row items-center mb-6 justify-between mx-4">
+        <div class="flex flex-row items-center mb-6 justify-between mx-4" :class="{ 'justify-center': allExercisesCompleted }">
             <h2 class="text-2xl font-bold text-primary">
                 {{ allExercisesCompleted ? 'Résumé des exercices' : `Exercice ${currentExerciseIndex + 1}/${exercises.length}` }}
             </h2>
