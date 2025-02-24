@@ -7,4 +7,5 @@ export interface User {
         id: number;
         svg: string;
     } | null;
+    avatarId?: number | null;
 }

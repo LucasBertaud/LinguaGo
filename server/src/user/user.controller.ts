@@ -8,7 +8,6 @@ import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagg
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/user/role/roles.guard';
 import { UserEntity } from './entities/user.entity';
-import { UpdateUserAvatarDto } from './dto/update-user-avatar.dto';
 
 @ApiTags('users')
 @Controller('user')
@@ -47,19 +46,6 @@ export class UserController {
     @Param('id') id: string
   ): Promise<Partial<UserEntity> | null> {
     return this.userService.findOne({ id: String(id) });
-  }
-
-  @Patch('update-avatar')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  async updateAvatar(
-    @Request() req,
-    @Body() updateUserAvatarDto: UpdateUserAvatarDto
-  ): Promise<Partial<UserEntity>> {
-    return this.userService.updateAvatar({
-      where: { id: String(req.user.id) },
-      data: updateUserAvatarDto
-    });
   }
 
   @Patch()

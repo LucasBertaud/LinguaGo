@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Avatar } from '@prisma/client';
 
 export class UserEntity { 
   @ApiProperty({ example: 1, description: 'The unique identifier of the user' })

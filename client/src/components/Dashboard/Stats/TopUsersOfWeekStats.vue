@@ -7,8 +7,9 @@
             <div class="overflow-y-auto" v-if="topUsersOfWeek && topUsersOfWeek.length > 0">
                 <ul class="space-y-6">
                     <li class="flex items-center" v-for="user in topUsersOfWeek" :key="user.pseudo">
-                        <div class="h-10 w-10 mr-3 bg-gray-100 rounded-full overflow-hidden">
-                            <img src="https://randomuser.me/api/portraits/women/82.jpg" alt="Annette Watson profile picture">
+                        <div class="h-10 w-10 mr-3 rounded-full overflow-hidden flex items-center justify-center"
+                             v-if="user.avatar?.svg"
+                             v-html="sanitizeAvatar(user.avatar.svg)">
                         </div>
                         <p class="text-gray-600">{{ user.pseudo }}</p>
                         <p class="ml-auto font-semibold">{{ user.pointsWon }} pts</p>
@@ -24,11 +25,15 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import DOMPurify from 'dompurify';
 import Database from '../../../utils/database.utils';
 
 const topUsersOfWeek = ref<{
     pseudo: string;
     pointsWon: number;
+    avatar: { 
+        svg: string 
+    };
 }[]>();
 
 const fetchTopUsersOfWeek = async () => {
@@ -39,6 +44,10 @@ const fetchTopUsersOfWeek = async () => {
         console.error(error);
     }
 }
+
+const sanitizeAvatar = (svg: string) => {
+    return DOMPurify.sanitize(svg);
+};
 
 onMounted(() => {
     fetchTopUsersOfWeek();
