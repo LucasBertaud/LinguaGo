@@ -9,11 +9,15 @@ import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
+  private readonly cookieSecure: boolean;
+
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
     private prisma: PrismaService,
-  ) { }
+  ) { 
+    this.cookieSecure = process.env.COOKIE_SECURE === 'true';
+  }
 
   async signIn(email: string, pass: string, @Res() res: Response): Promise<void> {
     const user = await this.userService.findOneForAuth({ email });
@@ -52,12 +56,12 @@ export class AuthService {
     // Défini les cookies HTTP-only
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Utilisez secure en production
+      secure: this.cookieSecure,
       sameSite: 'strict',
     });
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Utilisez secure en production
+      secure: this.cookieSecure,
       sameSite: 'strict',
     });
 
@@ -110,12 +114,12 @@ export class AuthService {
 
     res.cookie('access_token', newAccessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: this.cookieSecure,
       sameSite: 'strict',
     });
     res.cookie('refresh_token', newRefreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: this.cookieSecure,
       sameSite: 'strict',
     });
 
@@ -145,18 +149,18 @@ export class AuthService {
 
     res.clearCookie('access_token', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: this.cookieSecure,
       sameSite: 'strict'
     });
 
     res.clearCookie('refresh_token', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: this.cookieSecure,
       sameSite: 'strict'
     });
 
     res.clearCookie('user', {
-      secure: process.env.NODE_ENV === 'production',
+      secure: this.cookieSecure,
       sameSite: 'strict'
     });
 
