@@ -110,7 +110,7 @@ const handleSubmit = async () => {
         });
         if (response && response.status === 201) {
             toast.success(formTexts.registerSuccess);
-            router.push({ path: '/' });
+            router.push({ path: '/login' });
         } else {
             toast.error(errorMessages.registerFailed);
         }

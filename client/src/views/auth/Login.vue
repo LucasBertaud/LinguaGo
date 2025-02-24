@@ -88,8 +88,7 @@ const handleSubmit = async () => {
       email: email.value,
       password: password.value,
     });
-    toast.success(formTexts.loginSuccess);
-    router.push({ path: '/' });
+    router.push({ path: '/dashboard' });
   } catch (error) {
     toast.error(errorMessages.loginFailed);
   } finally {
