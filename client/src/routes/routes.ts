@@ -1,4 +1,6 @@
-const routes = [
+import { RouteRecordRaw } from 'vue-router';
+
+const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Home',
@@ -65,11 +67,22 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: () => import('../views/auth/Login.vue'),
+    meta: {
+      requiresGuest: true
+    }
   },
   {
     path: '/register',
     name: 'Register',
     component: () => import('../views/auth/Register.vue'),
+    meta: {
+      requiresGuest: true
+    }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('../views/NotFound.vue'),
   },
 ];
 

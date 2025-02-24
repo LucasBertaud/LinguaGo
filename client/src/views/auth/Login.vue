@@ -1,10 +1,10 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100 bg-cover bg-center">
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md mx-4">
-      <h1 class="text-4xl font-bold mb-6 text-center text-primary">{{ formTexts.login }}</h1>
+      <h1 class="text-4xl font-bold mb-6 text-center text-primary">Connexion</h1>
       <form @submit.prevent="handleSubmit">
         <div class="mb-4">
-          <label for="email" class="block text-gray-700">{{ formTexts.emailLabel }}</label>
+          <label for="email" class="block text-gray-700">Email</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3">
               <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="128" height="128"
@@ -19,7 +19,7 @@
           <Error :error="emailError" />
         </div>
         <div class="mb-6">
-          <label for="password" class="block text-gray-700">{{ formTexts.passwordLabel }}</label>
+          <label for="password" class="block text-gray-700">Mot de passe</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3">
               <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
@@ -33,11 +33,10 @@
           <Error :error="passwordError" />
         </div>
         <button type="submit"
-          class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 cursor-pointer">{{
-            formTexts.login }}</button>
+          class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 cursor-pointer">Connexion</button>
       </form>
       <div class="mt-4 text-center">
-        <router-link to="/register" class="text-primary hover:underline">{{ formTexts.registerLink }}</router-link>
+        <router-link to="/register" class="text-primary hover:underline">Pas encore inscrit ? Créez un compte</router-link>
       </div>
       <LoadingSpinner v-if="isLoading" />
     </div>
@@ -51,8 +50,6 @@ import { useStore } from 'vuex';
 import { useToast } from 'vue-toastification';
 import Error from '../../components/Form/Error.vue';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
-import { errorMessages } from '../../config/error/auth/login';
-import { formTexts } from '../../config/form/auth/login';
 import { validateEmail, validatePasswordLength } from '../../utils/validation.utils';
 
 const email = ref('');
@@ -69,15 +66,15 @@ const handleSubmit = async () => {
   passwordError.value = null;
 
   if (!validateEmail(email.value)) {
-    emailError.value = errorMessages.invalidEmail;
+    emailError.value = "L'adresse email n'est pas valide.";
   }
 
   if (!validatePasswordLength(password.value)) {
-    passwordError.value = errorMessages.shortPassword;
+    passwordError.value = "Le mot de passe doit contenir au moins 10 caractères.";
   }
 
   if (emailError.value || passwordError.value) {
-    toast.error(errorMessages.fixErrors);
+    toast.error("Veuillez corriger les erreurs avant de continuer.");
     return;
   }
 
@@ -90,7 +87,7 @@ const handleSubmit = async () => {
     });
     router.push({ path: '/dashboard' });
   } catch (error) {
-    toast.error(errorMessages.loginFailed);
+    toast.error("Erreur de connexion. Veuillez vérifier vos identifiants.");
   } finally {
     isLoading.value = false;
   }

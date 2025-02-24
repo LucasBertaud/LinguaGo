@@ -1,28 +1,21 @@
 import api from "./api.utils";
-import Cookies from 'js-cookie';
 
 export default class Database {
   /**
    * -- General CRUD
    */
-  static async getAll(collection: string, params?: object, headers?: object) {
+  static async getAll(collection: string, params?: object) {
     try {
-      const response = await api.get(`/${collection}`, { 
-        params: params,
-        headers: this.addAuthHeader(headers),
-      });
+      const response = await api.get(`/${collection}`, { params });
       return response.data;
     } catch (err) {
       console.error(err);
     }
   }
 
-  static async getOne(collection: string, id: string, params?: object, headers?: object) {
+  static async getOne(collection: string, id: string, params?: object) {
     try {
-      const response = await api.get(`/${collection}/${id}`, {
-        params: params,
-        headers: this.addAuthHeader(headers),
-      });
+      const response = await api.get(`/${collection}/${id}`, { params });
       return response.data;
     } catch (err) {
       console.error(err);
@@ -31,9 +24,7 @@ export default class Database {
 
   static async create(collection: string, item: object) {
     try {
-      const response = await api.post(`/${collection}`, item, {
-        headers: this.addAuthHeader(),
-      });
+      const response = await api.post(`/${collection}`, item);
       return {
         data: response.data,
         status: response.status
@@ -45,9 +36,7 @@ export default class Database {
 
   static async update(collection: string, id: string, item: object) {
     try {
-      const response = await api.patch(`/${collection}/${id}`, item, {
-        headers: this.addAuthHeader(),
-      });
+      const response = await api.patch(`/${collection}/${id}`, item);
       return response.data;
     } catch (err) {
       console.error(err);
@@ -56,10 +45,7 @@ export default class Database {
 
   static async patch(collection: string, item?: object, params?: object) {
     try {
-      const response = await api.patch(`/${collection}`, item, {
-        params: params,
-        headers: this.addAuthHeader(),
-      });
+      const response = await api.patch(`/${collection}`, item, { params });
       return response.data;
     } catch (error) {
       console.error(error);
@@ -68,20 +54,10 @@ export default class Database {
 
   static async delete(collection: string) {
     try {
-      const { status } = await api.delete(`/${collection}`, {
-        headers: this.addAuthHeader(),
-      });
+      const { status } = await api.delete(`/${collection}`);
       return status;
     } catch (err) {
       console.error(err);
     }
-  }
-
-  private static addAuthHeader(headers: object = {}) {
-    const token = Cookies.get('access_token');
-    if (token) {
-      return { ...headers, Authorization: `Bearer ${token}` };
-    }
-    return headers;
   }
 }

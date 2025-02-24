@@ -7,11 +7,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
             </svg>
         </button>
-<<<<<<< HEAD
-        <div class="flex flex-shrink-0 items-center ml-auto">
-=======
         <div class="flex flex-shrink-0 items-center ml-auto p-2">
->>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
             <button @click="openProfileModal"
                 class="cursor-pointer group inline-flex items-center p-2 hover:bg-gray-100 focus:bg-gray-100 rounded-lg">
                 <span class="sr-only">User Menu</span>
@@ -34,23 +30,9 @@
                 </svg>
             </button>
             <div class="border-l pl-3 ml-3 space-x-1">
-<<<<<<< HEAD
-                <button
-                    class="relative p-2 text-white hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-100 focus:text-gray-600 rounded-full cursor-pointer">
-                    <span class="sr-only">Notifications</span>
-                    <span class="absolute top-0 right-0 h-2 w-2 mt-1 mr-2 bg-red-500 rounded-full"></span>
-                    <span class="absolute top-0 right-0 h-2 w-2 mt-1 mr-2 bg-red-500 rounded-full animate-ping"></span>
-                    <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                </button>
+                <NotificationButton />
                 <button v-if="isAuthenticated" @click="logout"
                     class="relative p-2 text-white hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-100 focus:text-gray-600 rounded-full cursor-pointer">
-=======
-                <NotificationButton />
-                <button v-if="isAuthenticated" @click="logout" class="relative p-2 text-white hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-100 focus:text-gray-600 rounded-full cursor-pointer">
->>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
                     <span class="sr-only">Déconnexion</span>
                     <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -71,19 +53,19 @@
                 </button>
                 <router-link @click="toggleMenu" to="/"
                     class="block py-2 px-6 text-white text-2xl hover:bg-primary-dark text-center w-full">
-                    {{ navbarTexts.links.home }}
+                    🏠 Accueil
                 </router-link>
                 <router-link v-if="!isAuthenticated" @click="toggleMenu" to="/login"
                     class="block py-2 px-6 text-white text-2xl hover:bg-primary-dark text-center w-full">
-                    {{ navbarTexts.links.login }}
+                    🔑 Connexion
                 </router-link>
                 <router-link v-if="isAuthenticated" @click="toggleMenu" to="/profile"
                     class="block py-2 px-6 text-white text-2xl hover:bg-primary-dark text-center w-full">
-                    {{ navbarTexts.links.profile }}
+                    👤 Profil
                 </router-link>
                 <button v-if="isAuthenticated" @click="logout"
                     class="block w-full text-white text-center py-2 px-6 text-2xl hover:bg-primary-dark">
-                    {{ navbarTexts.links.logout }}
+                    🚪 Déconnexion
                 </button>
             </div>
         </transition>
@@ -97,12 +79,8 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import DOMPurify from 'dompurify';
 import Database from '../../../utils/database.utils';
-import { navbarTexts } from '../../../config/content/layout/navbar';
-<<<<<<< HEAD
-=======
 import NotificationButton from '../Button/NotificationButton.vue';
 import type { User } from '../../../interface/user.interface';
->>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
 import UserProfileModal from '../../Modal/UserProfileModal.vue';
 
 const store = useStore();
