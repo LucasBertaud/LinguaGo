@@ -22,6 +22,7 @@
             </template>
         </Carousel>
     </section>
+    <LoadingSpinner v-if="isLoading" />
 </template>
 
 <script lang="ts" setup>
@@ -32,9 +33,11 @@ import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 import ExercisesSerieCard from '../../components/Dashboard/Card/ExercisesSerieCard.vue';
 import type Level from '../../interface/level.interface';
+import LoadingSpinner from '../../components/LoadingSpinner.vue';
 import type ExercisesSerie from '../../interface/exercises-serie.interface';
 
 const levels = ref<Level[]>();
+const isLoading = ref(false);
 
 const carouselConfig = (items: number) => {
     return {
@@ -55,10 +58,13 @@ const carouselConfig = (items: number) => {
 
 const fetchFavorites = async () => {
     try {
+        isLoading.value = true;
         const response = await Database.getAll(`level/favorites`)
         levels.value = response;
     } catch (error) {
         console.error('Erreur lors de la récupération des favoris:', error);
+    } finally {
+        isLoading.value = false;
     }
 };
 

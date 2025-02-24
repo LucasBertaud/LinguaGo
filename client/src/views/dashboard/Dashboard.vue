@@ -49,6 +49,7 @@
         <TopUsersOfWeekStats />
         <SeriesCompletedStats />
     </section>
+    <LoadingSpinner v-if="isLoading" />
 </template>
 
 <script setup lang="ts">
@@ -62,27 +63,35 @@ import type SiteStats from '../../interface/site-stats.interface';
 import ExercisesCompletedPerDaysStats from '../../components/Dashboard/Stats/ExercisesCompletedPerDaysStats.vue';
 import SeriesCompletedStats from '../../components/Dashboard/Stats/SeriesCompletedStats.vue';
 import TopUsersOfWeekStats from '../../components/Dashboard/Stats/TopUsersOfWeekStats.vue';
+import LoadingSpinner from '../../components/LoadingSpinner.vue';
 
 const userStats = ref<UserStats>();
 const siteStats = ref<SiteStats>();
 const timeStats = ref<TimeStatsUtils>();
+const isLoading = ref(false);
 
 const fetchUserStats = async () => {
     try {
+        isLoading.value = true;
         const response = await Database.getAll('user-stats/user');
         timeStats.value = new TimeStatsUtils(response.timeSpentOnExercises);
         userStats.value = response;
     } catch (error) {
         console.error(error);
+    }   finally {
+        isLoading.value = false;
     }
 }
 
 const fetchSiteStats = async () => {
     try {
+        isLoading.value = true;
         const response = await Database.getAll('site-stats');
         siteStats.value = response;
     } catch (error) {
         console.error(error);
+    } finally {
+        isLoading.value = false;
     }
 }
 

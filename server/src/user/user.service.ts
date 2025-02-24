@@ -2,11 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { PrismaService } from 'src/utils/prisma.service';
 import { User, Prisma, Avatar } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-<<<<<<< HEAD
-import { UpdateUserAvatarDto } from './dto/update-user-avatar.dto';
-=======
 import { UpdateUserDto } from './dto/update-user.dto';
->>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
 
 type UserWithAvatar = User & {
   avatar: Avatar | null;
@@ -54,11 +50,7 @@ export class UserService {
     return user;
   }
 
-<<<<<<< HEAD
-  async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<Partial<User> | null> {
-=======
   async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<Partial<UserWithAvatar> | null> {
->>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
     const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
       omit: {
@@ -89,52 +81,6 @@ export class UserService {
     }
 
     return user as UserWithAvatar;
-<<<<<<< HEAD
-  }
-
-  async findAll(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.UserWhereUniqueInput;
-    where?: Prisma.UserWhereInput;
-    orderBy?: Prisma.UserOrderByWithRelationInput;
-  }): Promise<Partial<User>[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.user.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-      select: {
-        pseudo: true,
-        role: true,
-        email: true,
-        createdAt: true,
-      },
-    });
-=======
->>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
-  }
-
-  async updateAvatar(params: {
-    where: Prisma.UserWhereUniqueInput;
-    data: UpdateUserAvatarDto;
-  }): Promise<Partial<User>> {
-    const { where, data } = params;
-
-    return this.prisma.user.update({
-      data: {
-        avatarId: data.avatarId,
-      },
-      where,
-      select: {
-        pseudo: true,
-        role: true,
-        email: true,
-        createdAt: true,
-      }
-    });
   }
 
   async update(params: {

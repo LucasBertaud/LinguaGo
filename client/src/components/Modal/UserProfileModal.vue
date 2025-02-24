@@ -14,11 +14,7 @@
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <div class="flex items-start">
                             <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
-<<<<<<< HEAD
-                                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Mon Profil</h3>
-=======
                                 <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4 text-center">Mon Profil</h3>
->>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
                                 <div class="flex flex-col space-y-4">
                                     <div class="flex flex-col items-center justify-center mb-4">
                                         <div class="h-20 w-20 rounded-full overflow-hidden bg-gray-100 mb-2">
@@ -27,11 +23,7 @@
                                             </div>
                                         </div>
                                         <button @click="openAvatarSelection"
-<<<<<<< HEAD
-                                            class="text-sm text-primary hover:text-primary-dark transition-colors duration-200 flex items-center gap-1">
-=======
                                             class="text-sm text-primary hover:text-primary-dark transition-colors duration-200 flex items-center gap-1 cursor-pointer">
->>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                                 viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -139,11 +131,7 @@ const toggleEdit = async () => {
 
             if (response) {
                 // Mise à jour du store ET du cookie d'authentification
-<<<<<<< HEAD
-                await store.dispatch('updateUser', response);
-=======
                 store.commit('setUser', response);
->>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
                 
                 toast.success('Pseudo mis à jour avec succès');
                 isEditing.value = false;

@@ -34,6 +34,7 @@
             </div>
         </div>
     </div>
+    <LoadingSpinner v-if="isLoading" />
 </template>
 
 <script setup lang="ts">
@@ -42,6 +43,7 @@ import MultipleChoice from '../../components/Dashboard/Exercises/MultipleChoice.
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
+import LoadingSpinner from '../../components/LoadingSpinner.vue';
 import Database from '../../utils/database.utils';
 import type Exercise from '../../interface/exercise.interface';
 import Translation from '../../components/Dashboard/Exercises/Translation.vue';
@@ -50,6 +52,7 @@ import Timer from '../../components/Dashboard/Exercises/Timer.vue';
 
 const route = useRoute();
 const store = useStore();
+const isLoading = ref(false);
 const serieId = parseInt(route.params.serieId as string, 10);
 const exercises = ref<Exercise[]>([]);
 const completedExercises = ref<Exercise[]>([]);
@@ -66,6 +69,7 @@ let pointsPerExo: number = 1;
 
 const fetchExercises = async () => {
     try {
+        isLoading.value = true;
         const response = await Database.getAll(`exercise/serie/${serieId}`);
         pointsPerExo = response[0].serie.level.pointsPerExo;
         exercises.value = response;
@@ -76,6 +80,8 @@ const fetchExercises = async () => {
         exercisesFetched.value = true;
     } catch (error) {
         console.error('Erreur lors de la récupération des exercices:', error);
+    } finally {
+        isLoading.value = false;
     }
 };
 
@@ -100,6 +106,7 @@ const markExerciseAsCompleted = async () => {
         return;
     }
     try {
+        isLoading.value = true;
         await Database.create('user-completed-exercise', {
             userId,
             exerciseId,
@@ -109,6 +116,8 @@ const markExerciseAsCompleted = async () => {
         completedExercises.value.push(currentExercise.value);
     } catch (error) {
         console.error('Erreur lors de l\'enregistrement de la complétion de l\'exercice:', error);
+    } finally {
+        isLoading.value = false;
     }
 };
 
@@ -122,17 +131,23 @@ const markExerciseAsFailed = async () => {
     }
 
     try {
+        isLoading.value = true;
         await Database.delete(`user-completed-exercise/${userId}/${exerciseId}`);
     } catch (error) {
         console.error('Erreur lors de l\'enregistrement de la complétion de l\'exercice:', error);
+    } finally {
+        isLoading.value = false;
     }
 }
 
 const incrementFailedExercises = async () => {
     try {
+        isLoading.value = true;
         await Database.patch('user-stats/failed-exercises');
     } catch (error) {
         console.error('Erreur lors de l\'enregistrement de l\'échec de l\'exercice:', error);
+    } finally {
+        isLoading.value = false;
     }
 };
 

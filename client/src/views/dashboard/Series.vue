@@ -4,6 +4,7 @@
             <ExercisesSerieCard :exercises-serie="exercisesSerie" />
         </div>
     </section>
+    <LoadingSpinner v-if="isLoading" />
 </template>
 
 <script setup lang="ts">
@@ -12,20 +13,25 @@ import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import Database from '../../utils/database.utils';
 import type Level from '../../interface/level.interface';
+import LoadingSpinner from '../../components/LoadingSpinner.vue';
 
 const props = defineProps<{
     levelTitle: string;
 }>();
 const route = useRoute();
 const level = ref<Level>();
+const isLoading = ref(false);
 
 const fetchLevel = async () => {
-    const response = Database.getOne('level/title', props.levelTitle);
-    response.then((data) => {
+    try {
+        isLoading.value = true;
+        const data = await Database.getOne('level/title', props.levelTitle);
         level.value = data;
-    }).catch((error) => {
-        console.error(error);
-    });
+    } catch (error) {
+        console.error('Erreur lors du chargement du niveau:', error);
+    } finally {
+        isLoading.value = false;
+    }
 };
 
 watch(() => route.query, () => {

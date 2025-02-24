@@ -20,6 +20,7 @@
             </div>
         </div>
     </section>
+    <LoadingSpinner v-if="isLoading" />
 </template>
 
 <script setup lang="ts">
@@ -27,11 +28,14 @@ import { onMounted, ref } from 'vue';
 import Title from '../../components/Dashboard/Layout/Title.vue';
 import Database from '../../utils/database.utils';
 import type Level from '../../interface/level.interface';
+import LoadingSpinner from '../../components/LoadingSpinner.vue';
 
 const levels = ref<Level[]>([]);
+const isLoading = ref(false);
 
 const fetchLevels = async () => {
     try {
+        isLoading.value = true;
         const response = await Database.getAll('level');
         levels.value = response.map((level: Level) => {
                 return level;
@@ -39,6 +43,8 @@ const fetchLevels = async () => {
         levels.value.sort((a, b) => a.title > b.title ? 1 : -1);
     } catch (error) {
         console.error('Erreur lors de la récupération des niveaux:', error);
+    } finally {
+        isLoading.value = false;
     }
 };
 

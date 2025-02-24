@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Res, Req, Get } from '@nestjs/common';
-=======
 import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Request, Patch, Res, Req, Get } from '@nestjs/common';
->>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { AuthGuard } from './auth.guard';
@@ -24,20 +20,6 @@ export class AuthController {
     @Res() res: Response
   ) {
     return this.authService.signIn(signInDto.email, signInDto.password, res);
-<<<<<<< HEAD
-  }
-
-  @Get('me')
-  @UseGuards(AuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get current user information' })
-  @ApiResponse({ status: 200, description: 'Return current user information.' })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  async getCurrentUser(@Req() req) {
-    return this.authService.getCurrentUser(req.user.id);
-  }
-
-=======
   }
 
   @Patch('first-time-connected')
@@ -63,7 +45,6 @@ export class AuthController {
     return this.authService.getCurrentUser(req.user.id);
   }
 
->>>>>>> d783c89a694dac33c9156fcc7b2200c063cf6f4e
   @Post('refresh')
   @ApiOperation({ summary: 'Refresh access token' })
   @ApiResponse({ status: 200, description: 'Access token successfully refreshed.' })
