@@ -26,11 +26,14 @@ model User {
 }
 
 model Notification {
-  id           Int     @id @default(autoincrement())
-  userId       String  @unique
-  user         User    @relation(fields: [userId], references: [id])
-  isActivate   Boolean @default(true)
-  subscription Json
+  id               Int                   @id @default(autoincrement())
+  userId           String                @unique
+  user             User                  @relation(fields: [userId], references: [id])
+  isActivate       Boolean               @default(true)
+  subscription     String
+  frequency        FrequencyNotification @default(ONE_DAY)
+  notificationTime String                @default("17:00")
+  nextNotifyAt     DateTime              @default(dbgenerated("NOW() - interval '1 year'"))
 }
 
 model Avatar {
@@ -131,6 +134,16 @@ model UserCompletedExercisesSerie {
   user           User           @relation(fields: [userId], references: [id])
 
   @@id([userId, serieId], name: "idUserCompletedExercisesSerie")
+}
+
+enum FrequencyNotification {
+  ONE_DAY
+  TWO_DAYS
+  THREE_DAYS
+  FOUR_DAYS
+  FIVE_DAYS
+  SIX_DAYS
+  SEVEN_DAYS
 }
 
 enum Role {
