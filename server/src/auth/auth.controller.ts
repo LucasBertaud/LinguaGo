@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Request, Patch, Res, Req, Get } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Request, Patch, Res, Get, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { AuthGuard } from './auth.guard';
@@ -8,33 +8,17 @@ import { Response } from 'express';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'User login' })
   @ApiResponse({ status: 200, description: 'User successfully logged in.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  signIn(
-    @Body() signInDto: SignInDto,
-    @Res() res: Response
-  ) {
+  signIn(@Body() signInDto: SignInDto, @Res() res: Response) {
     return this.authService.signIn(signInDto.email, signInDto.password, res);
   }
 
-  @Patch('first-time-connected')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'First time connected' })
-  @ApiResponse({ status: 200, description: 'First time connected successfully.' })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  firstTimeConnected(
-    @Request() req
-  ) {
-    return this.authService.firstTimeConnected(req.user.id);
-  }
-  
   @Get('me')
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
@@ -46,12 +30,23 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Refresh access token' })
   @ApiResponse({ status: 200, description: 'Access token successfully refreshed.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   refreshToken(@Req() req, @Res() res: Response) {
-    const refreshToken = req.cookies['refresh_token'];
-    return this.authService.refreshToken(refreshToken, res);
+    return this.authService.refreshToken(req.user.id, res);
+  }
+
+  @Patch('first-time-connected')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'First time connected' })
+  @ApiResponse({ status: 200, description: 'First time connected successfully.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  firstTimeConnected(@Request() req) {
+    return this.authService.firstTimeConnected(req.user.id);
   }
 
   @Post('logout')
@@ -61,7 +56,6 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'User successfully logged out.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async logout(@Req() req, @Res() res: Response) {
-    const refreshToken = req.cookies['refresh_token'];
-    return this.authService.logout(refreshToken, res);
+    return this.authService.logout(req.user.id, res);
   }
 }

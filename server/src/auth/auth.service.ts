@@ -15,7 +15,7 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
     private prisma: PrismaService,
-  ) { 
+  ) {
     this.cookieSecure = process.env.COOKIE_SECURE === 'true';
   }
 
@@ -59,11 +59,6 @@ export class AuthService {
       secure: this.cookieSecure,
       sameSite: 'strict',
     });
-    res.cookie('refresh_token', refresh_token, {
-      httpOnly: true,
-      secure: this.cookieSecure,
-      sameSite: 'strict',
-    });
 
     res.send({ message: 'User successfully logged in.', payload });
   }
@@ -73,42 +68,43 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Utilisateur non trouvé');
     }
-
-    return {
-      user
-    };
+    return { user };
   }
 
-  async refreshToken(refreshToken: string, @Res() res: Response): Promise<void> {
-    if (!refreshToken) {
-      throw new UnauthorizedException('Refresh token non fourni');
-    }
-
+  async refreshToken(userId: string, @Res() res: Response): Promise<void> {
     const storedToken = await this.prisma.refreshToken.findFirst({
-      where: { token: refreshToken },
+      where: {
+        userId,
+        expiresAt: { gt: new Date() }
+      },
       include: { user: true },
+      orderBy: { createdAt: 'desc' }
     });
-  
-    if (!storedToken || storedToken.expiresAt < new Date()) {
-      throw new UnauthorizedException('Le token de rafraîchissement est expiré ou invalide.');
+
+    if (!storedToken) {
+      throw new UnauthorizedException('Aucun token de rafraîchissement valide trouvé.');
     }
 
-    const payload = { 
-      id: storedToken.userId, 
-      email: storedToken.user.email, 
+    const payload = {
+      id: storedToken.userId,
+      email: storedToken.user.email,
       role: storedToken.user.role,
       AuthService: storedToken.user.pseudo,
-      firsttimeconnection: storedToken.user.firstTimeConnection
+      firsttimeconnection: storedToken.user.firstTimeConnection,
+      avatarId: storedToken.user.avatarId
     };
-    
-    const newAccessToken = await this.jwtService.signAsync(payload);
-    const newRefreshToken = await this.jwtService.signAsync(payload, { expiresIn: '1d' });
+
+    // Générer les tokens de manière asynchrone en parallèle
+    const [newAccessToken, newRefreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload),
+      this.jwtService.signAsync(payload)
+    ]);
 
     await this.prisma.refreshToken.update({
       where: { id: storedToken.id },
       data: {
         token: newRefreshToken,
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 jour
       },
     });
 
@@ -117,21 +113,17 @@ export class AuthService {
       secure: this.cookieSecure,
       sameSite: 'strict',
     });
-    res.cookie('refresh_token', newRefreshToken, {
-      httpOnly: true,
-      secure: this.cookieSecure,
-      sameSite: 'strict',
-    });
 
     res.send({
       message: 'Token rafraîchi avec succès',
-      payload
+      payload,
+      success: true
     });
   }
 
   async firstTimeConnected(userId: string): Promise<User> {
     return await this.prisma.user.update({
-      where: { 
+      where: {
         id: userId
       },
       data: {
@@ -140,26 +132,13 @@ export class AuthService {
     })
   }
 
-  async logout(refreshToken: string, @Res() res: Response): Promise<void> {
-    if (refreshToken) {
-      await this.prisma.refreshToken.deleteMany({
-        where: { token: refreshToken },
-      });
-    }
+  async logout(userId: string, @Res() res: Response): Promise<void> {
+    await this.prisma.refreshToken.deleteMany({
+      where: { userId },
+    });
 
     res.clearCookie('access_token', {
       httpOnly: true,
-      secure: this.cookieSecure,
-      sameSite: 'strict'
-    });
-
-    res.clearCookie('refresh_token', {
-      httpOnly: true,
-      secure: this.cookieSecure,
-      sameSite: 'strict'
-    });
-
-    res.clearCookie('user', {
       secure: this.cookieSecure,
       sameSite: 'strict'
     });

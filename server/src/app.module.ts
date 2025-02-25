@@ -15,6 +15,7 @@ import { SubscriptionsModule } from './notifications/subscriptions/subscriptions
 import { AvatarModule } from './avatar/avatar.module';
 import { NotificationModule } from './notifications/notification.module';
 import { AuthMiddleware } from './auth/auth.middleware';
+import { PrismaModule } from './utils/prisma.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AuthMiddleware } from './auth/auth.middleware';
     SubscriptionsModule,
     AvatarModule,
     NotificationModule,
+    PrismaModule,
   ],
   controllers: [],
   providers: [],
