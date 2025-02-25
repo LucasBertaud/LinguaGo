@@ -30,10 +30,24 @@ export class NotificationController{
     }
 
     @Post()
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
     @ApiOperation({ summary: 'Create user notification.' })
     @ApiResponse({ status: 200, description: 'Return the user notification.' })
     @ApiResponse({ status: 401, description: 'Unauthorized.' })
-    create(@Body() createNotificationDto: CreateNotificationDto) {
+    async create(@Body() createNotificationDto: CreateNotificationDto, @Request() req) {
+        const existingNotification = await this.genericService.findOne("notification", {
+            where: {
+                userId: String(req.user.id)
+            }
+        })
+        if (existingNotification) {
+            this.genericService.remove("notification", {
+                where: {
+                    userId: String(req.user.id)
+                }
+            });
+        }
         return this.genericService.create("notification", createNotificationDto);
     }
 
