@@ -1,30 +1,27 @@
+import store from "../store";
 import Database from "../utils/database.utils";
 import { serviceWorkerManager } from "./service-worker-manager";
 
 class SubscriberService {
-    public async subscribe(): Promise<Object | void> {
+    public async subscribe(): Promise<any | void> {
         const registration: ServiceWorkerRegistration = await serviceWorkerManager.getRegistration();
-        if (!registration) {
-            return;
-        }
+        if (!registration) return;
         
-        const permission = await Notification.requestPermission();
-        if(!permission && permission != "granted") return;
-
         let sub = await registration.pushManager.getSubscription();
         if (!sub) {
             const response = await Database.getAll("push/key");
             const pubkey = response.pubkey;
-
-            sub = await registration.pushManager.subscribe({
-                applicationServerKey: pubkey,
-                userVisibleOnly: true,
-            });
+            try {
+                sub = await registration.pushManager.subscribe({
+                    applicationServerKey: pubkey,
+                    userVisibleOnly: true,
+                });
+                
+            } catch (error) {
+                return;
+            }
         }
-        
-        if(!sub) {
-            return;
-        }
+        if(!sub) return;
 
         const subData = sub.toJSON();
         await Database.create('push/sub', {
@@ -33,7 +30,18 @@ class SubscriberService {
             expirationTime: subData.expirationTime,
         });
 
-        return subData;
+        const stringifySubscription = JSON.stringify(subData);
+        const response = await Database.create("notification", {
+            userId: store.getters.getUser.id,
+            isActivate: true,
+            subscription: stringifySubscription
+        });
+
+        return response;
+    }
+
+    public async isNotificationBlocked(): Promise<boolean> {
+        return Notification.permission === "denied";
     }
 }
 
