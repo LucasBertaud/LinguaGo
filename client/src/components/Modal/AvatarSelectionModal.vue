@@ -41,7 +41,7 @@ import LoadingSpinner from '../../components/LoadingSpinner.vue';
 
 const avatars = ref<Avatar[]>([]);
 
-const props = defineProps<{
+defineProps<{
     isOpen: boolean;
 }>();
 
