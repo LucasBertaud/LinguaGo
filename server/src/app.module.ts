@@ -16,6 +16,7 @@ import { AvatarModule } from './avatar/avatar.module';
 import { NotificationModule } from './notifications/notification.module';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { PrismaModule } from './utils/prisma.module';
+import { CryptoModule } from './auth/crypto/crypto.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { PrismaModule } from './utils/prisma.module';
     AvatarModule,
     NotificationModule,
     PrismaModule,
+    CryptoModule,
   ],
   controllers: [],
   providers: [],

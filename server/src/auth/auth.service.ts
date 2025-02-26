@@ -6,6 +6,7 @@ import { PrismaService } from 'src/utils/prisma.service';
 import AuthPayload from 'src/interface/auth-payload.interface';
 import { User } from '@prisma/client';
 import { Response } from 'express';
+import { CryptoService } from './crypto/crypto.service';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,7 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
     private prisma: PrismaService,
+    private cryptoService: CryptoService
   ) {
     this.cookieSecure = process.env.COOKIE_SECURE === 'true';
   }
@@ -39,21 +41,32 @@ export class AuthService {
       avatarId: user.avatarId || undefined
     };
 
-    const access_token = await this.jwtService.signAsync(payload);
-    const refresh_token = await this.jwtService.signAsync(payload, { expiresIn: '1d' });
+    // Utilise le CryptoService pour chiffrer le payload
+    const { encryptedData, iv } = this.cryptoService.encryptPayload(payload);
+    const tokenPayload = { data: encryptedData, iv };
+
+    const [access_token, refresh_token] = await Promise.all([
+      this.jwtService.signAsync(tokenPayload, {
+        algorithm: 'HS512',
+        issuer: 'LinguaGo',
+        audience: 'LinguaGo-client',
+      }),
+      this.jwtService.signAsync(payload, {
+        expiresIn: '1d',
+        algorithm: 'HS512'
+      })
+    ]);
 
     await this.prisma.refreshToken.create({
       data: {
         token: refresh_token,
         userId: user.id,
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 jour
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
       },
     });
 
-    // Supprime les anciennes sessions
     await this.cleanUpOldSessions(user.id);
 
-    // Défini les cookies HTTP-only
     res.cookie('access_token', access_token, {
       httpOnly: true,
       secure: this.cookieSecure,
@@ -89,22 +102,31 @@ export class AuthService {
       id: storedToken.userId,
       email: storedToken.user.email,
       role: storedToken.user.role,
-      AuthService: storedToken.user.pseudo,
-      firsttimeconnection: storedToken.user.firstTimeConnection,
+      pseudo: storedToken.user.pseudo,
+      firstTimeConnection: storedToken.user.firstTimeConnection,
       avatarId: storedToken.user.avatarId
     };
 
-    // Générer les tokens de manière asynchrone en parallèle
+    const { encryptedData, iv } = this.cryptoService.encryptPayload(payload);
+    const tokenPayload = { data: encryptedData, iv };
+
     const [newAccessToken, newRefreshToken] = await Promise.all([
-      this.jwtService.signAsync(payload),
-      this.jwtService.signAsync(payload)
+      this.jwtService.signAsync(tokenPayload, {
+        algorithm: 'HS512',
+        issuer: 'LinguaGo',
+        audience: 'LinguaGo-client',
+      }),
+      this.jwtService.signAsync(payload, {
+        expiresIn: '1d',
+        algorithm: 'HS512'
+      })
     ]);
 
     await this.prisma.refreshToken.update({
       where: { id: storedToken.id },
       data: {
         token: newRefreshToken,
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 jour
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
       },
     });
 
