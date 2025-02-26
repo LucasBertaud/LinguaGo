@@ -41,13 +41,14 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import { getEnumKeyByValue } from '../../../utils/enum.utils';
 
 enum FrequencyNotification {
-  ONE_DAY = "Un jour",
-  TWO_DAYS = "Deux jours",
-  THREE_DAYS = "Trois jours",
-  FOUR_DAYS = "Quatre jours",
-  FIVE_DAYS = "Cinq jours",
-  SIX_DAYS = "Six jours",
-  SEVEN_DAYS = "Une semaine"
+    TODAY = "Juste aujourd'hui",
+    ONE_DAY = "Un jour",
+    TWO_DAYS = "Deux jours",
+    THREE_DAYS = "Trois jours",
+    FOUR_DAYS = "Quatre jours",
+    FIVE_DAYS = "Cinq jours",
+    SIX_DAYS = "Six jours",
+    SEVEN_DAYS = "Une semaine"
 }
 
 const isNotificationBlocked = ref<boolean>(Notification.permission === "denied");

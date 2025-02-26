@@ -1,16 +1,14 @@
 /// <reference lib="webworker" />
 declare let self: ServiceWorkerGlobalScope
 
-self.addEventListener("push", e => {
-    if (!(
-        Notification &&
-        Notification.permission === 'granted'
-    )) return;
-
-    e.waitUntil(
-        self.registration.showNotification('Title', {
-            icon: 'Icon URL',
-            body: 'Message',
-        })
-    );
+self.addEventListener('push', e => {
+    e.waitUntil(push(e));
 });
+
+const push = async e => {
+    const notification = await e.data.json();
+    self.registration.showNotification(notification.title, {
+        icon: 'http://localhost:5173/icons/192x192.png',
+        body: notification.content,
+    });
+};

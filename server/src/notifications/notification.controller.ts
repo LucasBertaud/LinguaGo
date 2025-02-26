@@ -5,10 +5,11 @@ import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { NotificationService } from './notification.service';
 
 @Controller('notification')
 export class NotificationController{
-    constructor(private readonly genericService: GenericService<Notification>){}
+    constructor(private readonly genericService: GenericService<Notification>, private readonly notificationService: NotificationService){}
 
     @Get()
     async findAll() {
@@ -64,6 +65,9 @@ export class NotificationController{
     @ApiResponse({ status: 200, description: 'Return the user notification.' })
     @ApiResponse({ status: 401, description: 'Unauthorized.' })
     async update(@Body() updateNotificationDto: UpdateNotificationDto, @Request() req) {
+        if(updateNotificationDto.notificationTime || updateNotificationDto.frequency) {
+            updateNotificationDto.nextNotifyAt = await this.notificationService.updateNextNotifyAt(String(req.user.id), updateNotificationDto.frequency, updateNotificationDto.notificationTime);
+        }
         return this.genericService.update("notification", {
             where: {
                 userId: String(req.user.id)
