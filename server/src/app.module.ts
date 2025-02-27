@@ -16,6 +16,8 @@ import { AvatarModule } from './avatar/avatar.module';
 import { NotificationModule } from './notifications/notification.module';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { ScheduleModule } from '@nestjs/schedule';
+import { PrismaModule } from './utils/prisma.module';
+import { CryptoModule } from './auth/crypto/crypto.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { ScheduleModule } from '@nestjs/schedule';
     SubscriptionsModule,
     AvatarModule,
     NotificationModule,
+    PrismaModule,
+    CryptoModule,
   ],
   controllers: [],
   providers: [],
