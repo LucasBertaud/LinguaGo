@@ -1,6 +1,12 @@
 /// <reference lib="webworker" />
 declare let self: ServiceWorkerGlobalScope
 
+self.__WB_MANIFEST
+
+import { precacheAndRoute } from 'workbox-precaching'
+
+precacheAndRoute(self.__WB_MANIFEST)
+
 self.addEventListener('push', e => {
     e.waitUntil(push(e));
 });

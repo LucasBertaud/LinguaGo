@@ -38,6 +38,7 @@ export default defineConfig({
     },
 
     workbox: {
+      swDest: 'dist/service-worker.js', 
       globPatterns: ['**/*.{js,css,html,svg,png,ico,json}'],
       cleanupOutdatedCaches: true,
       clientsClaim: true,
