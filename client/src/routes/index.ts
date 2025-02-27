@@ -13,7 +13,7 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
   const isAuthenticated = (store.state as RootState).auth.userLoggedIn;
 
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);

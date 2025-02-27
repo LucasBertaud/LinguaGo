@@ -5,6 +5,9 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    host: true
+  },
   plugins: [vue(), tailwindcss(), VitePWA({
     registerType: 'autoUpdate',
     injectRegister: false, 
@@ -35,6 +38,7 @@ export default defineConfig({
     },
 
     workbox: {
+      swDest: 'dist/service-worker.js', 
       globPatterns: ['**/*.{js,css,html,svg,png,ico,json}'],
       cleanupOutdatedCaches: true,
       clientsClaim: true,

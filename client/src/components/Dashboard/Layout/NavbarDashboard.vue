@@ -80,7 +80,6 @@ import { useRouter } from 'vue-router';
 import DOMPurify from 'dompurify';
 import Database from '../../../utils/database.utils';
 import NotificationButton from '../Button/NotificationButton.vue';
-import type { User } from '../../../interface/user.interface';
 import UserProfileModal from '../../Modal/UserProfileModal.vue';
 
 const store = useStore();

@@ -15,6 +15,7 @@ import { SubscriptionsModule } from './notifications/subscriptions/subscriptions
 import { AvatarModule } from './avatar/avatar.module';
 import { NotificationModule } from './notifications/notification.module';
 import { AuthMiddleware } from './auth/auth.middleware';
+import { ScheduleModule } from '@nestjs/schedule';
 import { PrismaModule } from './utils/prisma.module';
 import { CryptoModule } from './auth/crypto/crypto.module';
 
@@ -23,6 +24,7 @@ import { CryptoModule } from './auth/crypto/crypto.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     UserModule,
     AuthModule,
     ExercisesSerieModule,

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsString, IsNotEmpty, IsJSON } from 'class-validator';
+import { IsBoolean, IsString, IsNotEmpty, IsEmpty } from 'class-validator';
+import { FrequencyNotification } from '../frequency-notification.enum';
 
 export class CreateNotificationDto {
     @ApiProperty({
@@ -21,6 +22,6 @@ export class CreateNotificationDto {
     isActivate: boolean;
 
     @IsNotEmpty()
-    @IsJSON()
-    subscription: JSON;
+    @IsString()
+    subscription: string;
 }

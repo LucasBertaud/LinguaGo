@@ -94,7 +94,7 @@ import Database from '../../utils/database.utils';
 import AvatarSelectionModal from './AvatarSelectionModal.vue';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
 
-const props = defineProps<{
+defineProps<{
     isOpen: boolean
 }>();
 

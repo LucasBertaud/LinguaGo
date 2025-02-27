@@ -5,11 +5,12 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import * as webpush from 'web-push';
 import * as cookieParser from 'cookie-parser';
+import { NotificationService } from './notifications/notification.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
-
+  
   app.use(cookieParser());
 
   // Configure CORS
@@ -26,7 +27,7 @@ async function bootstrap() {
     transform: true,
   }));
 
-  // Configure webpush
+  // Configure webpush and start the notification service
   webpush.setVapidDetails(
     `mailto:${process.env.DOMAIN_EMAIL}`,
     process.env.VAPID_PUBLIC_KEY as string,
@@ -42,6 +43,6 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
 bootstrap();
