@@ -19,7 +19,7 @@ router.beforeEach((to, _, next) => {
   if(!networkObserver.isOffline()){
     isAuthenticated = (store.state as RootState).auth.userLoggedIn;
   } else {
-    isAuthenticated = Boolean(JSON.parse(sessionStorage.getItem('userOffline')));
+    isAuthenticated = Boolean(JSON.parse(localStorage.getItem('userOffline')));
   }
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const requiresGuest = to.matched.some(record => record.meta.requiresGuest);

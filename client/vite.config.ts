@@ -44,7 +44,6 @@ export default defineConfig({
       cleanupOutdatedCaches: true,
       clientsClaim: true,
       skipWaiting: true,
-      navigateFallback: '/index.html',
     },
     devOptions: {
       enabled: true,

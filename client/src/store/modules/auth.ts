@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import type { User } from '../../interface/user.interface';
 import { subscriberService } from '../../services/subscriber.service';
 import Database from '../../utils/database.utils';
+import { networkObserver } from '../../services/network-observer';
 
 interface AuthResponse {
   payload: User;
@@ -78,6 +79,9 @@ const getters = {
     return state.userLoggedIn;
   },
   getUser(state: AuthState): any | null {
+    if(networkObserver.isOffline()){
+      return JSON.parse(localStorage.getItem('userOffline'));
+    }
     return state.user;
   },
 };
