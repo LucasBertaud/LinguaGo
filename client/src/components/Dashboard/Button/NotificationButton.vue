@@ -59,6 +59,7 @@ const startTime = ref({ hours: 0, minutes: 0 });
 const timerUpdateTime = ref();
 const frequency = ref();
 const timerUpdateFrequency = ref();
+const isNotificationFetched = ref(false);
 
 const handleUpdateTime = () => {
     clearTimeout(timerUpdateTime.value);
@@ -85,6 +86,7 @@ const handleOpen = async () => {
 
 const fetchNotificationInDatabase = async () => {
     const response = await Database.getAll("notification/user");
+    if(!response) return isNotificationFetched.value = false;
     areNotificationsActivate.value = response.isActivate;
     response.notificationTime;
     const splitTime = response.notificationTime.split(':');
@@ -93,21 +95,34 @@ const fetchNotificationInDatabase = async () => {
     date.setMinutes(parseInt(splitTime[1]));
     startTime.value = { hours: date.getHours(), minutes: date.getMinutes() };
     frequency.value = response.frequency;
+    isNotificationFetched.value = true;
 }
 
-const handleCheckbox = async () => {
+const handleCheckbox = async (): Promise<void> => {
     if(!areNotificationsAllowed.value){
-        const response = await subscriberService.subscribe();
-        isNotificationBlocked.value = Notification.permission === "denied";
-        if(!response) return;
-        const notification: NotificationInterface = response.data;
-        areNotificationsAllowed.value = notification.isActivate;
-        areNotificationsActivate.value = notification.isActivate;
+        await createNotification();
     } else {
-        const response = await Database.update("notification", '', { isActivate: !areNotificationsActivate.value });
-        if(!response) return;
-        areNotificationsActivate.value = response.isActivate;
+        if(isNotificationFetched.value) {
+            await updateNotification();
+        } else {
+            await createNotification();
+        }
     }
+}
+
+const updateNotification = async () => {
+    const response = await Database.update("notification", '', { isActivate: !areNotificationsActivate.value });
+    if(!response) return;
+    areNotificationsActivate.value = response.isActivate;
+}
+
+const createNotification = async () => {
+    const response = await subscriberService.subscribe();
+    isNotificationBlocked.value = Notification.permission === "denied";
+    if(!response) return;
+    const notification: NotificationInterface = response.data;
+    areNotificationsAllowed.value = notification.isActivate;
+    areNotificationsActivate.value = notification.isActivate;
 }
 </script>
 

@@ -4,17 +4,10 @@ class ServiceWorkerManager {
     private registration: ServiceWorkerRegistration;
     private promise: Promise<ServiceWorkerRegistration>;
 
-    constructor() {
-        this.init();
-    }
-
-    private init(): void {
-        this.registerServiceWorker();
-    }
-
-    public registerServiceWorker(): void {
+    public register(): void {
         this.promise = new Promise((resolve, reject) => {
             useRegisterSW({
+                immediate: true,
                 onRegisteredSW(_, registration: ServiceWorkerRegistration) {
                     resolve(registration);
                     reject("Service Worker registration failed");
@@ -29,7 +22,7 @@ class ServiceWorkerManager {
         });
     }
 
-    public setRegistration(registration: ServiceWorkerRegistration): void {
+    private setRegistration(registration: ServiceWorkerRegistration): void {
         this.registration = registration;
     }
 

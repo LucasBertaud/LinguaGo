@@ -1,9 +1,8 @@
 import { VitePWA } from 'vite-plugin-pwa';
-import { defineConfig } from 'vite'
-import tailwindcss from '@tailwindcss/vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
+import vue from '@vitejs/plugin-vue';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   server: {
     host: true
@@ -11,9 +10,13 @@ export default defineConfig({
   plugins: [vue(), tailwindcss(), VitePWA({
     registerType: 'autoUpdate',
     injectRegister: false, 
-    filename: 'service-worker.ts',
-    srcDir: 'src',
     strategies: 'injectManifest',
+    srcDir: 'src',
+    filename: 'service-worker.js',
+    injectManifest: {
+      swSrc: 'src/service-worker.js',
+      swDest: 'dist/service-worker.js',
+    },
     manifest: {
       name: 'Linguago',
       short_name: 'Linguago',
@@ -36,22 +39,20 @@ export default defineConfig({
         }
       ]
     },
-
     workbox: {
-      swDest: 'dist/service-worker.js', 
-      globPatterns: ['**/*.{js,css,html,svg,png,ico,json}'],
+      globPatterns: ['**/*.{js,css,html,svg,png,ico,json,vue,ts}'],
       cleanupOutdatedCaches: true,
       clientsClaim: true,
       skipWaiting: true,
+      navigateFallback: '/index.html',
     },
-
     devOptions: {
       enabled: true,
-      navigateFallback: 'index.html',
+      navigateFallback: '',
       type: 'module',
     },
   })],
   optimizeDeps: {
     include: ['js-cookie'],
   },
-})
+});

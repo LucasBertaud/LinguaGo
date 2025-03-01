@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import routes from './routes';
 import store from '../store';
+import { networkObserver } from '../services/network-observer';
 
 interface RootState {
   auth: {
@@ -14,8 +15,12 @@ const router = createRouter({
 });
 
 router.beforeEach((to, _, next) => {
-  const isAuthenticated = (store.state as RootState).auth.userLoggedIn;
-
+  let isAuthenticated = false;
+  if(!networkObserver.isOffline()){
+    isAuthenticated = (store.state as RootState).auth.userLoggedIn;
+  } else {
+    isAuthenticated = Boolean(JSON.parse(sessionStorage.getItem('userOffline')));
+  }
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const requiresGuest = to.matched.some(record => record.meta.requiresGuest);
 
