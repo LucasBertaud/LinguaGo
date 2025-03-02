@@ -29,6 +29,8 @@ import type Exercise from '../../../interface/exercise.interface';
 import confetti from 'canvas-confetti';
 import Database from '../../../utils/database.utils';
 import type UserCompletedExercisesSerie from '../../../interface/user-completed-exercises-serie.interface';
+import { networkObserver } from '../../../services/network-observer';
+import { methods, OfflineStorageService } from '../../../services/offline-storage.service';
 
 const router = useRouter();
 const route = useRoute();
@@ -49,6 +51,14 @@ const goToExercises = () => {
 
 const stampInDatabase = async () => {
     try {
+        if(networkObserver.isOffline){
+            const data: object = {
+                userId: props.userId,
+                serieId: props.serieId,
+            };
+            OfflineStorageService.store("user-completed-exercises-serie", data, methods.POST);
+            return;
+        }
         await Database.create("user-completed-exercises-serie", {
             userId: props.userId,
             serieId: props.serieId,

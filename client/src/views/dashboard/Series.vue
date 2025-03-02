@@ -1,7 +1,10 @@
 <template>
     <section class="flex flex-wrap m-4 justify-center">
-        <div v-for="exercisesSerie in level?.exercisesSeries" :key="exercisesSerie.id" class="lg:w-1/2 xl:w-1/3 w-full">
+        <div v-if="!networkObserver.isOffline()" v-for="exercisesSerie in level?.exercisesSeries" :key="exercisesSerie.id" class="lg:w-1/2 xl:w-1/3 w-full">
             <ExercisesSerieCard :exercises-serie="exercisesSerie" />
+        </div>
+        <div v-else>
+            <p class="text-red-400 italic">Vous êtes hors ligne. Veuillez vous connecter à internet pour accéder aux exercices.</p>
         </div>
     </section>
     <LoadingSpinner v-if="isLoading" />
@@ -14,6 +17,7 @@ import { useRoute } from 'vue-router';
 import Database from '../../utils/database.utils';
 import type Level from '../../interface/level.interface';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
+import { networkObserver } from '../../services/network-observer';
 
 const props = defineProps<{
     levelTitle: string;

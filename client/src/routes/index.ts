@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import routes from './routes';
 import store from '../store';
 import { networkObserver } from '../services/network-observer';
+import { OfflineStorageService } from '../services/offline-storage.service';
 
 interface RootState {
   auth: {
@@ -32,6 +33,10 @@ router.beforeEach((to, _, next) => {
   if (requiresGuest && isAuthenticated) {
     next({ name: 'Dashboard' });
     return;
+  }
+
+  if(isAuthenticated && !networkObserver.isOffline()){ 
+    OfflineStorageService.releaseAllOfflineStorage();
   }
 
   next();

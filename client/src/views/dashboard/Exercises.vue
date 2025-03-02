@@ -44,11 +44,11 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
-import Database from '../../utils/database.utils';
 import type Exercise from '../../interface/exercise.interface';
 import Translation from '../../components/Dashboard/Exercises/Translation.vue';
 import TrueFalse from '../../components/Dashboard/Exercises/TrueFalse.vue';
 import Timer from '../../components/Dashboard/Exercises/Timer.vue';
+import { ExercisesService } from '../../services/exercises.service';
 
 const route = useRoute();
 const store = useStore();
@@ -64,24 +64,23 @@ const answered = ref<boolean>(false);
 const allExercisesCompleted = ref<boolean>(false);
 const userId = store.getters.getUser.id;
 const exercisesFetched = ref<boolean>(false);
-
-let pointsPerExo: number = 1;
+const exercisesService = ref<ExercisesService | null>(null);
 
 const fetchExercises = async () => {
-    try {
-        isLoading.value = true;
-        const response = await Database.getAll(`exercise/serie/${serieId}`);
-        pointsPerExo = response[0].serie.level.pointsPerExo;
-        exercises.value = response;
+    isLoading.value = true;
+    exercisesService.value = new ExercisesService(userId, serieId);
+    exercises.value = await exercisesService.value.fetchExercises()
+    .then((response: Exercise[]) => {
         completedExercises.value = response.filter((exercise: Exercise) => exercise.usersCompleted.length > 0);
-        if (exercises.value.length === 0 || completedExercises.value.length === exercises.value.length) {
-            allExercisesCompleted.value = true;
-        }
+        return response;
+    })
+    .finally(() => {
         exercisesFetched.value = true;
-    } catch (error) {
-        console.error('Erreur lors de la récupération des exercices:', error);
-    } finally {
         isLoading.value = false;
+    });
+
+    if (exercises.value.length === 0 || completedExercises.value.length === exercises.value.length) {
+        allExercisesCompleted.value = true;
     }
 };
 
@@ -100,56 +99,25 @@ const checkAnswer = async () => {
 };
 
 const markExerciseAsCompleted = async () => {
-    const exerciseId = currentExercise.value.id;
-    
-    if (completedExercises.value.find((exercise) => exercise.id === exerciseId)) {
-        return;
-    }
-    try {
-        isLoading.value = true;
-        await Database.create('user-completed-exercise', {
-            userId,
-            exerciseId,
-            serieId,
-            pointsWon: pointsPerExo,
-        });
-        completedExercises.value.push(currentExercise.value);
-    } catch (error) {
-        console.error('Erreur lors de l\'enregistrement de la complétion de l\'exercice:', error);
-    } finally {
+    isLoading.value = true;
+    exercisesService.value.markExerciseAsCompleted(currentExercise.value, completedExercises.value)
+    .then(() => {
+        if(!completedExercises.value.includes(currentExercise.value)){
+            completedExercises.value.push(currentExercise.value);
+        }
+    })
+    .finally(() => {
         isLoading.value = false;
-    }
+    });
 };
 
 const markExerciseAsFailed = async () => {
-    const exerciseId = currentExercise.value.id;
-
-    incrementFailedExercises();
-
-    if (!completedExercises.value.find((exercise) => exercise.id === exerciseId)) {
-        return;
-    }
-
-    try {
-        isLoading.value = true;
-        await Database.delete(`user-completed-exercise/${userId}/${exerciseId}`);
-    } catch (error) {
-        console.error('Erreur lors de l\'enregistrement de la complétion de l\'exercice:', error);
-    } finally {
+    isLoading.value = true;
+    exercisesService.value.markExerciseAsFailed(currentExercise.value, completedExercises.value)
+    .finally(() => {
         isLoading.value = false;
-    }
+    });
 }
-
-const incrementFailedExercises = async () => {
-    try {
-        isLoading.value = true;
-        await Database.patch('user-stats/failed-exercises');
-    } catch (error) {
-        console.error('Erreur lors de l\'enregistrement de l\'échec de l\'exercice:', error);
-    } finally {
-        isLoading.value = false;
-    }
-};
 
 const nextExercise = () => {
     if (currentExerciseIndex.value < exercises.value.length - 1) {

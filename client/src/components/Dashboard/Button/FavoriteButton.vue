@@ -49,6 +49,9 @@ const addFavorite = async () => {
     await Database.create('user-favorite-serie', { 
       userId: userId, 
       serieId: props.serieId 
+    }).then(() => {
+      // Permet de mettre en cache l'exercice favori
+      Database.getAll(`exercise/serie/${props.serieId}`);
     });
     isFavoriteActivate.value = true;
   } catch (error) {

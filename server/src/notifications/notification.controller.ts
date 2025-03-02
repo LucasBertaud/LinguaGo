@@ -53,8 +53,7 @@ export class NotificationController{
             return this.genericService.create("notification", createNotificationDto);
             
         } catch (error) {
-            console.log(error)
-            
+            console.error(error)
         }
     }
 
