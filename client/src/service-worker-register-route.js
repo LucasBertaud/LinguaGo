@@ -1,8 +1,9 @@
 import { NavigationRoute, registerRoute } from 'workbox-routing';
-import { CacheFirst, NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies';
+import { CacheFirst, NetworkFirst } from 'workbox-strategies';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response/CacheableResponsePlugin';
 import { createHandlerBoundToURL} from 'workbox-precaching';
 import { ExpirationPlugin } from 'workbox-expiration';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const register = () => {
     registerRoute(
@@ -38,7 +39,7 @@ export const register = () => {
     
     registerRoute(
         ({ url }) =>
-          url.origin === 'http://localhost:3000' && url.pathname.startsWith('/level/favorites'),
+          url.origin === API_URL && url.pathname.startsWith('/level/favorites'),
         new NetworkFirst({
           cacheName: 'user-favorites-series-cache',
           plugins: [
@@ -53,7 +54,7 @@ export const register = () => {
     
     registerRoute(
       ({ url }) =>
-        url.origin === 'http://localhost:4173' && url.pathname.startsWith('/assets/images/icons'),
+        url.origin === self.location.origin && url.pathname.startsWith('/assets/images/icons'),
       new CacheFirst({
         cacheName: 'icons-cache',
         plugins: [
@@ -70,7 +71,7 @@ export const register = () => {
 
     registerRoute(
         ({ url }) =>
-          url.origin === 'http://localhost:3000' && url.pathname.startsWith('/avatar'),
+          url.origin === API_URL && url.pathname.startsWith('/avatar'),
         new CacheFirst({
           cacheName: 'user-avatar-cache',
           plugins: [
@@ -85,7 +86,7 @@ export const register = () => {
 
     registerRoute(
         ({ url }) =>
-          url.origin === 'http://localhost:3000' && url.pathname.startsWith('/exercise/serie'),
+          url.origin === API_URL && url.pathname.startsWith('/exercise/serie'),
         new NetworkFirst({
           cacheName: 'exercises-cache',
           plugins: [
@@ -97,7 +98,8 @@ export const register = () => {
           ],
         })
     );
-    
+
+    if(self.location.host.includes('5173')) return;
     const handler = createHandlerBoundToURL('/index.html');
     const navigationRoute = new NavigationRoute(handler);
     registerRoute(navigationRoute);

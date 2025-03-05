@@ -20,7 +20,7 @@ self.addEventListener('push', function (e) {
         let message = e.data.json();
         e.waitUntil(self.registration.showNotification(message.title, {
             body: message.content,
-            icon: 'http://localhost:4173/icons/192x192.png',
+            icon: self.location.origin + '/icons/192x192.png',
         }));
     }
 });

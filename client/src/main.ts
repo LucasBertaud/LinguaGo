@@ -11,7 +11,7 @@ import { networkObserver } from './services/network-observer.js';
 
 serviceWorkerManager.register();
 networkObserver.observe();
-
+console.log(window.location.origin);
 const app = createApp(App);
 
 store.dispatch('initLogin').then(() => {
