@@ -73,73 +73,47 @@ export class AuthService {
       sameSite: 'strict',
     });
 
+    res.cookie('user', JSON.stringify(payload), {
+      secure: this.cookieSecure,
+      sameSite: 'strict',
+    });
+
     res.send({ message: 'User successfully logged in.', payload });
   }
 
-  async getCurrentUser(userId: string): Promise<any> {
+  async refreshToken(userId: string, @Res() res: Response): Promise<void> {
     const user = await this.userService.findOne({ id: userId });
     if (!user) {
-      throw new UnauthorizedException('Utilisateur non trouvé');
-    }
-    return { user };
-  }
-
-  async refreshToken(userId: string, @Res() res: Response): Promise<void> {
-    const storedToken = await this.prisma.refreshToken.findFirst({
-      where: {
-        userId,
-        expiresAt: { gt: new Date() }
-      },
-      include: { user: true },
-      orderBy: { createdAt: 'desc' }
-    });
-
-    if (!storedToken) {
-      throw new UnauthorizedException('Aucun token de rafraîchissement valide trouvé.');
+      throw new UnauthorizedException('User not found');
     }
 
     const payload = {
-      id: storedToken.userId,
-      email: storedToken.user.email,
-      role: storedToken.user.role,
-      pseudo: storedToken.user.pseudo,
-      firstTimeConnection: storedToken.user.firstTimeConnection,
-      avatarId: storedToken.user.avatarId
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      pseudo: user.pseudo,
+      firstTimeConnection: user.firstTimeConnection,
+      avatarId: user.avatarId || undefined
     };
 
     const { encryptedData, iv } = this.cryptoService.encryptPayload(payload);
     const tokenPayload = { data: encryptedData, iv };
 
-    const [newAccessToken, newRefreshToken] = await Promise.all([
-      this.jwtService.signAsync(tokenPayload, {
-        algorithm: 'HS512',
-        issuer: 'LinguaGo',
-        audience: 'LinguaGo-client',
-      }),
-      this.jwtService.signAsync(payload, {
-        expiresIn: '1d',
-        algorithm: 'HS512'
-      })
-    ]);
-
-    await this.prisma.refreshToken.update({
-      where: { id: storedToken.id },
-      data: {
-        token: newRefreshToken,
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      },
+    const access_token = await this.jwtService.signAsync(tokenPayload, {
+      algorithm: 'HS512',
+      issuer: 'LinguaGo',
+      audience: 'LinguaGo-client',
     });
 
-    res.cookie('access_token', newAccessToken, {
+    res.cookie('access_token', access_token, {
       httpOnly: true,
       secure: this.cookieSecure,
-      sameSite: 'strict',
+      sameSite: 'strict'
     });
 
-    res.send({
-      message: 'Token rafraîchi avec succès',
-      payload,
-      success: true
+    res.cookie('user', JSON.stringify(payload), {
+      secure: this.cookieSecure,
+      sameSite: 'strict'
     });
   }
 
@@ -161,6 +135,11 @@ export class AuthService {
 
     res.clearCookie('access_token', {
       httpOnly: true,
+      secure: this.cookieSecure,
+      sameSite: 'strict'
+    });
+
+    res.clearCookie('user', {
       secure: this.cookieSecure,
       sameSite: 'strict'
     });

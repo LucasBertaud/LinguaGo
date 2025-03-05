@@ -70,19 +70,12 @@ const loadAvatars = async () => {
 const selectAvatar = async (avatarId: number) => {
     try {
         isLoading.value = true;
-        const response = await Database.patch('user', { avatarId });
-
-        if (response) {
-            store.commit('setUser', response);
-
-            toast.success('Avatar mis à jour avec succès');
-            emit('update');
-            emit('close');
-        } else {
-            throw new Error('Réponse invalide du serveur');
-        }
+        await store.dispatch('updateUserProfile', { avatarId });
+        
+        toast.success('Avatar mis à jour avec succès');
+        emit('update');
+        emit('close');
     } catch (error) {
-        console.error('Error updating avatar:', error);
         toast.error('Erreur lors de la mise à jour de l\'avatar');
     } finally {
         isLoading.value = false;
