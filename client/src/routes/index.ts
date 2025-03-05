@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import routes from './routes';
 import store from '../store';
+import { networkObserver } from '../services/network-observer';
+import { OfflineStorageService } from '../services/offline-storage.service';
 
 interface RootState {
   auth: {
@@ -14,8 +16,12 @@ const router = createRouter({
 });
 
 router.beforeEach((to, _, next) => {
-  const isAuthenticated = (store.state as RootState).auth.userLoggedIn;
-
+  let isAuthenticated = false;
+  if(!networkObserver.isOffline()){
+    isAuthenticated = (store.state as RootState).auth.userLoggedIn;
+  } else {
+    isAuthenticated = Boolean(JSON.parse(localStorage.getItem('userOffline')));
+  }
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const requiresGuest = to.matched.some(record => record.meta.requiresGuest);
 
@@ -27,6 +33,10 @@ router.beforeEach((to, _, next) => {
   if (requiresGuest && isAuthenticated) {
     next({ name: 'Dashboard' });
     return;
+  }
+
+  if(isAuthenticated && !networkObserver.isOffline()){ 
+    OfflineStorageService.releaseAllOfflineStorage();
   }
 
   next();

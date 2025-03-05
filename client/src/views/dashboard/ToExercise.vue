@@ -2,7 +2,7 @@
     <Title title="S'exercer" subtitle="Exercez-vous à votre rythme et progressez dans votre apprentissage." />
     <section class="text-gray-600 body-font">
         <div class="container py-24 mx-auto flex flex-wrap flex-col pt-4">
-            <div class="flex mx-auto flex-wrap mb-6">
+            <div class="flex mx-auto flex-wrap mb-6" v-if="!networkObserver.isOffline()" >
                 <router-link 
                     v-for="level in levels" 
                     :key="level.id"
@@ -15,7 +15,7 @@
                     {{ level.title }} ({{ level.subtitle }})
                 </router-link>
             </div>
-            <div v-if="levels.length > 0" class="flex flex-col text-center w-full">
+            <div class="flex flex-col text-center w-full">
                 <router-view></router-view>
             </div>
         </div>
@@ -29,6 +29,7 @@ import Title from '../../components/Dashboard/Layout/Title.vue';
 import Database from '../../utils/database.utils';
 import type Level from '../../interface/level.interface';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
+import { networkObserver } from '../../services/network-observer';
 
 const levels = ref<Level[]>([]);
 const isLoading = ref(false);
@@ -49,6 +50,8 @@ const fetchLevels = async () => {
 };
 
 onMounted(() => {
-    fetchLevels();
+    if(!networkObserver.isOffline()) {
+        fetchLevels();
+    }
 });
 </script>

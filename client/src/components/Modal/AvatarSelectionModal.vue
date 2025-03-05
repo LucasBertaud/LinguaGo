@@ -68,14 +68,11 @@ const loadAvatars = async () => {
 };
 
 const selectAvatar = async (avatarId: number) => {
-    console.log('Selected avatar:', avatarId);
     try {
         isLoading.value = true;
         const response = await Database.patch('user', { avatarId });
 
         if (response) {
-            console.log('Response from server:', response);
-
             store.commit('setUser', response);
 
             toast.success('Avatar mis à jour avec succès');

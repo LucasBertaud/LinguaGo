@@ -7,9 +7,11 @@ import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
 import VueApexCharts from 'vue3-apexcharts';
 import { serviceWorkerManager } from './services/service-worker-manager.js';
+import { networkObserver } from './services/network-observer.js';
 
-serviceWorkerManager.registerServiceWorker();
-
+serviceWorkerManager.register();
+networkObserver.observe();
+console.log(window.location.origin);
 const app = createApp(App);
 
 store.dispatch('initLogin').then(() => {

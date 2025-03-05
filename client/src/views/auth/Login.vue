@@ -51,6 +51,7 @@ import { useToast } from 'vue-toastification';
 import Error from '../../components/Form/Error.vue';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
 import { validateEmail, validatePasswordLength } from '../../utils/validation.utils';
+import { networkObserver } from '../../services/network-observer';
 
 const email = ref('');
 const password = ref('');
@@ -62,6 +63,13 @@ const store = useStore();
 const toast = useToast();
 
 const handleSubmit = async () => {
+  if(navigator.onLine === false) {
+    toast.error("Vous devez être connecté à internet pour vous connecter.");
+    return;
+  } else {
+    networkObserver.removeOffline();
+  }
+
   emailError.value = null;
   passwordError.value = null;
 
