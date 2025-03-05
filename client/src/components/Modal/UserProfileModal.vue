@@ -125,17 +125,12 @@ const toggleEdit = async () => {
     if (isEditing.value) {
         try {
             isLoading.value = true;
-            const response = await Database.patch('user', {
+            await store.dispatch('updateUserProfile', {
                 pseudo: editedPseudo.value
             });
-
-            if (response) {
-                // Mise à jour du store ET du cookie d'authentification
-                store.commit('setUser', response);
-                
-                toast.success('Pseudo mis à jour avec succès');
-                isEditing.value = false;
-            }
+            
+            toast.success('Pseudo mis à jour avec succès');
+            isEditing.value = false;
         } catch (error) {
             toast.error('Erreur lors de la mise à jour du pseudo');
         } finally {

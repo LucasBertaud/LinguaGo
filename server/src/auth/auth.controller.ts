@@ -8,7 +8,7 @@ import { Response } from 'express';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -19,23 +19,14 @@ export class AuthController {
     return this.authService.signIn(signInDto.email, signInDto.password, res);
   }
 
-  @Get('me')
-  @UseGuards(AuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get current user information' })
-  @ApiResponse({ status: 200, description: 'Return current user information.' })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  async getCurrentUser(@Req() req) {
-    return this.authService.getCurrentUser(req.user.id);
-  }
-
   @Post('refresh')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Refresh access token' })
   @ApiResponse({ status: 200, description: 'Access token successfully refreshed.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  refreshToken(@Req() req, @Res() res: Response) {
-    return this.authService.refreshToken(req.user.id, res);
+  async refreshToken(@Req() req, @Res() res: Response) {
+    await this.authService.refreshToken(req.user.id, res);
+    return res.send({ message: 'Token successfully refreshed' });
   }
 
   @Patch('first-time-connected')

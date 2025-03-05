@@ -5,10 +5,6 @@ import { subscriberService } from '../../services/subscriber.service';
 import Database from '../../utils/database.utils';
 import { networkObserver } from '../../services/network-observer';
 
-interface AuthResponse {
-  payload: User;
-}
-
 interface AuthState {
   user: User | null;
   userLoggedIn: boolean;
@@ -20,7 +16,7 @@ const state: AuthState = {
 };
 
 const mutations = {
-  setUser(state: AuthState, user: any) {
+  setUser(state: AuthState, user: User) {
     state.user = user;
   },
   setAuth(state: AuthState, status: boolean) {
@@ -35,14 +31,16 @@ const mutations = {
 const actions = {
   async login({ commit }: any, { email, password }: { email: string, password: string }) {
     try {
-      const response = await api.post<AuthResponse>('/auth/login', { email, password });
-      const { payload } = response.data;
-      const isFirstTimeConnection = payload.firstTimeConnection;
-      commit('setUser', payload);
-      commit('setAuth', true);
-      if(isFirstTimeConnection){
-        Database.patch("auth/first-time-connected");
-        subscriberService.subscribe();
+      await api.post('/auth/login', { email, password });
+      const userCookie = Cookies.get('user');
+      if (userCookie) {
+        const user = JSON.parse(userCookie);
+        commit('setUser', user);
+        commit('setAuth', true);
+        if(user.firstTimeConnection){
+          Database.patch("auth/first-time-connected");
+          subscriberService.subscribe();
+        }
       }
     } catch (error) {
       console.error('Login failed:', error);
@@ -56,14 +54,20 @@ const actions = {
       commit('clearAuthData');
     } catch (error) {
       console.error('Logout failed:', error);
+      commit('clearAuthData');
       throw error;
     }
   },
   
-  async initLogin({ commit }: any) {
+  initLogin({ commit }: any) {
+    const userCookie = Cookies.get('user');
+    if (!userCookie) {
+      commit('clearAuthData');
+      return false;
+    }
+
     try {
-      const response = await api.get('/auth/me');
-      const { user } = response.data;
+      const user = JSON.parse(userCookie);
       commit('setUser', user);
       commit('setAuth', true);
       return true;
@@ -71,7 +75,19 @@ const actions = {
       commit('clearAuthData');
       return false;
     }
-  }
+  },
+
+  async updateUserProfile({ commit }: any, updatedProfile: Partial<User>) {
+    try {
+      const response = await api.patch('/user', updatedProfile);
+      commit('setUser', response.data);
+      await api.post('/auth/refresh');
+      return response.data;
+    } catch (error) {
+      console.error('Profile update failed:', error);
+      throw error;
+    }
+  },
 };
 
 const getters = {
