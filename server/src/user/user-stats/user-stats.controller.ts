@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { GenericService } from 'src/utils/generic.service';
 import { UserStat } from './entities/user-stat.entity';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('user-stats')
@@ -14,7 +14,7 @@ export class UserStatsController {
   }
 
   @Get('/user')
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get user stats.' })
   @ApiResponse({ status: 200, description: 'Return the user stats.', type: UserStat })
@@ -28,7 +28,7 @@ export class UserStatsController {
   }
 
   @Patch("/failed-exercises")
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Increment failed exercises on user stats.' })
   @ApiResponse({ status: 200, description: 'Return the user stats.', type: UserStat })
@@ -48,7 +48,7 @@ export class UserStatsController {
   }
 
   @Patch("/time-spent-on-exercises")
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Increment time spent on exercises in user stats.' })
   @ApiResponse({ status: 200, description: 'Return the user stats.', type: UserStat })
@@ -67,7 +67,7 @@ export class UserStatsController {
   }
 
   @Delete()
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Remove user stats.' })
   @ApiResponse({ status: 200, description: 'Return the user stats.', type: UserStat })

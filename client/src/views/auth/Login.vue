@@ -20,23 +20,15 @@
         </div>
         <div class="mb-6">
           <label for="password" class="block text-gray-700">Mot de passe</label>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-                <path fill-rule="evenodd"
-                  d="M24 14h-2V8a6 6 0 0 0-12 0v6H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V16a2 2 0 0 0-2-2M12 8a4 4 0 0 1 8 0v6h-8Zm12 20H8V16h16Z" />
-              </svg>
-            </span>
-            <input v-model="password" id="password" type="password" placeholder="Mot de passe"
-              class="w-full px-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
-          </div>
+          <PasswordInput v-model="password" id="password" placeholder="Mot de passe" />
           <Error :error="passwordError" />
         </div>
         <button type="submit"
           class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 cursor-pointer">Connexion</button>
       </form>
       <div class="mt-4 text-center">
-        <router-link to="/register" class="text-primary hover:underline">Pas encore inscrit ? Créez un compte</router-link>
+        <router-link to="/register" class="text-primary hover:underline">Pas encore inscrit ? Créez un
+          compte</router-link>
       </div>
       <LoadingSpinner v-if="isLoading" />
     </div>
@@ -51,6 +43,7 @@ import { useToast } from 'vue-toastification';
 import Error from '../../components/Form/Error.vue';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
 import { validateEmail, validatePasswordLength } from '../../utils/validation.utils';
+import PasswordInput from '../../components/Form/PasswordInput.vue';
 import { networkObserver } from '../../services/network-observer';
 
 const email = ref('');
@@ -63,7 +56,7 @@ const store = useStore();
 const toast = useToast();
 
 const handleSubmit = async () => {
-  if(navigator.onLine === false) {
+  if (navigator.onLine === false) {
     toast.error("Vous devez être connecté à internet pour vous connecter.");
     return;
   } else {

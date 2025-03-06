@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { CreateExercisesSerieDto } from './dto/create-exercises-serie.dto';
 import { UpdateExercisesSerieDto } from './dto/update-exercises-serie.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/user/role/roles.decorator';
 import { Role } from 'src/user/role/role.enum';
 import { ExercisesSerie } from './entities/exercises-serie.entity';
@@ -15,7 +15,7 @@ export class ExercisesSerieController {
   constructor(private readonly genericService: GenericService<ExercisesSerie>) {}
 
   @Post()
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Create a new serie of exercices' })
@@ -51,7 +51,7 @@ export class ExercisesSerieController {
   }
 
   @Patch(':id')
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Update the exercices serie' })
@@ -65,7 +65,7 @@ export class ExercisesSerieController {
   }
 
   @Delete(':id')
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Delete the exercices serie' })

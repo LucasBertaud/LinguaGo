@@ -2,7 +2,7 @@ import { Controller, Post, Body, Patch, UseGuards, Request } from '@nestjs/commo
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { UserEntity } from './entities/user.entity';
 
@@ -22,7 +22,7 @@ export class UserController {
   }
 
   @Patch()
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Update the authenticated user' })
   @ApiResponse({ status: 200, description: 'The user has been successfully updated.', type: UserEntity })
