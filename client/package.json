@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@microsoft/clarity": "^1.0.0",
     "@nestjs/mapped-types": "*",
     "@tailwindcss/vite": "^4.0.6",
     "@types/dompurify": "^3.2.0",
