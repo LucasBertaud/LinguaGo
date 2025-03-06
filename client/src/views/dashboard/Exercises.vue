@@ -101,11 +101,9 @@ const checkAnswer = async () => {
         if(currentExercise.value.type === "TRANSLATION"){
             const check = await translationCheck([currentExercise.value.question, answer]);
             if(check == "accept"){
-                console.log("Correct");
                 isCorrect.value = true;
                 await markExerciseAsCompleted();
             } else {
-                console.log("Incorrect");
                 isCorrect.value = false;
                 await markExerciseAsFailed();
             }
