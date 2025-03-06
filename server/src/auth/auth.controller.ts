@@ -2,7 +2,7 @@ import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Request, Patch
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { AuthGuard } from './auth.guard';
-import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Response } from 'express';
 
 @ApiTags('auth')
@@ -31,7 +31,7 @@ export class AuthController {
 
   @Patch('first-time-connected')
   @UseGuards(AuthGuard)
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'First time connected' })
   @ApiResponse({ status: 200, description: 'First time connected successfully.' })
@@ -42,7 +42,7 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(AuthGuard)
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @ApiOperation({ summary: 'User logout' })
   @ApiResponse({ status: 200, description: 'User successfully logged out.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })

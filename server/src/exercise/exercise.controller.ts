@@ -7,14 +7,14 @@ import { Roles } from 'src/user/role/roles.decorator';
 import { Role } from 'src/user/role/role.enum';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/user/role/roles.guard';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('exercise')
 export class ExerciseController {
   constructor(private readonly genericService: GenericService<Exercise>) {}
 
   @Post()
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Create a new exercice' })
@@ -26,7 +26,7 @@ export class ExerciseController {
   }
 
   @Post('multiple')
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Create a list of new exercises' })
@@ -52,7 +52,7 @@ export class ExerciseController {
   }
 
   @Get('serie/:id')
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get all exercices by serie ID' })
   @ApiResponse({ status: 200, description: 'Return all exercices.', type: [Exercise] })
@@ -95,7 +95,7 @@ export class ExerciseController {
   }
 
   @Patch(':id')
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Update the exercice' })
@@ -109,7 +109,7 @@ export class ExerciseController {
   }
 
   @Delete(':id')
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Delete the exercice' })
