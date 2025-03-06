@@ -38,6 +38,7 @@ const route = useRoute();
 const props = defineProps<{ completedExercises: Exercise[], totalExercises: number, serieId: number, userId: string }>();
 
 const correctAnswersCount = computed(() => {
+    console.log(props.completedExercises);
     return props.completedExercises.length;
 });
 

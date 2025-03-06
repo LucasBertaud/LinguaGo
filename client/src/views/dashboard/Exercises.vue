@@ -49,7 +49,12 @@ import Translation from '../../components/Dashboard/Exercises/Translation.vue';
 import TrueFalse from '../../components/Dashboard/Exercises/TrueFalse.vue';
 import Timer from '../../components/Dashboard/Exercises/Timer.vue';
 import { ExercisesService } from '../../services/exercises.service';
+import { translationCheck } from '../../services/ai.services';
 
+defineProps<{
+    levelTitle: string;
+    serieId: string;
+}>();
 const route = useRoute();
 const store = useStore();
 const isLoading = ref(false);
@@ -87,13 +92,29 @@ const fetchExercises = async () => {
 const checkAnswer = async () => {
     const answer = userAnswer.value?.toLowerCase().replace(/[.,!?;:'"]/g, '').trim();
     const correctAnswer = currentExercise.value.answer.toLowerCase().replace(/[.,!?;:'"]/g, '').trim();
+
+    
     if (answer === correctAnswer) {
         isCorrect.value = true;
         await markExerciseAsCompleted();
     } else {
-        isCorrect.value = false;
-        await markExerciseAsFailed();
+        if(currentExercise.value.type === "TRANSLATION"){
+            const check = await translationCheck([currentExercise.value.question, answer]);
+            if(check == "accept"){
+                console.log("Correct");
+                isCorrect.value = true;
+                await markExerciseAsCompleted();
+            } else {
+                console.log("Incorrect");
+                isCorrect.value = false;
+                await markExerciseAsFailed();
+            }
+        } else {
+            isCorrect.value = false;
+            await markExerciseAsFailed();
+        }
     }
+
     answered.value = true;
     nextExercise();
 };
@@ -114,6 +135,11 @@ const markExerciseAsCompleted = async () => {
 const markExerciseAsFailed = async () => {
     isLoading.value = true;
     exercisesService.value.markExerciseAsFailed(currentExercise.value, completedExercises.value)
+    .then(() => {
+        if(completedExercises.value.includes(currentExercise.value)){
+            completedExercises.value = completedExercises.value.filter((exercise: Exercise) => exercise.id !== currentExercise.value.id);
+        }
+    })
     .finally(() => {
         isLoading.value = false;
     });
