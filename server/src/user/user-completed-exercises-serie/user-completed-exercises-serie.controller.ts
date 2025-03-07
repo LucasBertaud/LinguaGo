@@ -3,7 +3,7 @@ import { CreateUserCompletedExercisesSerieDto } from './dto/create-user-complete
 import { UpdateUserCompletedExercisesSerieDto } from './dto/update-user-completed-exercises-serie.dto';
 import { GenericService } from 'src/utils/generic.service';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserCompletedExercisesSerie } from './entities/user-completed-exercises-serie.entity';
 
 @Controller('user-completed-exercises-serie')
@@ -21,7 +21,7 @@ export class UserCompletedExercisesSerieController {
   }
 
   @Get('user')
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get user completed series.' })
   @ApiResponse({ status: 200, description: 'Return the user completed series.', type: UserCompletedExercisesSerie })

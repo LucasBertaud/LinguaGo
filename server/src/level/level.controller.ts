@@ -1,5 +1,5 @@
 import { Controller, Get, Param, UseGuards, Request } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { GenericService } from 'src/utils/generic.service';
 import { Level } from './entities/level.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -17,7 +17,7 @@ export class LevelController {
   }
 
   @Get('favorites')
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @UseGuards(AuthGuard)
   @ApiOperation({
     summary: 'Get user favorites',
@@ -81,7 +81,7 @@ export class LevelController {
   }
 
   @Get('title/:title')
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @UseGuards(AuthGuard)
   @ApiOperation({
     summary: 'Get level by title',

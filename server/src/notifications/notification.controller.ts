@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { Notification } from '@prisma/client';
 import { GenericService } from 'src/utils/generic.service';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
@@ -17,7 +17,7 @@ export class NotificationController{
     }
 
     @Get('user')
-    @ApiBearerAuth()
+    @ApiCookieAuth('access_token')
     @UseGuards(AuthGuard)
     @ApiOperation({ summary: 'Get user notification.' })
     @ApiResponse({ status: 200, description: 'Return the user notification.' })
@@ -31,7 +31,7 @@ export class NotificationController{
     }
 
     @Post()
-    @ApiBearerAuth()
+    @ApiCookieAuth('access_token')
     @UseGuards(AuthGuard)
     @ApiOperation({ summary: 'Create user notification.' })
     @ApiResponse({ status: 200, description: 'Return the user notification.' })
@@ -58,7 +58,7 @@ export class NotificationController{
     }
 
     @Patch()
-    @ApiBearerAuth()
+    @ApiCookieAuth('access_token')
     @UseGuards(AuthGuard)
     @ApiOperation({ summary: 'Update user notification.' })
     @ApiResponse({ status: 200, description: 'Return the user notification.' })

@@ -3,7 +3,7 @@ import { GenericService } from 'src/utils/generic.service';
 import { CreateUserCompletedExerciseDto } from './dto/create-user-completed-exercise.dto';
 import { UpdateUserCompletedExerciseDto } from './dto/update-user-completed-exercise.dto';
 import { UserCompletedExercise } from './entities/user-completed-exercise.entity';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { UserService } from '../user.service';
 
@@ -12,7 +12,7 @@ export class UserCompletedExerciseController {
   constructor(private readonly genericService: GenericService<UserCompletedExercise>, private readonly userService: UserService) { }
 
   @Post()
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Create a completed exercise record' })
   @ApiBody({ type: CreateUserCompletedExerciseDto })
@@ -96,7 +96,7 @@ export class UserCompletedExerciseController {
   }
 
   @Get('user/:userId')
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get user completed exercises' })
   @ApiParam({ name: 'userId', description: 'User ID' })
@@ -110,7 +110,7 @@ export class UserCompletedExerciseController {
   }
 
   @Get('one-week')
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get authenticated user completed exercises for last week' })
   @ApiResponse({ status: 200, description: 'List of completed exercises', type: [UserCompletedExercise] })
@@ -127,7 +127,7 @@ export class UserCompletedExerciseController {
   }
 
   @Patch(':id')
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Update completed exercise record' })
   @ApiParam({ name: 'id', description: 'Record ID' })
@@ -141,7 +141,7 @@ export class UserCompletedExerciseController {
   }
 
   @Delete(':userId/:exerciseId')
-  @ApiBearerAuth()
+  @ApiCookieAuth('access_token')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Delete completed exercise record' })
   @ApiParam({ name: 'userId', description: 'User ID' })

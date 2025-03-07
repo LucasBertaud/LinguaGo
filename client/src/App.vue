@@ -19,8 +19,19 @@
 <script setup lang="ts">
 import NavbarDashboard from './components/Dashboard/Layout/NavbarDashboard.vue';
 import AsideDashboard from './components/Dashboard/Layout/Aside/AsideDashboard.vue';
+import {onMounted} from "vue";
+import Clarity from "@microsoft/clarity";
 
 defineOptions({
   name: 'App'
+});
+
+onMounted(() => {
+  if (import.meta.env.VITE_CLARITY_PROJECT_ID) {
+    Clarity.init(import.meta.env.VITE_CLARITY_PROJECT_ID);
+    Clarity.consent();
+  } else {
+    console.warn('Clarity project ID not found. Please set VITE_CLARITY_PROJECT_ID in .env file');
+  }
 });
 </script>
