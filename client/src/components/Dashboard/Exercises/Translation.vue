@@ -10,6 +10,7 @@ const emit = defineEmits(['update:userAnswer']);
 const localAnswer = ref('');
 
 const updateAnswer = () => {
+    if(localAnswer.value === '') return;
     emit('update:userAnswer', localAnswer.value);
 };
 </script>
