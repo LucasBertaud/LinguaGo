@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `exercise` MODIFY `type` ENUM('MULTIPLE_CHOICE', 'TRANSLATION', 'TRUE_FALSE', 'TALK') NOT NULL;
+
+-- AlterTable
+ALTER TABLE `exercisesserie` ADD COLUMN `type` ENUM('DEFAULT', 'TALK') NOT NULL DEFAULT 'DEFAULT';

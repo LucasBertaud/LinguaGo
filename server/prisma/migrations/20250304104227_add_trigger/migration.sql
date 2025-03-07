@@ -65,7 +65,7 @@ FOR EACH ROW
 BEGIN
     UPDATE UserStats
     SET successfullExercises = successfullExercises + 1
-    WHERE userId = NEW.userId COLLATE utf8mb4_unicode_ci;
+    WHERE userId COLLATE utf8mb4_unicode_ci = NEW.userId COLLATE utf8mb4_unicode_ci;
 END;
 
 -- Fonction pour ajouter des points à l'utilisateur
@@ -81,7 +81,7 @@ BEGIN
 
     UPDATE UserStats
     SET points = points + points_per_exo
-    WHERE userId = NEW.userId COLLATE utf8mb4_unicode_ci;
+    WHERE userId COLLATE utf8mb4_unicode_ci = NEW.userId COLLATE utf8mb4_unicode_ci;
 END;
 
 -- Fonction pour incrémenter le nombre total d'utilisateurs
@@ -179,7 +179,7 @@ BEGIN
 
     UPDATE UserStats
     SET points = points - points_per_exo
-    WHERE userId = OLD.userId COLLATE utf8mb4_unicode_ci;
+    WHERE userId COLLATE utf8mb4_unicode_ci = OLD.userId COLLATE utf8mb4_unicode_ci;
 END;
 
 -- Fonction pour décrémenter les exercices réussis de l'utilisateur
@@ -189,7 +189,7 @@ FOR EACH ROW
 BEGIN
     UPDATE UserStats
     SET successfullExercises = successfullExercises - 1
-    WHERE userId = OLD.userId COLLATE utf8mb4_unicode_ci;
+    WHERE userId COLLATE utf8mb4_unicode_ci = OLD.userId COLLATE utf8mb4_unicode_ci;
 END;
 
 CREATE TRIGGER on_create_UserCompletedExercisesSerie
@@ -198,7 +198,7 @@ FOR EACH ROW
 BEGIN
     UPDATE UserStats
     SET completedSeries = completedSeries + 1
-    WHERE userId = NEW.userId COLLATE utf8mb4_unicode_ci;
+    WHERE userId COLLATE utf8mb4_unicode_ci = NEW.userId COLLATE utf8mb4_unicode_ci;
 END;
 
 CREATE TRIGGER on_update_UserStats_check_user_level
@@ -218,6 +218,6 @@ BEGIN
     IF levelUser IS NOT NULL AND levelUser != NEW.level THEN
         UPDATE UserStats 
         SET level = levelUser 
-        WHERE userId = NEW.userId COLLATE utf8mb4_unicode_ci;
+        WHERE userId COLLATE utf8mb4_unicode_ci = NEW.userId COLLATE utf8mb4_unicode_ci;
     END IF;
 END;

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { CreateExercisesSerieDto } from './dto/create-exercises-serie.dto';
 import { UpdateExercisesSerieDto } from './dto/update-exercises-serie.dto';
 import { ApiCookieAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -38,13 +38,26 @@ export class ExercisesSerieController {
   }
 
   @Get(':id')
+  @ApiCookieAuth('access_token')
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get an exercices serie by ID' })
   @ApiResponse({ status: 200, description: 'Return the exercices serie.', type: ExercisesSerie })
   @ApiResponse({ status: 404, description: 'Exercices serie not found.' })
-  findOne(@Param('id') id: string): Promise<ExercisesSerie | null> {
+  findOne(@Param('id') id: string, @Req() request): Promise<ExercisesSerie | null> {
     return this.genericService.findOne("exercisesSerie", { 
       where: { id: Number(id) },
       include: {
+        level: true,
+        completedUsers: {
+          where: {
+            userId: String(request.user?.id)
+          }
+        },
+        favoriteUsers: {
+          where: {
+            userId: String(request.user?.id)
+          }
+        },
         exercises: true,
       }
     });

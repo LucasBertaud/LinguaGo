@@ -11,13 +11,13 @@
 </template>
 
 <script setup lang="ts">
-import ExercisesSerieCard from '../../components/Dashboard/Card/ExercisesSerieCard.vue';
+import ExercisesSerieCard from '../../../components/Dashboard/Card/ExercisesSerieCard.vue';
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import Database from '../../utils/database.utils';
-import type Level from '../../interface/level.interface';
-import LoadingSpinner from '../../components/LoadingSpinner.vue';
-import { networkObserver } from '../../services/network-observer';
+import Database from '../../../utils/database.utils';
+import type Level from '../../../interface/level.interface';
+import LoadingSpinner from '../../../components/LoadingSpinner.vue';
+import { networkObserver } from '../../../services/network-observer';
 
 const props = defineProps<{
     levelTitle: string;

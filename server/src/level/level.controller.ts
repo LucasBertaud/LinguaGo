@@ -1,8 +1,9 @@
-import { Controller, Get, Param, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards, Request, Query } from '@nestjs/common';
 import { ApiCookieAuth, ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { GenericService } from 'src/utils/generic.service';
 import { Level } from './entities/level.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { ExercisesSerieType } from '@prisma/client';
 
 @ApiTags('Levels')
 @Controller('level')
@@ -91,12 +92,18 @@ export class LevelController {
   @ApiResponse({ status: 200, description: 'The level with details', type: Level })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Level not found' })
-  findOneByTitle(@Request() req, @Param('title') title: string) {
-    return this.genericService.findOne("level", {
+  async findOneByTitle(@Request() req, @Param('title') title: string, @Query('type') type?: string) {
+    return await this.genericService.findOne("level", {
       where: { title: String(title) },
       include: {
         exercisesSeries: {
+          where: {
+            type: type as ExercisesSerieType ?? "DEFAULT"
+          },
           include: {
+            completedUsers: {
+              where: { userId: String(req.user?.id) }
+            },
             favoriteUsers: {
               where: { userId: String(req.user?.id) }
             },

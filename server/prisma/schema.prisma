@@ -91,6 +91,7 @@ model ExercisesSerie {
   level          Level                         @relation(fields: [levelId], references: [id])
   completedUsers UserCompletedExercisesSerie[]
   favoriteUsers  UserFavoriteSerie[]
+  type           ExercisesSerieType           @default(DEFAULT)
 }
 
 model Exercise {
@@ -164,4 +165,10 @@ enum ExerciseType {
   MULTIPLE_CHOICE
   TRANSLATION
   TRUE_FALSE
+  TALK
+}
+
+enum ExercisesSerieType {
+  DEFAULT
+  TALK
 }
