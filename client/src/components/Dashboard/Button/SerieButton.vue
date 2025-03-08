@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import ExercisesSerie from '../../../interface/exercises-serie.interface';
 import { getPercentageCompleted } from '../../../utils/exercises.utils';
 interface Props {
@@ -32,6 +32,12 @@ interface Props {
 const { serie } = defineProps<Props>();
 
 const percentageCompleted = ref<number>(0);
+
+watch(() => serie, async (newSerie) => {
+    if (newSerie) {
+        percentageCompleted.value = await getPercentageCompleted(newSerie);
+    }
+}, { deep: true, immediate: true });
 
 onMounted(async () => {
     percentageCompleted.value = await getPercentageCompleted(serie); 

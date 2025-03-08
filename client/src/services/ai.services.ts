@@ -42,7 +42,6 @@ const model = genAI.getGenerativeModel({
 });
 
 export const translationCheck = async (content: string[]) => {
-    console.log('content', content);
     const result = await model.generateContent(content);
     const response = JSON.parse(result.response.text()) as string;
     return response;

@@ -70,25 +70,41 @@ import UserFavoriteSerie from '../../../interface/user-favorite-serie.interface'
 import store from '../../../store';
 import TimerSeconds from '../Exercises/TimerSeconds.vue';
 import Exercise from '../../../interface/exercise.interface';
+import { ExercisesService } from '../../../services/exercises.service';
+import { networkObserver } from '../../../services/network-observer';
+import { methods, OfflineStorageService } from '../../../services/offline-storage.service';
+import Database from '../../../utils/database.utils';
 
 const {serie, pointsPerExo} = defineProps<{
     serie: ExercisesSerie;
     pointsPerExo: number;
 }>();
-
-const userFavoriteSerie: UserFavoriteSerie | undefined = serie.favoriteUsers.find((favorite) => favorite.userId === store.getters.getUser.id && favorite.serieId === serie.id);
+const userId = store.getters.getUser.id;
+const userFavoriteSerie: UserFavoriteSerie | undefined = serie.favoriteUsers.find((favorite) => favorite.userId === userId && favorite.serieId === serie.id);
 
 const isPlaying = ref(false);
 const currentExercise = ref<Exercise>();
 const currentExerciseIndex = ref<number>(0);
+const completedExercises = ref<Exercise[]>([]);
 const answer = ref<string>('');
+const isAlreadyCompleted = ref<boolean>(serie.completedUsers.length > 0);
+const exercisesService = ref<ExercisesService | null>(null);
 const recognition = ref(null);
+const emit = defineEmits<{
+    completed: [boolean];
+}>();
 
 const initVocal = () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechGrammarList = (window as any).SpeechGrammarList || (window as any).webkitSpeechGrammarList;
+
+    const grammar = '#JSGF V1.0; grammar phrase; public <phrase> = ' + serie.exercises.map((exercise: Exercise) => exercise.answer).join(' | ') + ' ;';
 
     const recognition = new SpeechRecognition();
-    
+    const speechRecognitionList = new SpeechGrammarList();
+    speechRecognitionList.addFromString(grammar, 1);
+    console.log(grammar);
+    recognition.grammars = speechRecognitionList;
     recognition.lang = 'en-US';
     recognition.interimResults = true;
     recognition.continuous = true;
@@ -99,15 +115,18 @@ const handlePlay = () => {
     isPlaying.value = !isPlaying.value;
     if(isPlaying.value) {
         recognition.value.start();
-        console.log('Recognition started');
+        let timer = null;
         recognition.value.onresult = (e: any) => {
+            clearTimeout(timer);
             const lastIndex: number = e.results.length - 1;
             const transcript: string = e.results[lastIndex][0].transcript;
-            answer.value = transcript.toLowerCase().trim();
-            isAnswerCorrect();
+            timer = setTimeout(() => {
+                answer.value = transcript.toLowerCase().trim();
+                isAnswerCorrect();
+            }, 500);
         }
         recognition.value.onend = () => {
-            console.log('Recognition ended');
+            isPlaying.value = false;
         }
     } else {
         recognition.value.stop();
@@ -115,10 +134,47 @@ const handlePlay = () => {
 }
 
 const isAnswerCorrect = async () => {
-    const isCorrect: boolean = answer.value.includes(currentExercise.value.answer);
+    const isCorrect: boolean = currentExercise.value.answer
+    .split(' ')
+    .every(word => answer.value.includes(word));
     if(isCorrect) {
-        nextExercise();
+        correct();
+    } else {
+        incorrect();
     }
+}
+
+const correct = async () => {
+    exercisesService.value.markExerciseAsCompleted(currentExercise.value, completedExercises.value)
+    .then(_ => {
+        if(!completedExercises.value.includes(currentExercise.value)){
+            completedExercises.value.push(currentExercise.value);
+            store.dispatch('updateSerie', serie.id);
+        }
+    })
+    .finally(() => {
+        if(currentExerciseIndex.value == serie.exercises.length - 1) {
+            isCompleted();
+            return;
+        } else {
+            nextExercise();
+        }
+    });
+}
+
+const incorrect = async () => {
+    if(isAlreadyCompleted.value) return;
+    exercisesService.value.markExerciseAsFailed(currentExercise.value, completedExercises.value)
+    .then(_ => {
+        if(completedExercises.value.includes(currentExercise.value)){
+            completedExercises.value = completedExercises.value.filter((exercise: Exercise) => exercise.id !== currentExercise.value.id);
+        }
+    });
+}
+
+const isCompleted = () => {
+    if(!isAlreadyCompleted.value) stampInDatabase();
+    emit('completed', true);
 }
 
 const nextExercise = () => {
@@ -127,7 +183,30 @@ const nextExercise = () => {
     serie.exercises[currentExerciseIndex.value];
 };
 
+const stampInDatabase = async () => {
+    try {
+        if(networkObserver.isOffline()){
+            const data: object = {
+                userId: userId,
+                serieId: serie.id,
+            };
+            OfflineStorageService.store("user-completed-exercises-serie", data, methods.POST);
+            return;
+        }
+        await Database.create("user-completed-exercises-serie", {
+            userId: userId,
+            serieId: serie.id,
+        });
+        isAlreadyCompleted.value = true;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 onMounted(() => {
+    exercisesService.value = new ExercisesService(userId, serie.id);
+    exercisesService.value.setPointsPerExo(pointsPerExo);
+    completedExercises.value = serie.exercises.filter((exercise: Exercise) => exercise?.usersCompleted?.length > 0);
     currentExercise.value = serie.exercises[currentExerciseIndex.value];
     recognition.value = initVocal();
 });

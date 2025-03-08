@@ -58,7 +58,15 @@ export class ExercisesSerieController {
             userId: String(request.user?.id)
           }
         },
-        exercises: true,
+        exercises: {
+          include: {
+            usersCompleted: {
+              where: {
+                userId: String(request.user?.id)
+              }
+            }
+          }
+        },
       }
     });
   }

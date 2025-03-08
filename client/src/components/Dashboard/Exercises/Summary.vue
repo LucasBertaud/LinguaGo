@@ -38,7 +38,6 @@ const route = useRoute();
 const props = defineProps<{ completedExercises: Exercise[], totalExercises: number, serieId: number, userId: string }>();
 
 const correctAnswersCount = computed(() => {
-    console.log(props.completedExercises);
     return props.completedExercises.length;
 });
 
@@ -52,7 +51,7 @@ const goToExercises = () => {
 
 const stampInDatabase = async () => {
     try {
-        if(networkObserver.isOffline){
+        if(networkObserver.isOffline()){
             const data: object = {
                 userId: props.userId,
                 serieId: props.serieId,
