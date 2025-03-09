@@ -13,11 +13,15 @@ export class ExercisesService {
     public async fetchExercises (): Promise<Exercise[]> {
         try {
             const response = await Database.getAll(`exercise/serie/${this.serieId}`);
-            this.pointsPerExo = response[0].serie.level.pointsPerExo;
+            this.setPointsPerExo(response[0].serie.level.pointsPerExo);
             return response;
         } catch (error) {
             console.error('Erreur lors de la récupération des exercices:', error);
         }
+    }
+
+    public setPointsPerExo(points: number): void {
+        this.pointsPerExo = points;
     }
 
     public async markExerciseAsCompleted(currentExercise: Exercise, completedExercises: Exercise[]): Promise<void> {
@@ -39,7 +43,7 @@ export class ExercisesService {
             return;
         }
 
-        this.saveExerciseCompleted(exerciseId);
+        await this.saveExerciseCompleted(exerciseId);
     }
 
     public async markExerciseAsFailed(currentExercise: Exercise, completedExercises: Exercise[]): Promise<void> {
@@ -71,6 +75,7 @@ export class ExercisesService {
 
     private async saveExerciseCompleted(exerciseId: number): Promise<void> {
         try {
+            console.log('saving exercise completed', exerciseId, this.userId, this.serieId, this.pointsPerExo);
             await Database.create('user-completed-exercise', {
                 userId: this.userId,
                 exerciseId: exerciseId,

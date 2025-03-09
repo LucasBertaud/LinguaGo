@@ -1,5 +1,5 @@
 import { NavigationRoute, registerRoute } from 'workbox-routing';
-import { CacheFirst, NetworkFirst } from 'workbox-strategies';
+import { CacheFirst, NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response/CacheableResponsePlugin';
 import { createHandlerBoundToURL} from 'workbox-precaching';
 import { ExpirationPlugin } from 'workbox-expiration';
@@ -55,7 +55,7 @@ export const register = () => {
     registerRoute(
       ({ url }) =>
         url.origin === self.location.origin && url.pathname.startsWith('/assets/images/icons'),
-      new CacheFirst({
+      new StaleWhileRevalidate({
         cacheName: 'icons-cache',
         plugins: [
           new CacheableResponsePlugin({

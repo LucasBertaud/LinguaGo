@@ -49,6 +49,7 @@ import FavoriteButton from '../Button/FavoriteButton.vue';
 import store from '../../../store';
 import type ExercisesSerie from '../../../interface/exercises-serie.interface';
 import type UserFavoriteSerie from '../../../interface/user-favorite-serie.interface';
+import { getPercentageCompleted } from '../../../utils/exercises.utils';
 
 const props = defineProps<{
   exercisesSerie: ExercisesSerie;
@@ -60,14 +61,6 @@ const emit = defineEmits<{
 const percentageCompleted = ref<number>(0);
 const router = useRouter();
 const userFavoriteSerie: UserFavoriteSerie | undefined = props.exercisesSerie.favoriteUsers.find((favorite) => favorite.userId === store.getters.getUser.id && favorite.serieId === props.exercisesSerie.id);
-
-const getCompletedExercisesLength = () => {
-  return props.exercisesSerie.exercises.filter((exercise) => exercise.usersCompleted.length > 0).length;
-};
-
-const getPercentageCompleted = async () => {
-  return (getCompletedExercisesLength() / props.exercisesSerie.exercises.length) * 100 || 0;
-};
 
 const svgContent = ref<string | null>(null);
 
@@ -84,6 +77,6 @@ const onRemoveFavorite = () => {
 
 onMounted(async () => {
   svgContent.value = await loadSvg(`/assets/images/icons/achievement.svg`);
-  percentageCompleted.value = await getPercentageCompleted();
+  percentageCompleted.value = await getPercentageCompleted(props.exercisesSerie);
 });
 </script>

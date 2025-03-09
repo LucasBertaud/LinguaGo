@@ -38,18 +38,18 @@
 </template>
 
 <script setup lang="ts">
-import Summary from '../../components/Dashboard/Exercises/Summary.vue';
-import MultipleChoice from '../../components/Dashboard/Exercises/MultipleChoice.vue';
+import Summary from '../../../components/Dashboard/Exercises/Summary.vue';
+import MultipleChoice from '../../../components/Dashboard/Exercises/MultipleChoice.vue';
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import LoadingSpinner from '../../components/LoadingSpinner.vue';
-import type Exercise from '../../interface/exercise.interface';
-import Translation from '../../components/Dashboard/Exercises/Translation.vue';
-import TrueFalse from '../../components/Dashboard/Exercises/TrueFalse.vue';
-import Timer from '../../components/Dashboard/Exercises/Timer.vue';
-import { ExercisesService } from '../../services/exercises.service';
-import { translationCheck } from '../../services/ai.services';
+import LoadingSpinner from '../../../components/LoadingSpinner.vue';
+import type Exercise from '../../../interface/exercise.interface';
+import Translation from '../../../components/Dashboard/Exercises/Translation.vue';
+import TrueFalse from '../../../components/Dashboard/Exercises/TrueFalse.vue';
+import Timer from '../../../components/Dashboard/Exercises/TimerDisplay.vue';
+import { ExercisesService } from '../../../services/exercises.service';
+import { translationCheck } from '../../../services/ai.services';
 
 defineProps<{
     levelTitle: string;

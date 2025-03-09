@@ -23,12 +23,34 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'to-talk',
         name: 'ToTalk',
-        component: () => import('../views/dashboard/ToTalk.vue'),
+        component: () => import('../views/dashboard/to-talk/Index.vue'),
+        redirect: {
+          name: 'TalkLevelDetail',
+          params: {
+            levelTitle: 'A1'
+          }
+        },
+        children: [
+          {
+            path: ':levelTitle',
+            name: 'TalkLevelDetail',
+            props: true,
+            component: () => import('../views/dashboard/to-talk/Level.vue'),
+            children: [
+              {
+                name: 'TalkSerie',
+                path: ':serieId',
+                props: true,
+                component: () => import('../views/dashboard/to-talk/Serie.vue'),
+              }
+            ]
+          }
+        ]
       },
       {
         path: 'to-exercise',
         name: 'ToExercise',
-        component: () => import('../views/dashboard/ToExercise.vue'),
+        component: () => import('../views/dashboard/to-exercise/Index.vue'),
         redirect: {
           name: 'LevelDetail',
           params: {
@@ -40,7 +62,7 @@ const routes: RouteRecordRaw[] = [
             path: ':levelTitle',
             name: 'LevelDetail',
             props: true,
-            component: () => import('../views/dashboard/Level.vue'),
+            component: () => import('../views/dashboard/to-exercise/Level.vue'),
             redirect: {
               name: 'Series',
             },
@@ -49,13 +71,13 @@ const routes: RouteRecordRaw[] = [
                 name: 'Series',
                 path: 'series',
                 props: true,
-                component: () => import('../views/dashboard/Series.vue'),
+                component: () => import('../views/dashboard/to-exercise/Series.vue'),
               },
               {
                 name: 'Exercises',
                 path: ':serieId',
                 props: true,
-                component: () => import('../views/dashboard/Exercises.vue'),
+                component: () => import('../views/dashboard/to-exercise/Exercises.vue'),
               }
             ]
           }

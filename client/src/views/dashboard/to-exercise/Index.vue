@@ -25,11 +25,11 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import Title from '../../components/Dashboard/Layout/Title.vue';
-import Database from '../../utils/database.utils';
-import type Level from '../../interface/level.interface';
-import LoadingSpinner from '../../components/LoadingSpinner.vue';
-import { networkObserver } from '../../services/network-observer';
+import Title from '../../../components/Dashboard/Layout/Title.vue';
+import Database from '../../../utils/database.utils';
+import type Level from '../../../interface/level.interface';
+import LoadingSpinner from '../../../components/LoadingSpinner.vue';
+import { networkObserver } from '../../../services/network-observer';
 
 const levels = ref<Level[]>([]);
 const isLoading = ref(false);

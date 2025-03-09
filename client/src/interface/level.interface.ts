@@ -5,6 +5,7 @@ export default interface Level {
     title: string
     subtitle?: string
     description?: string
+    pointsPerExo: number
     winablePoints: number
     exercisesSeries: ExercisesSerie[]
 }
