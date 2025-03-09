@@ -10,7 +10,6 @@ import { UpdateUserCompletedExerciseDto } from "src/user/user-completed-exercise
 import { CreateUserCompletedExercisesSerieDto } from "src/user/user-completed-exercises-serie/dto/create-user-completed-exercises-serie.dto";
 import { UpdateUserCompletedExercisesSerieDto } from "src/user/user-completed-exercises-serie/dto/update-user-completed-exercises-serie.dto";
 import { CreateUserFavoriteSerieDto } from "src/user/user-favorite-serie/dto/create-user-favorite-serie.dto";
-import { UpdateUserFavoriteSerieDto } from "src/user/user-favorite-serie/dto/update-user-favorite-serie.dto";
 
 export type PrismaModels = {
     ExercisesSerie: {
@@ -60,7 +59,7 @@ export type PrismaModels = {
         include: Prisma.UserFavoriteSerieInclude;
         createMany: Prisma.UserFavoriteSerieCreateManyInput;
         create: CreateUserFavoriteSerieDto;
-        update: UpdateUserFavoriteSerieDto;
+        update: Prisma.UserFavoriteSerieUpdateInput;
         _sum: Prisma.UserFavoriteSerieSumAggregateInputType;
     };
     UserStats: {
