@@ -2,8 +2,9 @@ import api from '../../utils/api.utils';
 import Cookies from 'js-cookie';
 import type { User } from '../../interface/user.interface';
 import { subscriberService } from '../../services/subscriber.service';
-import Database from '../../utils/database.utils';
+import { Database } from '../../utils/database.utils';
 import { networkObserver } from '../../services/network-observer';
+import { Commit } from 'vuex';
 
 interface AuthState {
   user: User | null;
@@ -29,7 +30,7 @@ const mutations = {
 };
 
 const actions = {
-  async login({ commit }: any, { email, password }: { email: string, password: string }) {
+  async login({ commit }: { commit: Commit }, { email, password }: { email: string, password: string }) {
     try {
       await api.post('/auth/login', { email, password });
       const userCookie = Cookies.get('user');
@@ -48,7 +49,7 @@ const actions = {
     }
   },
   
-  async logout({ commit }: any) {
+  async logout({ commit }: { commit: Commit }) {
     try {
       await api.post('/auth/logout');
       commit('clearAuthData');
@@ -59,7 +60,7 @@ const actions = {
     }
   },
   
-  initLogin({ commit }: any) {
+  initLogin({ commit }: { commit: Commit }) {
     const userCookie = Cookies.get('user');
     if (!userCookie) {
       commit('clearAuthData');
@@ -72,12 +73,13 @@ const actions = {
       commit('setAuth', true);
       return true;
     } catch (error) {
+      console.error('Error while initializing login:', error);
       commit('clearAuthData');
       return false;
     }
   },
 
-  async updateUserProfile({ commit }: any, updatedProfile: Partial<User>) {
+  async updateUserProfile({ commit }: { commit: Commit }, updatedProfile: Partial<User>) {
     try {
       const response = await api.patch('/user', updatedProfile);
       commit('setUser', response.data);
@@ -94,7 +96,7 @@ const getters = {
   isAuthenticated(state: AuthState): boolean {
     return state.userLoggedIn;
   },
-  getUser(state: AuthState): any | null {
+  getUser(state: AuthState): User | null {
     if(networkObserver.isOffline()){
       return JSON.parse(localStorage.getItem('userOffline'));
     }

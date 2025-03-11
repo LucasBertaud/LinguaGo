@@ -1,16 +1,17 @@
 import store from "../store";
-import Database from "../utils/database.utils";
+import { Database } from "../utils/database.utils";
 import { serviceWorkerManager } from "./service-worker-manager";
+import { SubscriptionInterface } from "../interface/subscription.interface";
 
 class SubscriberService {
-    public async subscribe(): Promise<any | void> {
+    public async subscribe(): Promise<SubscriptionInterface | null> {
         const registration: ServiceWorkerRegistration = await serviceWorkerManager.getRegistration();
         if (!registration) return;
         
         let sub = await registration.pushManager.getSubscription();
         if (!sub) {
-            const response = await Database.getAll("push/key");
-            const pubkey = response.pubkey;
+            const response = await Database.get("push/key");
+            const pubkey = response.data.pubkey;
             try {
                 sub = await registration.pushManager.subscribe({
                     applicationServerKey: pubkey,
@@ -18,26 +19,28 @@ class SubscriberService {
                 });
                 
             } catch (error) {
-                return;
+                console.error('Erreur lors de l\'abonnement aux notifications:', error);
             }
         }
         if(!sub) return;
 
         const subData = sub.toJSON();
-        await Database.create('push/sub', {
+        await Database.post('push/sub', {
             endpoint: subData.endpoint,
             keys: subData.keys,
             expirationTime: subData.expirationTime,
         });
 
         const stringifySubscription = JSON.stringify(subData);
-        const response = await Database.create("notification", {
+        const subscription: SubscriptionInterface = {
             userId: store.getters.getUser.id,
             isActivate: true,
             subscription: stringifySubscription
-        });
+        }
 
-        return response;
+        const response = await Database.post("notification", subscription);
+
+        return response.data;
     }
 
     public async isNotificationBlocked(): Promise<boolean> {

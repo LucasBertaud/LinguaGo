@@ -16,11 +16,11 @@
                 <div v-if="areNotificationsActivate">
                     <div class="mb-4 relative after:content-[''] after:absolute after:-top-4 after:w-full after:h-[1px] after:bg-gray-300 mt-8">
                         <label for="frequency" class="block mb-2 text-sm font-medium text-black">À quelle heure ?</label>
-                        <VueDatePicker auto-apply v-model="time" @update:model-value="handleUpdateTime" time-picker inline :startTime="startTime" />
+                        <VueDatePicker auto-apply v-model="time" @update:model-value="handleUpdate({'notificationTime': `${time.hours}:${time.minutes}`})" time-picker inline :startTime="startTime" />
                     </div>
                     <div>
                         <label for="frequency" class="block mb-2 text-sm font-medium text-black">Tous les combiens de jours ?</label>
-                        <select @change="handleUpdateFrequency" v-model="frequency" name="frequency" class="bg-white border border-gray-300 text-black text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5">
+                        <select @change="handleUpdate({'frequency': frequency})" v-model="frequency" name="frequency" class="bg-white border border-gray-300 text-black text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5">
                             <option v-for="days in FrequencyNotification" :value="getEnumKeyByValue(FrequencyNotification, days)">{{ days }}</option>
                         </select>
                     </div>
@@ -33,12 +33,12 @@
 <script setup lang="ts">
 import Popper from 'vue3-popper';
 import { ref } from 'vue';
-import Database from '../../../utils/database.utils';
+import { Database } from '../../../utils/database.utils';
 import { subscriberService } from '../../../services/subscriber.service';
-import NotificationInterface from '../../../interface/notification.interface';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { getEnumKeyByValue } from '../../../utils/enum.utils';
+import { SubscriptionInterface } from '../../../interface/subscription.interface';
 
 enum FrequencyNotification {
     TODAY = "Juste aujourd'hui",
@@ -56,25 +56,15 @@ const areNotificationsAllowed = ref<boolean>(false);
 const areNotificationsActivate = ref<boolean>(false);
 const time = ref();
 const startTime = ref({ hours: 0, minutes: 0 });
-const timerUpdateTime = ref();
+const timerUpdate = ref();
 const frequency = ref();
-const timerUpdateFrequency = ref();
 const isNotificationFetched = ref(false);
 
-const handleUpdateTime = () => {
-    clearTimeout(timerUpdateTime.value);
-    timerUpdateTime.value = setTimeout(async () => {
-        const hours = time.value.hours;
-        const minutes = time.value.minutes;
-        await Database.update("notification", '', { notificationTime: `${hours}:${minutes}` });
-    }, 3000);
-}
-
-const handleUpdateFrequency = async () => {
-    clearTimeout(timerUpdateFrequency.value);
-    timerUpdateFrequency.value = setTimeout(async () => {
-        await Database.update("notification", '', { frequency: frequency.value });
-    }, 3000);
+const handleUpdate = async(data: object) => {
+    if(timerUpdate.value) clearTimeout(timerUpdate.value);
+    timerUpdate.value = setTimeout(async () => {
+        await Database.patch("notification", data);
+    }, 1000);
 }
 
 const handleOpen = async () => {
@@ -85,16 +75,16 @@ const handleOpen = async () => {
 }
 
 const fetchNotificationInDatabase = async () => {
-    const response = await Database.getAll("notification/user");
+    const response = await Database.get("notification/user");
     if(!response) return isNotificationFetched.value = false;
-    areNotificationsActivate.value = response.isActivate;
-    response.notificationTime;
-    const splitTime = response.notificationTime.split(':');
+    areNotificationsActivate.value = response.data.isActivate;
+    response.data.notificationTime;
+    const splitTime = response.data.notificationTime.split(':');
     const date = new Date();
     date.setHours(parseInt(splitTime[0]));
     date.setMinutes(parseInt(splitTime[1]));
     startTime.value = { hours: date.getHours(), minutes: date.getMinutes() };
-    frequency.value = response.frequency;
+    frequency.value = response.data.frequency;
     isNotificationFetched.value = true;
 }
 
@@ -103,26 +93,20 @@ const handleCheckbox = async (): Promise<void> => {
         await createNotification();
     } else {
         if(isNotificationFetched.value) {
-            await updateNotification();
+            await handleUpdate({ isActivate: !areNotificationsActivate.value });
+            areNotificationsActivate.value = !areNotificationsActivate.value;
         } else {
             await createNotification();
         }
     }
 }
 
-const updateNotification = async () => {
-    const response = await Database.update("notification", '', { isActivate: !areNotificationsActivate.value });
-    if(!response) return;
-    areNotificationsActivate.value = response.isActivate;
-}
-
 const createNotification = async () => {
-    const response = await subscriberService.subscribe();
+    const subscription: SubscriptionInterface | void = await subscriberService.subscribe();
     isNotificationBlocked.value = Notification.permission === "denied";
-    if(!response) return;
-    const notification: NotificationInterface = response.data;
-    areNotificationsAllowed.value = notification.isActivate;
-    areNotificationsActivate.value = notification.isActivate;
+    if(!subscription) return;
+    areNotificationsAllowed.value = subscription.isActivate;
+    areNotificationsActivate.value = subscription.isActivate;
 }
 </script>
 

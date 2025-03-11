@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import Database from '../../../utils/database.utils';
+import { Database } from '../../../utils/database.utils';
 import Chart from '../../Chart.vue';
 
 const seriesCompletedStats = ref<number[]>();
@@ -35,13 +35,13 @@ const levels = ['A1', 'A2', 'B1', 'B2', 'C1'];
 
 const fetchSeriesCompletedStats = async () => {
     try {
-        const response = await Database.getAll('user-completed-exercises-serie/user');
+        const response = await Database.get('user-completed-exercises-serie/user');
         const filterResponse: number[] = [];
         for (const level of levels) {
-            filterResponse.push(response.filter((serie: any) => serie.exercisesSerie.level.title === level).length);
+            filterResponse.push(response.data.filter((serie: any) => serie.exercisesSerie.level.title === level).length);
         }
         seriesCompletedStats.value = filterResponse;
-        isNoSeriesCompleted.value = response.length === 0;
+        isNoSeriesCompleted.value = response.data.length === 0;
     } catch (error) {
         console.error(error);
     }

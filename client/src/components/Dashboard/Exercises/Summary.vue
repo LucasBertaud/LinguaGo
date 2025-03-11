@@ -27,7 +27,7 @@ import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import type Exercise from '../../../interface/exercise.interface';
 import confetti from 'canvas-confetti';
-import Database from '../../../utils/database.utils';
+import { Database } from '../../../utils/database.utils';
 import type UserCompletedExercisesSerie from '../../../interface/user-completed-exercises-serie.interface';
 import { networkObserver } from '../../../services/network-observer';
 import { methods, OfflineStorageService } from '../../../services/offline-storage.service';
@@ -59,7 +59,7 @@ const stampInDatabase = async () => {
             OfflineStorageService.store("user-completed-exercises-serie", data, methods.POST);
             return;
         }
-        await Database.create("user-completed-exercises-serie", {
+        await Database.post("user-completed-exercises-serie", {
             userId: props.userId,
             serieId: props.serieId,
         });

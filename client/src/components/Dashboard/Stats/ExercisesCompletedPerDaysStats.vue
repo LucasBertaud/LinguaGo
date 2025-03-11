@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import Database from '../../../utils/database.utils';
+import { Database } from '../../../utils/database.utils';
 import Chart from '../../Chart.vue';
 
 const exercisesCompletedPerDaysStats = ref<number[]>();
@@ -44,7 +44,7 @@ const days = Array.from({ length: 7 }, (_, i) => {
 
 const fetchExercisesCompletedStats = async () => {
     try {
-        const response = await Database.getAll('user-completed-exercise/one-week');
+        const response = await Database.get('user-completed-exercise/one-week');
         const groupBy = (objectArray: any, key: any) => {
             return objectArray.reduce((rv: any, x: any) => {
                 const dateKey = new Date(x[key]).toLocaleDateString('fr-FR', { month: '2-digit', day: '2-digit' });
@@ -52,7 +52,7 @@ const fetchExercisesCompletedStats = async () => {
                 return rv;
             }, {});
         }
-        const groupByDay = groupBy(response, 'completedAt');
+        const groupByDay = groupBy(response.data, 'completedAt');
         exercisesCompletedPerDaysStats.value = days.map(day => {
             return groupByDay[day]?.length ?? 0
         });

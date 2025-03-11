@@ -90,7 +90,7 @@ import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import DOMPurify from 'dompurify';
 import { useToast } from 'vue-toastification';
-import Database from '../../utils/database.utils';
+import { Database } from '../../utils/database.utils';
 import AvatarSelectionModal from './AvatarSelectionModal.vue';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
 
@@ -145,9 +145,9 @@ const toggleEdit = async () => {
 const loadAvatar = async () => {
   if (userInfo.value?.avatarId) {
     try {
-      const avatar = await Database.getOne('avatar', userInfo.value.avatarId.toString());
-      if (avatar) {
-        avatarSvg.value = avatar.svg;
+      const response = await Database.get('avatar/' + userInfo.value.avatarId.toString());
+      if (response) {
+        avatarSvg.value = response.data.svg;
       }
     } catch (error) {
       console.error('Erreur lors du chargement de l\'avatar:', error);

@@ -4,6 +4,7 @@ import { CacheableResponsePlugin } from 'workbox-cacheable-response/CacheableRes
 import { createHandlerBoundToURL} from 'workbox-precaching';
 import { ExpirationPlugin } from 'workbox-expiration';
 const API_URL = import.meta.env.VITE_API_URL;
+const self = globalThis;
 
 export const register = () => {
     registerRoute(

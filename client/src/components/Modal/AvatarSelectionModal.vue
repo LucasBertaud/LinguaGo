@@ -36,7 +36,7 @@ import DOMPurify from 'dompurify';
 import { useStore } from 'vuex';
 import { useToast } from 'vue-toastification';
 import type { Avatar } from '../../interface/avatar.interface';
-import Database from '../../utils/database.utils';
+import { Database } from '../../utils/database.utils';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
 
 const avatars = ref<Avatar[]>([]);
@@ -57,9 +57,9 @@ const userInfo = computed(() => store.getters.getUser);
 
 const loadAvatars = async () => {
     try {
-        const response = await Database.getAll('avatar');
+        const response = await Database.get('avatar');
         if (response) { 
-            avatars.value = response;
+            avatars.value = response.data;
         }
     } catch (error) {
         console.error('Error loading avatars:', error);
