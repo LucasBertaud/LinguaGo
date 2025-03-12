@@ -22,6 +22,8 @@ export class UserCompletedExerciseController {
   }
 
   @Get()
+  @ApiCookieAuth('access_token')
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get all completed exercises' })
   @ApiResponse({ status: 200, description: 'List of all completed exercises', type: [UserCompletedExercise] })
   findAll() {
@@ -29,6 +31,8 @@ export class UserCompletedExerciseController {
   }
 
   @Get('top-users-of-week')
+  @ApiCookieAuth('access_token')
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get top 10 users of the week' })
   @ApiResponse({
     status: 200,

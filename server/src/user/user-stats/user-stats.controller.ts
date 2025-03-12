@@ -1,14 +1,19 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { GenericService } from 'src/utils/generic.service';
 import { UserStat } from './entities/user-stat.entity';
-import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {ApiCookieAuth, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 
+@ApiTags('User Stats')
 @Controller('user-stats')
 export class UserStatsController {
   constructor(private readonly genericService: GenericService<UserStat>) {}
 
   @Get()
+  @ApiCookieAuth('access_token')
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Get all user stats records' })
+  @ApiResponse({ status: 200, description: 'Returns all user stats records', type: [UserStat] })
   findAll() {
     return this.genericService.findAll("userStats", {});
   }

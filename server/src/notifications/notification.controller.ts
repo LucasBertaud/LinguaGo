@@ -1,17 +1,25 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { Notification } from '@prisma/client';
 import { GenericService } from 'src/utils/generic.service';
-import { ApiCookieAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {ApiCookieAuth, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { NotificationService } from './notification.service';
 
+@ApiTags('Notifications')
 @Controller('notification')
 export class NotificationController{
     constructor(private readonly genericService: GenericService<Notification>, private readonly notificationService: NotificationService){}
 
     @Get()
+    @ApiCookieAuth('access_token')
+    @UseGuards(AuthGuard)
+    @ApiOperation({ summary: 'Get all notifications' })
+    @ApiResponse({
+        status: 200,
+        description: 'Returns all notification records'
+    })
     async findAll() {
         return this.genericService.findAll("notification", {});
     }
@@ -51,7 +59,7 @@ export class NotificationController{
                 });
             }
             return this.genericService.create("notification", createNotificationDto);
-            
+
         } catch (error) {
             console.error(error)
         }

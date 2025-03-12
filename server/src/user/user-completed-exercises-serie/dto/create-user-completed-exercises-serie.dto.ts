@@ -5,7 +5,8 @@ export class CreateUserCompletedExercisesSerieDto {
     @ApiProperty({
         type: 'string',
         example: '1',
-        description: 'Id of the user',
+        description: 'Unique identifier of the user who completed the series',
+        required: true
     })
     @IsNotEmpty()
     @IsString()
@@ -14,7 +15,8 @@ export class CreateUserCompletedExercisesSerieDto {
     @ApiProperty({
         type: 'number',
         example: 1,
-        description: 'Id of the serie',
+        description: 'Unique identifier of the completed exercise series',
+        required: true
     })
     @IsNotEmpty()
     @IsInt()
