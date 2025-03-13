@@ -69,7 +69,7 @@ export class NotificationService {
         return 7;
     }
   }
-  public async updateNextNotifyAt(userId: String, frequencyDto: string | undefined, notificationTimeDto: string | undefined): Promise<Date> {
+  public async updateNextNotifyAt(userId: string, frequencyDto: string | undefined, notificationTimeDto: string | undefined): Promise<Date> {
     const currentNotification: Notification | null = await this.genericService.findOne("notification", {
       where: {
           userId: String(userId)

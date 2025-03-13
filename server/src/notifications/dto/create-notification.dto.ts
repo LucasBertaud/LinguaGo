@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsString, IsNotEmpty, IsEmpty, IsDate } from 'class-validator';
+import { IsBoolean, IsString, IsNotEmpty, IsDate } from 'class-validator';
 
 const notifyInOneDayAndAt17h = new Date();
 notifyInOneDayAndAt17h.setDate(notifyInOneDayAndAt17h.getDate() + 1);
