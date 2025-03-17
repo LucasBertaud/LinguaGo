@@ -1,5 +1,5 @@
 import Exercise from "../interface/exercise.interface";
-import Database from "../utils/database.utils";
+import { Database } from "../utils/database.utils";
 import { networkObserver } from "./network-observer";
 import { methods, OfflineStorageService } from "./offline-storage.service";
 
@@ -12,9 +12,9 @@ export class ExercisesService {
 
     public async fetchExercises (): Promise<Exercise[]> {
         try {
-            const response = await Database.getAll(`exercise/serie/${this.serieId}`);
+            const response = await Database.get(`exercise/serie/${this.serieId}`);
             this.setPointsPerExo(response[0].serie.level.pointsPerExo);
-            return response;
+            return response.data;
         } catch (error) {
             console.error('Erreur lors de la récupération des exercices:', error);
         }
@@ -75,8 +75,7 @@ export class ExercisesService {
 
     private async saveExerciseCompleted(exerciseId: number): Promise<void> {
         try {
-            console.log('saving exercise completed', exerciseId, this.userId, this.serieId, this.pointsPerExo);
-            await Database.create('user-completed-exercise', {
+            await Database.post('user-completed-exercise', {
                 userId: this.userId,
                 exerciseId: exerciseId,
                 serieId: this.serieId,

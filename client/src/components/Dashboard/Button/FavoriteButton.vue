@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import Database from '../../../utils/database.utils';
+import { Database } from '../../../utils/database.utils';
 import store from '../../../store';
 import { ref } from 'vue';
 import type UserFavoriteSerie from '../../../interface/user-favorite-serie.interface';
@@ -46,12 +46,12 @@ const handleFavorite = async () => {
 
 const addFavorite = async () => {
   try {
-    await Database.create('user-favorite-serie', { 
+    await Database.post('user-favorite-serie', { 
       userId: userId, 
       serieId: props.serieId 
     }).then(() => {
       // Permet de mettre en cache l'exercice favori
-      Database.getAll(`exercise/serie/${props.serieId}`);
+      Database.get(`exercise/serie/${props.serieId}`);
     });
     isFavoriteActivate.value = true;
   } catch (error) {

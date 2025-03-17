@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
-import Database from '../../../utils/database.utils';
+import { Database } from '../../../utils/database.utils';
 import { useRouter } from 'vue-router';
 import { useRoute } from 'vue-router';
 import ExercisesSerie from '../../../interface/exercises-serie.interface';
@@ -32,9 +32,9 @@ const firstSerie = ref<ExercisesSerie>();
 const fetchLevel = async () => {
     try {
         isLoading.value = true;
-        const data = await Database.getAll(`level/title/${props.levelTitle}?type=TALK`);
-        series.value = data.exercisesSeries;
-        store.commit('setExercisesSeries', data.exercisesSeries);
+        const response = await Database.get(`level/title/${props.levelTitle}?type=TALK`);
+        series.value = response.data.exercisesSeries;
+        store.commit('setExercisesSeries', response.data.exercisesSeries);
         firstSerie.value = getFirstSerie();
     } catch (error) {
         console.error('Erreur lors du chargement du niveau:', error);
@@ -70,7 +70,6 @@ onMounted(async () => {
 });
 
 const computedSeries = computed(() => {
-    console.log(store.getters.getExercisesSeries);
     return store.getters.getExercisesSeries;
 })
 </script>

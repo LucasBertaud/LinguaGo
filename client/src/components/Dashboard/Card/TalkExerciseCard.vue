@@ -73,7 +73,7 @@ import Exercise from '../../../interface/exercise.interface';
 import { ExercisesService } from '../../../services/exercises.service';
 import { networkObserver } from '../../../services/network-observer';
 import { methods, OfflineStorageService } from '../../../services/offline-storage.service';
-import Database from '../../../utils/database.utils';
+import { Database } from '../../../utils/database.utils';
 
 const {serie, pointsPerExo} = defineProps<{
     serie: ExercisesSerie;
@@ -103,7 +103,6 @@ const initVocal = () => {
     const recognition = new SpeechRecognition();
     const speechRecognitionList = new SpeechGrammarList();
     speechRecognitionList.addFromString(grammar, 1);
-    console.log(grammar);
     recognition.grammars = speechRecognitionList;
     recognition.lang = 'en-US';
     recognition.interimResults = true;
@@ -193,7 +192,7 @@ const stampInDatabase = async () => {
             OfflineStorageService.store("user-completed-exercises-serie", data, methods.POST);
             return;
         }
-        await Database.create("user-completed-exercises-serie", {
+        await Database.post("user-completed-exercises-serie", {
             userId: userId,
             serieId: serie.id,
         });

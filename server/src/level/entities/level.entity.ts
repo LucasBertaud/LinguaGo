@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ExercisesSerie } from '../../exercises-serie/entities/exercises-serie.entity';
 import { Level as LevelEnum } from '../level.enum';
 
 export class Level {

@@ -14,7 +14,7 @@
 import ExercisesSerieCard from '../../../components/Dashboard/Card/ExercisesSerieCard.vue';
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import Database from '../../../utils/database.utils';
+import { Database } from '../../../utils/database.utils';
 import type Level from '../../../interface/level.interface';
 import LoadingSpinner from '../../../components/LoadingSpinner.vue';
 import { networkObserver } from '../../../services/network-observer';
@@ -29,8 +29,8 @@ const isLoading = ref(false);
 const fetchLevel = async () => {
     try {
         isLoading.value = true;
-        const data = await Database.getOne('level/title', props.levelTitle);
-        level.value = data;
+        const response = await Database.get('level/title/' + props.levelTitle);
+        level.value = response.data;
     } catch (error) {
         console.error('Erreur lors du chargement du niveau:', error);
     } finally {

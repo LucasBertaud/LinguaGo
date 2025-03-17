@@ -78,7 +78,7 @@ import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import DOMPurify from 'dompurify';
-import Database from '../../../utils/database.utils';
+import { Database } from '../../../utils/database.utils';
 import NotificationButton from '../Button/NotificationButton.vue';
 import UserProfileModal from '../../Modal/UserProfileModal.vue';
 
@@ -101,9 +101,9 @@ const logout = async () => {
 const loadAvatar = async () => {
     if (userInfo.value?.avatarId) {
         try {
-            const avatar = await Database.getOne('avatar', userInfo.value.avatarId.toString());
-            if (avatar) {
-                avatarSvg.value = avatar.svg;
+            const response = await Database.get('avatar/' + userInfo.value.avatarId.toString());
+            if (response) {
+                avatarSvg.value = response.data.svg;
             }
         } catch (error) {
             console.error('Erreur lors du chargement de l\'avatar:', error);

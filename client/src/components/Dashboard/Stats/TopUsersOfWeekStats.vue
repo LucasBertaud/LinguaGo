@@ -26,7 +26,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import DOMPurify from 'dompurify';
-import Database from '../../../utils/database.utils';
+import { Database } from '../../../utils/database.utils';
 
 const topUsersOfWeek = ref<{
     pseudo: string;
@@ -38,8 +38,8 @@ const topUsersOfWeek = ref<{
 
 const fetchTopUsersOfWeek = async () => {
     try {
-        const response = await Database.getAll('user-completed-exercise/top-users-of-week');
-        topUsersOfWeek.value = response;
+        const response = await Database.get('user-completed-exercise/top-users-of-week');
+        topUsersOfWeek.value = response.data;
     } catch (error) {
         console.error(error);
     }

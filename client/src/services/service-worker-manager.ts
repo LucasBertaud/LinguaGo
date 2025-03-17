@@ -27,7 +27,7 @@ class ServiceWorkerManager {
     }
 
     public async getRegistration(): Promise<ServiceWorkerRegistration> {
-        return await this.promise.then(_ => this.registration);
+        return await this.promise.then(() => this.registration);
     }
 }
 

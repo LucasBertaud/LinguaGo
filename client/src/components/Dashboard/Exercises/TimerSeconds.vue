@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
-import Database from '../../../utils/database.utils';
+import { Database } from '../../../utils/database.utils';
 
 interface Props {
     color?: string;

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsInt, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 import { ExerciseType } from '../exercise.enum';
 
 export class CreateExerciseDto {

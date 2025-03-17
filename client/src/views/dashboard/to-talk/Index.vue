@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import Title from '../../../components/Dashboard/Layout/Title.vue';
-import Database from '../../../utils/database.utils';
+import { Database } from '../../../utils/database.utils';
 import type Level from '../../../interface/level.interface';
 import LoadingSpinner from '../../../components/LoadingSpinner.vue';
 import { networkObserver } from '../../../services/network-observer';
@@ -31,8 +31,8 @@ const isLoading = ref(false);
 const fetchLevels = async () => {
     try {
         isLoading.value = true;
-        const response = await Database.getAll('level');
-        levels.value = response.map((level: Level) => {
+        const response = await Database.get('level');
+        levels.value = response.data.map((level: Level) => {
                 return level;
         });
         levels.value.sort((a, b) => a.title > b.title ? 1 : -1);

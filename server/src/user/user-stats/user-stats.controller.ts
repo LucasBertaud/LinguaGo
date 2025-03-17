@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Delete, UseGuards, Request } from '@nestjs/common';
 import { GenericService } from 'src/utils/generic.service';
 import { UserStat } from './entities/user-stat.entity';
 import {ApiCookieAuth, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';

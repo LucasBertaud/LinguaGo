@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Request } from '@nestjs/common';
 import { GenericService } from 'src/utils/generic.service';
 import { CreateUserFavoriteSerieDto } from './dto/create-user-favorite-serie.dto';
 import { UserFavoriteSerie } from './entities/user-favorite-serie.entity';

@@ -36,6 +36,7 @@ export class CryptoService {
       decrypted += decipher.final('utf8');
       return JSON.parse(decrypted);
     } catch (error) {
+      console.error(error);
       throw new Error('Impossible de déchiffrer le payload');
     }
   }

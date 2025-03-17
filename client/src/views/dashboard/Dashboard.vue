@@ -56,7 +56,7 @@
 import { onMounted, ref } from 'vue';
 import SimpleStatCard from '../../components/Dashboard/Card/SimpleStatCard.vue';
 import Title from '../../components/Dashboard/Layout/Title.vue';
-import Database from '../../utils/database.utils';
+import { Database } from '../../utils/database.utils';
 import TimeStatsUtils from '../../utils/stats/time-stats.utils';
 import type UserStats from '../../interface/user-stats.interface';
 import type SiteStats from '../../interface/site-stats.interface';
@@ -73,9 +73,9 @@ const isLoading = ref(false);
 const fetchUserStats = async () => {
     try {
         isLoading.value = true;
-        const response = await Database.getAll('user-stats/user');
-        timeStats.value = new TimeStatsUtils(response.timeSpentOnExercises);
-        userStats.value = response;
+        const response = await Database.get('user-stats/user');
+        timeStats.value = new TimeStatsUtils(response.data.timeSpentOnExercises);
+        userStats.value = response.data;
     } catch (error) {
         console.error(error);
     }   finally {
@@ -86,8 +86,8 @@ const fetchUserStats = async () => {
 const fetchSiteStats = async () => {
     try {
         isLoading.value = true;
-        const response = await Database.getAll('site-stats');
-        siteStats.value = response;
+        const response = await Database.get('site-stats');
+        siteStats.value = response.data;
     } catch (error) {
         console.error(error);
     } finally {

@@ -28,7 +28,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import Title from '../../components/Dashboard/Layout/Title.vue';
-import Database from '../../utils/database.utils';
+import { Database } from '../../utils/database.utils';
 import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
 import ExercisesSerieCard from '../../components/Dashboard/Card/ExercisesSerieCard.vue';
@@ -59,8 +59,8 @@ const carouselConfig = (items: number) => {
 const fetchFavorites = async () => {
     try {
         isLoading.value = true;
-        const response = await Database.getAll(`level/favorites`)
-        levels.value = response;
+        const response = await Database.get(`level/favorites`)
+        levels.value = response.data;
     } catch (error) {
         console.error('Erreur lors de la récupération des favoris:', error);
     } finally {

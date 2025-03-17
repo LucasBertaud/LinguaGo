@@ -1,4 +1,4 @@
-import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
@@ -62,6 +62,7 @@ export class AuthMiddleware implements NestMiddleware {
         return next();
       }
     } catch (error) {
+      console.error(error);
       try {
         const decodedExpiredToken = this.jwtService.decode(accessToken);
         if (decodedExpiredToken && typeof decodedExpiredToken === 'object' && 'data' in decodedExpiredToken) {
@@ -87,11 +88,12 @@ export class AuthMiddleware implements NestMiddleware {
           req['user'] = decryptedPayload;
           
           // Modifie le token dans les cookies uniquements 
-          const newToken = await this.authService.refreshToken(decryptedPayload.id, res);
+          await this.authService.refreshToken(decryptedPayload.id, res);
           
           return next();
         }
-      } catch (refreshError) {
+      } catch (err) {
+        console.error(err);
         this.clearAuthCookies(res);
       }
     }

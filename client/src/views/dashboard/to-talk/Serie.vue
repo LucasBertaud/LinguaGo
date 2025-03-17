@@ -16,7 +16,7 @@
 import { onMounted, ref, watch } from 'vue';
 import TalkExerciseCard from '../../../components/Dashboard/Card/TalkExerciseCard.vue';
 import ExercisesSerie from '../../../interface/exercises-serie.interface';
-import Database from '../../../utils/database.utils';
+import { Database } from '../../../utils/database.utils';
 import { useRoute } from 'vue-router';
 import store from '../../../store';
 import Icon from '../../../components/Icon.vue';
@@ -30,8 +30,8 @@ const props = defineProps<{
 
 const fetchSerie = async () => {
     try {
-        const data = await Database.getAll(`exercises-serie/${props.serieId}`);
-        serie.value = data;
+        const response = await Database.get(`exercises-serie/${props.serieId}`);
+        serie.value = response.data;
     } catch (error) {
         console.error('Erreur lors du chargement de la série:', error);
     }

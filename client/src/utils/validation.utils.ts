@@ -3,6 +3,6 @@ export const validateEmail = (email: string): boolean => {
     return re.test(email);
 };
 
-export const validatePasswordLength = (password: string, minLength: number = 10): boolean => {
+export const validatePasswordLength = (password: string, minLength = 10): boolean => {
     return password.length >= minLength;
 };

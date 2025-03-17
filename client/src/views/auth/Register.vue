@@ -60,7 +60,7 @@ import Error from '../../components/Form/Error.vue';
 import LoadingSpinner from '../../components/LoadingSpinner.vue';
 import PasswordInput from '../../components/Form/PasswordInput.vue';
 import { validateEmail, validatePasswordLength } from '../../utils/validation.utils';
-import Database from '../../utils/database.utils';
+import { Database } from '../../utils/database.utils';
 
 const pseudo = ref('');
 const email = ref('');
@@ -97,7 +97,7 @@ const handleSubmit = async () => {
     isLoading.value = true;
 
     try {
-        const response = await Database.create('user/register', {
+        const response = await Database.post('user/register', {
             pseudo: pseudo.value,
             email: email.value,
             password: password.value,

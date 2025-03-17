@@ -11,7 +11,7 @@ import { CreateUserCompletedExercisesSerieDto } from "src/user/user-completed-ex
 import { UpdateUserCompletedExercisesSerieDto } from "src/user/user-completed-exercises-serie/dto/update-user-completed-exercises-serie.dto";
 import { CreateUserFavoriteSerieDto } from "src/user/user-favorite-serie/dto/create-user-favorite-serie.dto";
 
-export type PrismaModels = {
+export interface PrismaModels {
     ExercisesSerie: {
         cursor: Prisma.ExercisesSerieWhereUniqueInput;
         where: Prisma.ExercisesSerieWhereInput;
@@ -102,6 +102,6 @@ export type PrismaModels = {
         update: UpdateNotificationDto;
         _sum: Prisma.NotificationSumAggregateInputType;
     };
-  };
+  }
   
   export type EntityName = keyof PrismaModels;

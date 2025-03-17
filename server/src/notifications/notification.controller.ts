@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, UseGuards, Request } from '@nestjs/common';
 import { Notification } from '@prisma/client';
 import { GenericService } from 'src/utils/generic.service';
 import {ApiCookieAuth, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';

@@ -1,17 +1,16 @@
-import Database from "../utils/database.utils";
+import { Database } from "../utils/database.utils";
 import { networkObserver } from "./network-observer";
 
-export class OfflineStorageService {
-    public static async releaseAllOfflineStorage(): Promise<void> {
+export const OfflineStorageService = {
+    async releaseAllOfflineStorage(): Promise<void> {
         if(networkObserver.isOffline()) return;
         const items = { ...localStorage };
         for(const key in items) {
             if(key.includes('||')) this.save(key);
         }
-    }
-
-    public static async store(path: string, data: object, method: methods): Promise<void> {
-        const key: string = `${path}||${method}`;
+    },
+    async store(path: string, data: object, method: methods): Promise<void> {
+        const key = `${path}||${method}`;
         try {
             const storage = JSON.parse(localStorage.getItem(key) || '[]');
             storage.push(data);
@@ -19,9 +18,8 @@ export class OfflineStorageService {
         } catch (error) {
             console.error('Erreur lors de l\'enregistrement pour plus tard:', error);
         }  
-    }
-
-    private static async save(key: string): Promise<void> {
+    },
+    async save(key: string): Promise<void> {
         const path = key.split('||')[0];
         const method = key.split('||')[1];
         try {

@@ -1,5 +1,7 @@
+import { AxiosResponse } from "axios";
 import ExercisesSerie from "../../interface/exercises-serie.interface";
-import Database from "../../utils/database.utils";
+import { Database } from "../../utils/database.utils";
+import { Commit } from "vuex";
 
 interface ExercisesSerieState {
     exercisesSeries: ExercisesSerie[];
@@ -26,8 +28,9 @@ const getters = {
 }
 
 const actions = {
-    async updateSerie({ commit }: any, serieId: number) {
-        const serie: ExercisesSerie = await Database.getAll(`exercises-serie/${serieId}`);
+    async updateSerie({ commit }: { commit: Commit }, serieId: number) {
+        const response: AxiosResponse = await Database.get(`exercises-serie/${serieId}`);
+        const serie: ExercisesSerie = response.data;
         commit('updateExercisesSerie', serie);
     }
 }
