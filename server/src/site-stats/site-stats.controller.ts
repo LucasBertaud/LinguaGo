@@ -8,13 +8,16 @@ export class SiteStatsController {
   constructor(private readonly genericService: GenericService<SiteStat>) {}
   @Get()
   @ApiOperation({ summary: 'Get site stats by unique ID : 1.' })
-  @ApiResponse({ status: 200, description: 'Return the site stats.', type: SiteStat })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return the site stats.',
+    type: SiteStat,
+  })
   findOne() {
-    return this.genericService.findOne("SiteStats", {
+    return this.genericService.findOne('SiteStats', {
       where: {
-        id: 1
-      }
+        id: 1,
+      },
     });
   }
 }

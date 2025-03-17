@@ -11,7 +11,6 @@ import { UserStatsModule } from './user/user-stats/user-stats.module';
 import { SiteStatsModule } from './site-stats/site-stats.module';
 import { UserCompletedExercisesSerieModule } from './user/user-completed-exercises-serie/user-completed-exercises-serie.module';
 import { PushModule } from './notifications/push/push.module';
-import { SubscriptionsModule } from './notifications/subscriptions/subscriptions.module';
 import { AvatarModule } from './avatar/avatar.module';
 import { NotificationModule } from './notifications/notification.module';
 import { AuthMiddleware } from './auth/auth.middleware';
@@ -36,7 +35,6 @@ import { CryptoModule } from './auth/crypto/crypto.module';
     SiteStatsModule,
     UserCompletedExercisesSerieModule,
     PushModule,
-    SubscriptionsModule,
     AvatarModule,
     NotificationModule,
     PrismaModule,
@@ -47,8 +45,6 @@ import { CryptoModule } from './auth/crypto/crypto.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .forRoutes('*');
+    consumer.apply(AuthMiddleware).forRoutes('*');
   }
 }

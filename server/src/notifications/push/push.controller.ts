@@ -1,21 +1,16 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
-import { SubscriptionsService } from "../subscriptions/subscriptions.service";
-import SubscriptionDto from "../subscriptions/dto/subscription.dto";
+import { Controller, Get } from '@nestjs/common';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('push')
 export class PushController {
-    constructor(private readonly subscriptionsService: SubscriptionsService){}
+  constructor() {}
 
-    @Get('key')
-    getKey() {
-        return {
-            pubkey: process.env.VAPID_PUBLIC_KEY,
-         };
-    }
-
-    @Post('sub')
-    subscribe(@Body() subscriptionDto: SubscriptionDto) {
-        this.subscriptionsService.addSubscription(subscriptionDto);
-        return { message: 'subscribed' };
-    }
+  @Get('key')
+  @ApiOperation({ summary: 'Fetch public vapid key.' })
+  @ApiResponse({ status: 200, description: 'Return the public vapid key.' })
+  getKey() {
+    return {
+      pubkey: process.env.VAPID_PUBLIC_KEY,
+    };
+  }
 }

@@ -4,48 +4,42 @@ import { serviceWorkerManager } from "./service-worker-manager";
 import { SubscriptionInterface } from "../interface/subscription.interface";
 
 class SubscriberService {
-    public async subscribe(): Promise<SubscriptionInterface | null> {
-        const registration: ServiceWorkerRegistration = await serviceWorkerManager.getRegistration();
-        if (!registration) return;
-        
-        let sub = await registration.pushManager.getSubscription();
-        if (!sub) {
-            const response = await Database.get("push/key");
-            const pubkey = response.data.pubkey;
-            try {
-                sub = await registration.pushManager.subscribe({
-                    applicationServerKey: pubkey,
-                    userVisibleOnly: true,
-                });
-                
-            } catch (error) {
-                console.error('Erreur lors de l\'abonnement aux notifications:', error);
-            }
-        }
-        if(!sub) return;
+  public async subscribe(): Promise<SubscriptionInterface | null> {
+    const registration: ServiceWorkerRegistration =
+      await serviceWorkerManager.getRegistration();
+    if (!registration) return;
 
-        const subData = sub.toJSON();
-        await Database.post('push/sub', {
-            endpoint: subData.endpoint,
-            keys: subData.keys,
-            expirationTime: subData.expirationTime,
+    let sub = await registration.pushManager.getSubscription();
+    if (!sub) {
+      const response = await Database.get("push/key");
+      const pubkey = response.data.pubkey;
+      try {
+        sub = await registration.pushManager.subscribe({
+          applicationServerKey: pubkey,
+          userVisibleOnly: true,
         });
-
-        const stringifySubscription = JSON.stringify(subData);
-        const subscription: SubscriptionInterface = {
-            userId: store.getters.getUser.id,
-            isActivate: true,
-            subscription: stringifySubscription
-        }
-
-        const response = await Database.post("notification", subscription);
-
-        return response.data;
+      } catch (error) {
+        console.error("Erreur lors de l'abonnement aux notifications:", error);
+      }
     }
+    if (!sub) return;
 
-    public async isNotificationBlocked(): Promise<boolean> {
-        return Notification.permission === "denied";
-    }
+    const subData = sub.toJSON();
+    const stringifySubscription = JSON.stringify(subData);
+    const subscription: SubscriptionInterface = {
+      userId: store.getters.getUser.id,
+      isActivate: true,
+      subscription: stringifySubscription,
+    };
+
+    const response = await Database.post("notification", subscription);
+
+    return response.data;
+  }
+
+  public async isNotificationBlocked(): Promise<boolean> {
+    return Notification.permission === "denied";
+  }
 }
 
 export const subscriberService = new SubscriberService();
