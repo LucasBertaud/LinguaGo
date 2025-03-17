@@ -7,18 +7,36 @@ import AuthPayload from 'src/interface/auth-payload.interface';
 import { User } from '@prisma/client';
 import { Response } from 'express';
 import { CryptoService } from './crypto/crypto.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   private readonly cookieSecure: boolean;
+  private readonly cookieDomain: string;
+  private readonly cookieSameSite: 'lax' | 'strict' | 'none';
+  private readonly ACCESS_TOKEN_EXPIRATION = 2 * 60 * 60 * 1000;
 
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
     private prisma: PrismaService,
-    private cryptoService: CryptoService
+    private cryptoService: CryptoService,
+    private configService: ConfigService
   ) {
-    this.cookieSecure = process.env.COOKIE_SECURE === 'true';
+    this.cookieSecure = this.configService.get('COOKIE_SECURE') === 'true';
+    this.cookieDomain = this.configService.get('COOKIE_DOMAIN') || '';
+    this.cookieSameSite = this.configService.get('COOKIE_SAME_SITE') as 'lax' | 'strict' | 'none';
+  }
+
+  private setCookieOptions(httpOnly = false) {
+    return {
+      httpOnly,
+      secure: this.cookieSecure,
+      sameSite: this.cookieSameSite,
+      domain: this.cookieDomain,
+      maxAge: this.ACCESS_TOKEN_EXPIRATION,
+      path: '/'
+    };
   }
 
   async signIn(email: string, pass: string, @Res() res: Response): Promise<void> {
@@ -67,16 +85,8 @@ export class AuthService {
 
     await this.cleanUpOldSessions(user.id);
 
-    res.cookie('access_token', access_token, {
-      httpOnly: true,
-      secure: this.cookieSecure,
-      sameSite: 'strict',
-    });
-
-    res.cookie('user', JSON.stringify(payload), {
-      secure: this.cookieSecure,
-      sameSite: 'strict',
-    });
+    res.cookie('access_token', access_token, this.setCookieOptions(true));
+    res.cookie('user', JSON.stringify(payload), this.setCookieOptions());
 
     res.send({ message: 'User successfully logged in.', payload });
   }
@@ -105,16 +115,8 @@ export class AuthService {
       audience: 'LinguaGo-client',
     });
 
-    res.cookie('access_token', access_token, {
-      httpOnly: true,
-      secure: this.cookieSecure,
-      sameSite: 'strict'
-    });
-
-    res.cookie('user', JSON.stringify(payload), {
-      secure: this.cookieSecure,
-      sameSite: 'strict'
-    });
+    res.cookie('access_token', access_token, this.setCookieOptions(true));
+    res.cookie('user', JSON.stringify(payload), this.setCookieOptions());
   }
 
   async firstTimeConnected(userId: string): Promise<User> {
@@ -133,16 +135,8 @@ export class AuthService {
       where: { userId },
     });
 
-    res.clearCookie('access_token', {
-      httpOnly: true,
-      secure: this.cookieSecure,
-      sameSite: 'strict'
-    });
-
-    res.clearCookie('user', {
-      secure: this.cookieSecure,
-      sameSite: 'strict'
-    });
+    res.clearCookie('access_token', this.setCookieOptions(true));
+    res.clearCookie('user', this.setCookieOptions());
 
     res.send({ message: 'Déconnexion réussie' });
   }

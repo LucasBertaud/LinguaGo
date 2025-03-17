@@ -17,6 +17,9 @@ import { AuthMiddleware } from './auth/auth.middleware';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PrismaModule } from './utils/prisma.module';
 import { CryptoModule } from './auth/crypto/crypto.module';
+import { LoggingInterceptor } from './utils/log/logging.interceptor';
+import { LoggerService } from './utils/log/logger.service';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -41,7 +44,13 @@ import { CryptoModule } from './auth/crypto/crypto.module';
     CryptoModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    LoggerService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
