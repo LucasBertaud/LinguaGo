@@ -1,13 +1,13 @@
 import { precacheAndRoute, cleanupOutdatedCaches } from "workbox-precaching";
 import { register } from "./service-worker-register-route";
 
+self.__WB_MANIFEST;
+
 precacheAndRoute(self.__WB_MANIFEST || []);
 
 cleanupOutdatedCaches();
 
 register();
-
-const self = globalThis;
 
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", () => self.clients.claim());

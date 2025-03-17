@@ -17,8 +17,11 @@ export default defineConfig({
       srcDir: "src",
       filename: "service-worker.js",
       injectManifest: {
-        swSrc: "src/service-worker.js",
-        swDest: "dist/service-worker.js",
+        injectionPoint: 'self.__WB_MANIFEST',
+        swSrc: './src/service-worker.js',
+        swDest: 'dist/service-worker.js',
+        globDirectory: 'dist',
+        maximumFileSizeToCacheInBytes: 3000000,
       },
       manifest: {
         name: "Linguago",
