@@ -11,8 +11,8 @@ class SubscriberService {
 
     let sub = await registration.pushManager.getSubscription();
     if (!sub) {
-      const response = await Database.get("push/key");
-      const pubkey = response.data.pubkey;
+      const { data } = await Database.get("push/key");
+      const pubkey = data.pubkey;
       try {
         sub = await registration.pushManager.subscribe({
           applicationServerKey: pubkey,
@@ -32,9 +32,9 @@ class SubscriberService {
       subscription: stringifySubscription,
     };
 
-    const response = await Database.post("notification", subscription);
+    const { data } = await Database.post("notification", subscription);
 
-    return response.data;
+    return data;
   }
 
   public async isNotificationBlocked(): Promise<boolean> {

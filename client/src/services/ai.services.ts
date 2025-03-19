@@ -1,18 +1,21 @@
-import { GoogleGenerativeAI, ResponseSchema, SchemaType } from '@google/generative-ai';
+import {
+  GoogleGenerativeAI,
+  ResponseSchema,
+  SchemaType,
+} from "@google/generative-ai";
 
-const schema : ResponseSchema = {
-    "type": SchemaType.STRING,
-    "enum": [
-        'accept',
-        'reject'
-    ],
-}
+const schema: ResponseSchema = {
+  type: SchemaType.STRING,
+  enum: ["accept", "reject"],
+};
 
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GOOGLE_GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(
+  import.meta.env.VITE_GOOGLE_GEMINI_API_KEY
+);
 
-const model = genAI.getGenerativeModel({ 
-    model: "gemini-1.5-flash",
-    systemInstruction: `
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+  systemInstruction: `
         Tu vas recevoir un tableau de deux éléments :
 
         Le premier élément contient une phrase en français à traduire en anglais.
@@ -35,14 +38,14 @@ const model = genAI.getGenerativeModel({
         Si la réponse est correcte = "accept".
         Si la réponse est incorrecte = "reject".
     `,
-    generationConfig: {
-        responseMimeType: "application/json",
-        responseSchema: schema,
-    },
+  generationConfig: {
+    responseMimeType: "application/json",
+    responseSchema: schema,
+  },
 });
 
 export const translationCheck = async (content: string[]) => {
-    const result = await model.generateContent(content);
-    const response = JSON.parse(result.response.text()) as string;
-    return response;
-}
+  const result = await model.generateContent(content);
+  const response = JSON.parse(result.response.text()) as string;
+  return response;
+};
