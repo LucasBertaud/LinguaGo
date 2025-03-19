@@ -125,6 +125,9 @@ const isNotificationFetched = ref(false);
 const handleUpdate = async (data: object) => {
   if (timerUpdate.value) clearTimeout(timerUpdate.value);
   timerUpdate.value = setTimeout(async () => {
+    const subscription = await subscriberService.getSubscription();
+    if (!subscription) return;
+    data["subscription"] = subscription;
     await Database.patch("notification", data);
   }, 1000);
 };
@@ -156,7 +159,9 @@ const handleCheckbox = async (): Promise<void> => {
     await createNotification();
   } else {
     if (isNotificationFetched.value) {
-      await handleUpdate({ isActivate: !areNotificationsActivate.value });
+      await handleUpdate({
+        isActivate: !areNotificationsActivate.value,
+      });
       areNotificationsActivate.value = !areNotificationsActivate.value;
     } else {
       await createNotification();
