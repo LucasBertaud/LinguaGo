@@ -192,23 +192,20 @@ const handlePlay = () => {
 
 const isAnswerCorrect = async () => {
   const splitedAnswer = answer.value.split(" ");
-  const sanitizedAnswerWords = splitedAnswer.map((word) => {
-    let sanitizeWord = word;
+  const sanitizedAnswerWords = splitedAnswer.flatMap((word) => {
+    let sanitizeWord = sanitize(word);
 
-    if (sanitizeWord.includes(":00")) {
-      const [hour] = sanitizeWord.split(":");
-      sanitizeWord = `${numWords(parseInt(hour))}`;
-      splitedAnswer.push("oclock");
-    } else {
-      sanitizeWord = sanitize(word);
-
-      const wordToNumber = parseInt(sanitizeWord);
-      if (!isNaN(wordToNumber)) {
-        sanitizeWord = numWords(parseInt(sanitizeWord));
-      }
+    const wordToNumber = parseInt(sanitizeWord);
+    if (!isNaN(wordToNumber)) {
+      sanitizeWord = numWords(wordToNumber);
     }
 
-    return sanitizeWord;
+    if (word.includes(":00")) {
+      const [hour] = word.split(":");
+      return [numWords(parseInt(hour)), "oclock"];
+    }
+
+    return [sanitizeWord];
   });
 
   const splitedExerciseAnswer = currentExercise.value.answer.split(" ");
