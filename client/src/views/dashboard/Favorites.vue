@@ -14,7 +14,7 @@
     <h2 class="text-2xl font-semibold mb-2">
       {{ level.title }} ({{ level.subtitle }})
     </h2>
-    <Carousel v-bind="carouselConfig(level.exercisesSeries.length)">
+    <Carousel v-bind="carouselConfig(level.exercisesSeries.length)" v-if="level.exercisesSeries.length > 3">
       <Slide
         v-for="exercisesSerie in level.exercisesSeries"
         :key="exercisesSerie.id"
@@ -32,6 +32,18 @@
         <Pagination />
       </template>
     </Carousel>
+    <div v-else>
+      <div class="flex flex-wrap justify-start">
+        <div class="lg:w-1/2 xl:w-1/3 w-full" v-for="exercisesSerie in level.exercisesSeries"
+        :key="exercisesSerie.id">
+          <ExercisesSerieCard
+            :exercisesSerie="exercisesSerie"
+            :routerParams="{ levelTitle: level.title }"
+            @removeFavorite="onRemoveFavorite"
+          />
+        </div>
+      </div>
+    </div>
   </section>
   <LoadingSpinner v-if="isLoading" />
 </template>

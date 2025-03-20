@@ -16,10 +16,10 @@
 
       <!-- Main Navigation -->
       <div class="w-full grow space-y-3 p-4">
-        <AsideLink link="/dashboard/home" label="Accueil" icon="house-heart" />
-        <AsideLink link="/dashboard/to-exercise" label="S'exercer" icon="learn" />
-        <AsideLink link="/dashboard/to-talk" label="S'entraîner à parler" icon="microphone" />
-        <AsideLink link="/dashboard/favorites" label="Mes favoris" icon="star" />
+        <Link link="/dashboard/home" label="Accueil" icon="house-heart" />
+        <Link link="/dashboard/to-exercise" label="S'exercer" icon="learn" />
+        <Link link="/dashboard/to-talk" label="S'entraîner à parler" icon="microphone" />
+        <Link link="/dashboard/favorites" label="Mes favoris" icon="star" />
       </div>
       <!-- END Main Navigation -->
 
@@ -32,6 +32,5 @@
 </template>
 
 <script setup lang="ts">
-import AsideLink from './AsideLink.vue';
-
+import Link from '../Link.vue';
 </script>

@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { loadSvg } from '../../../../utils/loadSvg.utils';
+import { loadSvg } from '../../../utils/loadSvg.utils';
 
 interface Props {
     link: string;

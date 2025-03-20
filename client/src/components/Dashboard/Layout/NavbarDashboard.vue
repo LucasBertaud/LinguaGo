@@ -2,7 +2,7 @@
   <header class="flex items-center h-20 px-6 sm:px-10 bg-primary">
     <button
       @click="toggleMenu"
-      class="cursor-pointer block sm:hidden relative flex-shrink-0 p-2 mr-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800 rounded-full"
+      class="cursor-pointer block sm:hidden relative flex-shrink-0 p-2 mr-2 text-white hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800 rounded-full"
     >
       <span class="sr-only">Menu</span>
       <svg
@@ -90,7 +90,7 @@
       >
         <button
           @click="toggleMenu"
-          class="absolute top-4 left-4 cursor-pointer"
+          class="absolute top-4 left-4 cursor-pointer p-2 text-white hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800 rounded-full"
         >
           <svg
             class="w-6 h-6"
@@ -107,36 +107,16 @@
             ></path>
           </svg>
         </button>
-        <router-link
-          @click="toggleMenu"
-          to="/"
-          class="block py-2 px-6 text-white text-2xl hover:bg-primary-dark text-center w-full"
-        >
-          🏠 Accueil
+        <div class="w-full grow space-y-3 p-4 flex justify-center items-center flex-col">
+          <router-link to="/" class="inline-flex text-4xl font-bold
+          mb-8 tracking-wide text-secondary transition hover:opacity-75 active:opacity-100">
+            <span>LinguaGo</span>
         </router-link>
-        <router-link
-          v-if="!isAuthenticated"
-          @click="toggleMenu"
-          to="/login"
-          class="block py-2 px-6 text-white text-2xl hover:bg-primary-dark text-center w-full"
-        >
-          🔑 Connexion
-        </router-link>
-        <router-link
-          v-if="isAuthenticated"
-          @click="toggleMenu"
-          to="/profile"
-          class="block py-2 px-6 text-white text-2xl hover:bg-primary-dark text-center w-full"
-        >
-          👤 Profil
-        </router-link>
-        <button
-          v-if="isAuthenticated"
-          @click="logout"
-          class="block w-full text-white text-center py-2 px-6 text-2xl hover:bg-primary-dark"
-        >
-          🚪 Déconnexion
-        </button>
+          <Link link="/dashboard/home" label="Accueil" icon="house-heart" class="!w-54" @click="toggleMenu" />
+          <Link link="/dashboard/to-exercise" label="S'exercer" icon="learn" class="!w-54" @click="toggleMenu" />
+          <Link link="/dashboard/to-talk" label="S'entraîner à parler" icon="microphone" class="!w-54" @click="toggleMenu" />
+          <Link link="/dashboard/favorites" label="Mes favoris" class="!w-54" icon="star" @click="toggleMenu" />
+      </div>
       </div>
     </transition>
   </header>
@@ -151,6 +131,7 @@ import DOMPurify from "dompurify";
 import { Database } from "../../../utils/database.utils";
 import NotificationButton from "../Button/NotificationButton.vue";
 import UserProfileModal from "../../Modal/UserProfileModal.vue";
+import Link from "./Link.vue";
 
 const store = useStore();
 const router = useRouter();
