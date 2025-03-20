@@ -3,8 +3,8 @@ import { CacheFirst, NetworkFirst, StaleWhileRevalidate } from 'workbox-strategi
 import { CacheableResponsePlugin } from 'workbox-cacheable-response/CacheableResponsePlugin';
 import { createHandlerBoundToURL} from 'workbox-precaching';
 import { ExpirationPlugin } from 'workbox-expiration';
-const API_URL = import.meta.env.VITE_API_URL;
-const self = globalThis;
+const API_URL = "https://api-linguago.mds-lille.yt";
+self.__WB_MANIFEST;
 
 export const register = () => {
     registerRoute(
