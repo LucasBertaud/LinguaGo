@@ -13,7 +13,7 @@
           démarrer :
         </p>
         <p class="text-black font-bold italic mb-4">
-          "{{ currentExercise?.answer }}"
+          "{{ currentExercise?.question }}"
         </p>
       </div>
       <FavoriteButton
@@ -193,11 +193,19 @@ const handlePlay = () => {
 const isAnswerCorrect = async () => {
   const splitedAnswer = answer.value.split(" ");
   const sanitizedAnswerWords = splitedAnswer.map((word) => {
-    let sanitizeWord = sanitize(word);
-    const wordToNumber = parseInt(sanitizeWord);
+    let sanitizeWord = word;
 
-    if (!isNaN(wordToNumber)) {
-      sanitizeWord = numWords(parseInt(sanitizeWord));
+    if (sanitizeWord.includes(":00")) {
+      const [hour] = sanitizeWord.split(":");
+      sanitizeWord = `${numWords(parseInt(hour))}`;
+      splitedAnswer.push("oclock");
+    } else {
+      sanitizeWord = sanitize(word);
+
+      const wordToNumber = parseInt(sanitizeWord);
+      if (!isNaN(wordToNumber)) {
+        sanitizeWord = numWords(parseInt(sanitizeWord));
+      }
     }
 
     return sanitizeWord;
@@ -211,12 +219,13 @@ const isAnswerCorrect = async () => {
   const filterAnswerWords = sanitizedAnswerWords.filter((word) =>
     sanitizeExerciseAnswerWords.includes(word)
   );
+
+  console.log(sanitizeExerciseAnswerWords, filterAnswerWords);
+
   const isCorrect: boolean = sanitizeExerciseAnswerWords.every((word) =>
     filterAnswerWords.includes(word)
   );
-  console.log(isCorrect, filterAnswerWords, sanitizeExerciseAnswerWords);
 
-  console.log(`isCorrect: ${isCorrect}`);
   if (isCorrect) {
     correct();
   } else {

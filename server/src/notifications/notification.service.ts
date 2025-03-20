@@ -95,7 +95,7 @@ export class NotificationService {
     const notificationTime: string =
       notificationTimeDto || currentNotification.notificationTime;
     const notificationTimeArray: string[] = notificationTime.split(':');
-    const notificationHour: number = parseInt(notificationTimeArray[0]) + 1;
+    const notificationHour: number = parseInt(notificationTimeArray[0]);
     const notificationMinute: number = parseInt(notificationTimeArray[1]);
 
     const date = new Date();
