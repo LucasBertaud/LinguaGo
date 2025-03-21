@@ -8,8 +8,8 @@
       :key="serie.id"
     />
     <div
-      v-else
-      class="bg-white rounded-b-4xl rounded-t-4xl shadow-lg overflow-hidden p-8 w-100 mx-auto my-auto"
+      v-if="serie && serieCompleted"
+      class="bg-white rounded-b-4xl rounded-t-4xl shadow-lg overflow-hidden p-8 w-full sm:w-100 mx-auto my-auto"
     >
       <div class="flex flex-col w-full justify-center items-center">
         <Icon
@@ -22,7 +22,7 @@
         <h3 class="text-gray-600 font-bold text-lg uppercase mb-2">
           Félicitations !
         </h3>
-        <p class="text-gray-400 italic">
+        <p class="text-gray-400 italic text-pretty text-center sm:text-left">
           Vous avez terminé cette série avec succés.
         </p>
         <p class="text-gray-400 italic">Passez à la prochaine série.</p>

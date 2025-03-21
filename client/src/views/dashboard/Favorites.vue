@@ -3,7 +3,11 @@
     title="Mes favoris"
     subtitle="Retrouver ici vos séries d'exercices favoris... même hors-ligne !"
   />
-
+  <p class="text-gray-600 ml-0.5">
+    Les exercices que vous avez ajoutés à vos favoris restent disponibles, même
+    sans connexion internet. Vous pouvez les réaliser à tout moment, sans avoir
+    besoin d'être connecté.
+  </p>
   <div v-if="!levels || levels.length === 0" class="py-5">
     <p class="text-gray-500 text-lg italic">
       Vous n'avez pas encore de favoris
@@ -14,7 +18,10 @@
     <h2 class="text-2xl font-semibold mb-2">
       {{ level.title }} ({{ level.subtitle }})
     </h2>
-    <Carousel v-bind="carouselConfig(level.exercisesSeries.length)" v-if="level.exercisesSeries.length > 3">
+    <Carousel
+      v-bind="carouselConfig(level.exercisesSeries.length)"
+      v-if="level.exercisesSeries.length > 3"
+    >
       <Slide
         v-for="exercisesSerie in level.exercisesSeries"
         :key="exercisesSerie.id"
@@ -22,7 +29,10 @@
         <div class="p-2">
           <ExercisesSerieCard
             :exercisesSerie="exercisesSerie"
-            :routerParams="{ levelTitle: level.title }"
+            :routerParams="{
+              levelTitle: level.title,
+              routerName: exercisesSerie?.type || null,
+            }"
             @removeFavorite="onRemoveFavorite"
           />
         </div>
@@ -34,11 +44,17 @@
     </Carousel>
     <div v-else>
       <div class="flex flex-wrap justify-start">
-        <div class="lg:w-1/2 xl:w-1/3 w-full" v-for="exercisesSerie in level.exercisesSeries"
-        :key="exercisesSerie.id">
+        <div
+          class="lg:w-1/2 xl:w-1/3 w-full"
+          v-for="exercisesSerie in level.exercisesSeries"
+          :key="exercisesSerie.id"
+        >
           <ExercisesSerieCard
             :exercisesSerie="exercisesSerie"
-            :routerParams="{ levelTitle: level.title }"
+            :routerParams="{
+              levelTitle: level.title,
+              routerName: setRouteName(exercisesSerie),
+            }"
             @removeFavorite="onRemoveFavorite"
           />
         </div>
@@ -77,6 +93,10 @@ const carouselConfig = (items: number) => {
       },
     },
   };
+};
+
+const setRouteName = (exercisesSerie: ExercisesSerie): string => {
+  return exercisesSerie?.type == "TALK" ? "TalkLevelDetail" : null;
 };
 
 const fetchFavorites = async () => {

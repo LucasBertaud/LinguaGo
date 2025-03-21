@@ -4,7 +4,7 @@
     subtitle="Entraînez-vous à parler et perfectionnez votre prononciation."
   />
   <section class="text-gray-600 body-font">
-    <div class="flex flex-row mb-8 flex-wrap">
+    <div class="flex sm:flex-row ml-4 mb-8 flex-wrap flex-col">
       <router-link
         class="mr-8 text-xl font-bold text-gray-300 hover:text-gray-800 text-nowrap relative"
         active-class="text-gray-500 items-center hover:!text-gray-500 before:content-[''] before:w-2 before:h-2 before:absolute before:left before:bg-gray-500 before:rounded-full before:top-1/2 before:-translate-y-1/2 before:-translate-x-3.5"

@@ -2,17 +2,19 @@
   <div class="flex flex-row flex-wrap">
     <router-view></router-view>
     <div
-      class="w-full bg-white rounded-b-4xl rounded-t-4xl shadow-lg overflow-hidden p-8 lg:flex-1 h-120 [&>*:nth-child(2)]:mt-3 mb-8 lg:mb-0"
+      class="rounded-b-4xl rounded-t-4xl overflow-x-hidden shadow-lg w-full bg-white py-8 lg:flex-1 mb-8 lg:mb-0"
     >
-      <h3 class="text-gray-600 font-bold text-lg uppercase">Séries</h3>
-      <SerieButton
-        v-for="serie in computedSeries"
-        :key="serie.id"
-        :serie="serie"
-      />
-      <p v-if="series.length == 0" class="italic text-gray-400">
-        Aucune série trouvée
-      </p>
+      <div class="overflow-x-hidden px-8 h-120 [&>*:nth-child(2)]:mt-3">
+        <h3 class="text-gray-600 font-bold text-lg uppercase">Séries</h3>
+        <SerieButton
+          v-for="serie in computedSeries"
+          :key="serie.id"
+          :serie="serie"
+        />
+        <p v-if="series.length == 0" class="italic text-gray-400">
+          Aucune série trouvée
+        </p>
+      </div>
     </div>
   </div>
 </template>

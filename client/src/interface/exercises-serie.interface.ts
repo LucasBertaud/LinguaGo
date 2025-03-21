@@ -4,13 +4,14 @@ import type UserCompletedExercisesSerie from "./user-completed-exercises-serie.i
 import type UserFavoriteSerie from "./user-favorite-serie.interface";
 
 export default interface ExercisesSerie {
-    id: number;
-    title: string;
-    description?: string;
-    levelId: number;
-    createdAt: string;
-    exercises: Exercise[];
-    favoriteUsers: UserFavoriteSerie[];
-    level?: Level;
-    completedUsers?: UserCompletedExercisesSerie[];
+  id: number;
+  title: string;
+  description?: string;
+  levelId: number;
+  createdAt: string;
+  exercises: Exercise[];
+  favoriteUsers: UserFavoriteSerie[];
+  level?: Level;
+  completedUsers?: UserCompletedExercisesSerie[];
+  type?: string;
 }
