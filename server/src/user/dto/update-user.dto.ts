@@ -1,17 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, IsNotEmpty, MinLength, Matches } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 export class UpdateUserDto {
-  @IsEmail({}, { message: 'L\'adresse email doit être valide.' })
-  @ApiProperty({ description: 'The email of the user', example: 'test@gmail.com' })
-  email: string;
+  @IsOptional()
+  @IsString({ message: 'Le pseudo doit être une chaîne de caractères.' })
+  @IsNotEmpty({ message: 'Le pseudo ne doit pas être vide.' })
+  @ApiProperty({ description: 'The pseudo of the user', example: 'user123', required: false })
+  pseudo?: string;
 
-  @IsString({ message: 'Le mot de passe doit être une chaîne de caractères.' })
-  @IsNotEmpty({ message: 'Le mot de passe ne doit pas être vide.' })
-  @MinLength(12, { message: 'Le mot de passe doit contenir au moins 12 caractères.' })
-  @Matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{12,}$/, {
-    message: 'Le mot de passe doit contenir une majuscule, un chiffre et un symbole.',
-  })
-  @ApiProperty({ description: 'The password of the user', example: 'Password123!' })
-  password: string;
+  @IsOptional()
+  @IsNumber({}, { message: 'L\'avatarId doit être un nombre.' })
+  @ApiProperty({ description: 'The avatar ID', example: 1, required: false })
+  avatarId?: number;
 }

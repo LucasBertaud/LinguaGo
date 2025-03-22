@@ -1,11 +1,16 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
-import { User, Prisma } from '@prisma/client';
+import { PrismaService } from 'src/utils/prisma.service';
+import { User, Prisma, Avatar } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserDto } from './dto/update-user.dto';
+
+type UserWithAvatar = User & {
+  avatar: Avatar | null;
+};
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(data: Prisma.UserCreateInput): Promise<User> {
     const existingUser = await this.prisma.user.findUnique({
@@ -17,17 +22,43 @@ export class UserService {
     }
 
     const hash: string = await bcrypt.hash(data.password, 10);
-    return this.prisma.user.create({
+
+    const avatars = await this.prisma.avatar.findMany();
+
+    if (avatars.length === 0) {
+      throw new Error('Aucun avatar disponible.');
+    }
+
+    // Sélectionne un avatar par défaut au hasard
+    const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
+
+    const user: User = await this.prisma.user.create({
       data: {
+        pseudo: data.pseudo,
         email: data.email,
         password: hash,
+        avatarId: randomAvatar.id,
       },
     });
+
+    await this.prisma.userStats.create({
+      data: {
+        userId: user.id,
+      }
+    });
+
+    return user;
   }
 
-  async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User | null> {
+  async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<Partial<UserWithAvatar> | null> {
     const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
+      omit: {
+        password: true,
+      },
+      include: {
+        avatar: true
+      }
     });
 
     if (!user) {
@@ -37,68 +68,54 @@ export class UserService {
     return user;
   }
 
-  async findAll(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.UserWhereUniqueInput;
-    where?: Prisma.UserWhereInput;
-    orderBy?: Prisma.UserOrderByWithRelationInput;
-  }): Promise<User[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.user.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
+  async findOneForAuth(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<UserWithAvatar> {
+    const user = await this.prisma.user.findUnique({
+      where: userWhereUniqueInput,
+      include: {
+        avatar: true
+      }
     });
+
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé.');
+    }
+
+    return user as UserWithAvatar;
   }
 
   async update(params: {
     where: Prisma.UserWhereUniqueInput;
-    data: Prisma.UserUpdateInput;
-  }): Promise<User> {
+    data: UpdateUserDto;
+  }): Promise<Partial<User>> {
     const { where, data } = params;
-
+  
     const user = await this.prisma.user.findUnique({
       where,
     });
-
+  
     if (!user) {
       throw new NotFoundException('Utilisateur non trouvé.');
     }
-
-    if (data.email) {
-      const existingUser = await this.prisma.user.findUnique({
-        where: { email: data.email as string },
+  
+    if (data.pseudo) {
+      const existingPseudo = await this.prisma.user.findFirst({
+        where: { pseudo: data.pseudo },
       });
-
-      if (existingUser && existingUser.id !== user.id) {
-        throw new BadRequestException('Un utilisateur avec cet email existe déjà.');
+  
+      if (existingPseudo && existingPseudo.id !== user.id) {
+        throw new BadRequestException('Un utilisateur avec ce pseudo existe déjà.');
       }
     }
-
-    const hash: string = await bcrypt.hash(data.password as string, 10);
+  
     return this.prisma.user.update({
       data: {
-        email: data.email,
-        password: hash,
+        ...(data.pseudo && { pseudo: data.pseudo }),
+        ...(data.avatarId && { avatarId: data.avatarId }),
       },
       where,
-    });
-  }
-
-  async remove(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    const user = await this.prisma.user.findUnique({
-      where,
-    });
-
-    if (!user) {
-      throw new NotFoundException('Utilisateur non trouvé.');
-    }
-
-    return this.prisma.user.delete({
-      where,
+      include: {
+        avatar: true
+      }
     });
   }
 }

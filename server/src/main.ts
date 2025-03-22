@@ -1,12 +1,16 @@
-import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
+import * as webpush from 'web-push';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+  
+  app.use(cookieParser());
 
   // Configure CORS
   app.enableCors({
@@ -22,15 +26,26 @@ async function bootstrap() {
     transform: true,
   }));
 
+  // Configure webpush and start the notification service
+  webpush.setVapidDetails(
+    `mailto:${process.env.DOMAIN_EMAIL}`,
+    process.env.VAPID_PUBLIC_KEY as string,
+    process.env.VAPID_PRIVATE_KEY as string,
+  );
+
   const config = new DocumentBuilder()
     .setTitle('LinguaGo API')
     .setDescription('The LinguaGo API provides a way to manage your language learning')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addCookieAuth('access_token', {
+      type: 'apiKey',
+      in: 'cookie',
+      name: 'access_token'
+    })
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
 bootstrap();

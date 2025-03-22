@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty } from 'class-validator';
-import { Level } from 'src/level/level.enum';
+import { ExercisesSerieType } from '@prisma/client';
+import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateExercisesSerieDto {
     @ApiProperty({
@@ -19,12 +19,20 @@ export class CreateExercisesSerieDto {
     @IsString()
     description: string | null;
     @ApiProperty({
+        type: 'number',
+        example: 1,
+        description: 'Id of the level',
+    })
+    @IsNotEmpty()
+    @IsNumber()
+    levelId: number;
+    @ApiProperty({
         type: 'string',
-        example: 'A1',
-        description: 'Level of the serie',
-        enum: ['A1', 'A2', 'B1', 'B2', 'C1'],
+        example: 'DEFAULT',
+        description: 'Type of the serie',
+        enum: ExercisesSerieType,
     })
     @IsNotEmpty()
     @IsString()
-    level: Level;
+    type: string;
 }

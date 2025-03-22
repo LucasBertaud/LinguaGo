@@ -10,7 +10,7 @@
             <div class="flex flex-col items-center text-center">
                 <span class="text-5xl text-secondary mb-4">⚡</span>
                 <h3 class="text-2xl font-bold text-primary mb-3">Personnalisé pour vous</h3>
-                <p class="text-text">Un parcours d’apprentissage adapté à votre niveau.</p>
+                <p class="text-text">Un parcours d'apprentissage adapté à votre niveau.</p>
             </div>
             <div class="flex flex-col items-center text-center">
                 <span class="text-5xl text-secondary mb-4">📈</span>

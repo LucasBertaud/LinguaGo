@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,40 +8,144 @@ datasource db {
 }
 
 model User {
-  id        Int           @default(autoincrement()) @id
-  email     String        @unique
-  password  String
-  role      Role          @default(USER)
-  createdAt DateTime      @default(now())
-  refreshTokens RefreshToken[]
+  id                  String                        @id @default(uuid())
+  pseudo              String
+  email               String                        @unique
+  password            String
+  role                Role                          @default(USER)
+  createdAt           DateTime                      @default(now())
+  avatarId            Int?
+  firstTimeConnection Boolean                       @default(true)
+  refreshTokens       RefreshToken[]
+  avatar              Avatar?                       @relation(fields: [avatarId], references: [id])
+  completedExercises  UserCompletedExercise[]
+  completedSeries     UserCompletedExercisesSerie[]
+  favoriteSeries      UserFavoriteSerie[]
+  stats               UserStats?
+  notification        Notification?
+}
+
+model Notification {
+  id               Int                   @id @default(autoincrement())
+  userId           String                @unique
+  user             User                  @relation(fields: [userId], references: [id])
+  isActivate       Boolean               @default(true)
+  subscription     String                @db.Text
+  frequency        FrequencyNotification @default(ONE_DAY)
+  notificationTime String                @default("17:00")
+  nextNotifyAt     DateTime
+}
+
+model Avatar {
+  id    Int    @id @default(autoincrement())
+  svg   String @db.Text
+  users User[]
+}
+
+model SiteStats {
+  id             Int @id @default(1)
+  totalUsers     Int @default(0)
+  totalExercises Int @default(0)
+  totalSeries    Int @default(0)
+  totalPoints    Int @default(0)
+}
+
+model UserStats {
+  id                   Int       @id @default(autoincrement())
+  userId               String    @unique
+  points               Int       @default(0)
+  successfullExercises Int       @default(0)
+  failedExercises      Int       @default(0)
+  completedSeries      Int       @default(0)
+  timeSpentOnExercises Int       @default(0)
+  level                LevelEnum @default(A1)
+  user                 User      @relation(fields: [userId], references: [id])
 }
 
 model RefreshToken {
-  id        Int       @default(autoincrement()) @id
-  token     String
-  userId    Int
-  user      User      @relation(fields: [userId], references: [id])
-  createdAt DateTime  @default(now())
+  id        String   @id @default(uuid())
+  token     String   @db.Text
+  userId    String
+  createdAt DateTime @default(now())
   expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Level {
+  id              Int              @id @default(autoincrement())
+  title           LevelEnum        @unique
+  subtitle        String
+  description     String?          @db.Text
+  winablePoints   Int              @default(0)
+  pointsPerExo    Int              @default(1)
+  exercisesSeries ExercisesSerie[]
 }
 
 model ExercisesSerie {
-  id          Int         @default(autoincrement()) @id
-  title       String
-  description String?
-  level       Level
-  exercises   Exercise[]
-  createdAt   DateTime    @default(now())
+  id             Int                           @id @default(autoincrement())
+  title          String
+  description    String?                       @db.Text
+  createdAt      DateTime                      @default(now())
+  levelId        Int
+  exercises      Exercise[]
+  level          Level                         @relation(fields: [levelId], references: [id])
+  completedUsers UserCompletedExercisesSerie[]
+  favoriteUsers  UserFavoriteSerie[]
+  type           ExercisesSerieType           @default(DEFAULT)
 }
 
 model Exercise {
-  id          Int             @default(autoincrement()) @id
-  question    String
-  answer      String
-  choices     String[]
-  type        ExerciseType
-  serie       ExercisesSerie  @relation(fields: [serieId], references: [id]) 
+  id             Int                     @id @default(autoincrement())
+  question       String                  @db.Text
+  answer         String                  @db.Text
+  choices        Json
+  type           ExerciseType
+  serieId        Int
+  serie          ExercisesSerie          @relation(fields: [serieId], references: [id])
+  usersCompleted UserCompletedExercise[]
+}
+
+model UserCompletedExercise {
+  userId      String
+  exerciseId  Int
+  completedAt DateTime @default(now())
   serieId     Int
+  pointsWon   Int      @default(1)
+  exercise    Exercise @relation(fields: [exerciseId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@id([userId, exerciseId], name: "idUserCompletedExercise")
+}
+
+model UserFavoriteSerie {
+  userId    String
+  serieId   Int
+  createdAt DateTime       @default(now())
+  serie     ExercisesSerie @relation(fields: [serieId], references: [id])
+  user      User           @relation(fields: [userId], references: [id])
+
+  @@id([userId, serieId], name: "idUserFavoriteSerie")
+}
+
+model UserCompletedExercisesSerie {
+  userId         String
+  serieId        Int
+  completedAt    DateTime       @default(now())
+  exercisesSerie ExercisesSerie @relation(fields: [serieId], references: [id])
+  user           User           @relation(fields: [userId], references: [id])
+
+  @@id([userId, serieId], name: "idUserCompletedExercisesSerie")
+}
+
+enum FrequencyNotification {
+  TODAY
+  ONE_DAY
+  TWO_DAYS
+  THREE_DAYS
+  FOUR_DAYS
+  FIVE_DAYS
+  SIX_DAYS
+  SEVEN_DAYS
 }
 
 enum Role {
@@ -55,7 +153,7 @@ enum Role {
   ADMIN
 }
 
-enum Level {
+enum LevelEnum {
   A1
   A2
   B1
@@ -67,4 +165,10 @@ enum ExerciseType {
   MULTIPLE_CHOICE
   TRANSLATION
   TRUE_FALSE
+  TALK
+}
+
+enum ExercisesSerieType {
+  DEFAULT
+  TALK
 }

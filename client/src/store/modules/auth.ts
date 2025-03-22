@@ -1,121 +1,111 @@
-import api from '../../utils/api';
-import Cookies from 'js-cookie';
-import { isTokenExpired, clearCookies } from '../../utils/authUtils';
-
-interface AuthResponse {
-  access_token: string;
-  refresh_token: string;
-  user: any;
-}
+import api from "../../utils/api.utils";
+import Cookies from "js-cookie";
+import type { User } from "../../interface/user.interface";
+import { subscriberService } from "../../services/subscriber.service";
+import { Database } from "../../utils/database.utils";
+import { networkObserver } from "../../services/network-observer";
+import { Commit } from "vuex";
 
 interface AuthState {
-  token: string | null;
-  refreshToken: string | null;
-  user: any | null;
+  user: User | null;
   userLoggedIn: boolean;
 }
 
 const state: AuthState = {
-  token: Cookies.get('access') || null,
-  refreshToken: Cookies.get('refresh') || null,
-  user: null,
-  userLoggedIn: !!Cookies.get('access'),
+  user: Cookies.get("user") ? JSON.parse(Cookies.get("user") as string) : null,
+  userLoggedIn: !!Cookies.get("user"),
 };
 
 const mutations = {
-  setToken(state: AuthState, token: string) {
-    state.token = token;
-  },
-  setRefreshToken(state: AuthState, refreshToken: string) {
-    state.refreshToken = refreshToken;
-  },
-  setUser(state: AuthState, user: any) {
+  setUser(state: AuthState, user: User) {
     state.user = user;
   },
   setAuth(state: AuthState, status: boolean) {
     state.userLoggedIn = status;
   },
   clearAuthData(state: AuthState) {
-    state.token = null;
-    state.refreshToken = null;
     state.user = null;
     state.userLoggedIn = false;
   },
 };
 
 const actions = {
-  async login({ commit }: any, { email, password }: { email: string, password: string }) {
+  async login(
+    { commit }: { commit: Commit },
+    { email, password }: { email: string; password: string }
+  ) {
     try {
-      const response = await api.post<AuthResponse>('/auth/login', { email, password });
-      const { access_token, refresh_token, user } = response.data;
-      commit('setToken', access_token);
-      commit('setRefreshToken', refresh_token);
-      commit('setUser', user);
-      commit('setAuth', true);
-      Cookies.set('access', access_token, { secure: true, sameSite: 'strict' });
-      Cookies.set('refresh', refresh_token, { secure: true, sameSite: 'strict' });
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw error;
-    }
-  },
-  async refreshToken({ commit, state }: any) {
-    try {
-      const response = await api.post<AuthResponse>('/auth/refresh', { refresh_token: state.refreshToken });
-      const { access_token } = response.data;
-      commit('setToken', access_token);
-      Cookies.set('access', access_token, { secure: true, sameSite: 'strict' });
-    } catch (error) {
-      console.error('Token refresh failed:', error);
-      commit('clearAuthData');
-      clearCookies();
-      throw error;
-    }
-  },
-  async logout({ commit, state }: any) {
-    try {
-      await api.post('/auth/logout', { refresh_token: state.refreshToken });
-      commit('clearAuthData');
-      clearCookies();
-    } catch (error) {
-      console.error('Logout failed:', error);
-      throw error;
-    }
-  },
-  async initLogin({ dispatch, commit, state }: any) {
-    const token = state.token;
-    let isLoggedIn = false;
-
-    if (token && !isTokenExpired(token)) {
-      isLoggedIn = true;
-    } else {
-      const refresh = state.refreshToken;
-      if (refresh) {
-        try {
-          await dispatch('refreshToken');
-          isLoggedIn = true;
-        } catch (error) {
-          commit('clearAuthData');
+      await api.post("/auth/login", { email, password });
+      const userCookie = Cookies.get("user");
+      if (userCookie) {
+        const user = JSON.parse(userCookie);
+        commit("setUser", user);
+        commit("setAuth", true);
+        if (user.firstTimeConnection) {
+          Database.patch("auth/first-time-connected");
+          subscriberService.subscribe();
         }
       }
+    } catch (error) {
+      console.error("Login failed:", error);
+      throw error;
+    }
+  },
+
+  async logout({ commit }: { commit: Commit }) {
+    try {
+      await api.post("/auth/logout");
+      commit("clearAuthData");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      commit("clearAuthData");
+      throw error;
+    }
+  },
+
+  initLogin({ commit }: { commit: Commit }) {
+    const userCookie = Cookies.get("user");
+    if (!userCookie) {
+      commit("clearAuthData");
+      return false;
     }
 
-    commit('setAuth', isLoggedIn);
-    return isLoggedIn;
+    try {
+      const user = JSON.parse(userCookie);
+      commit("setUser", user);
+      commit("setAuth", true);
+      return true;
+    } catch (error) {
+      console.error("Error while initializing login:", error);
+      commit("clearAuthData");
+      return false;
+    }
+  },
+
+  async updateUserProfile(
+    { commit }: { commit: Commit },
+    updatedProfile: Partial<User>
+  ) {
+    try {
+      const { data } = await api.patch("/user", updatedProfile);
+      commit("setUser", data);
+      await api.post("/auth/refresh");
+      return data;
+    } catch (error) {
+      console.error("Profile update failed:", error);
+      throw error;
+    }
   },
 };
 
 const getters = {
   isAuthenticated(state: AuthState): boolean {
-    return !!state.token;
+    return state.userLoggedIn;
   },
-  getToken(state: AuthState): string | null {
-    return state.token;
-  },
-  getRefreshToken(state: AuthState): string | null {
-    return state.refreshToken;
-  },
-  getUser(state: AuthState): any | null {
+  getUser(state: AuthState): User | null {
+    if (networkObserver.isOffline()) {
+      return JSON.parse(localStorage.getItem("userOffline"));
+    }
     return state.user;
   },
 };
