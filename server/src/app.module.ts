@@ -20,6 +20,7 @@ import { CryptoModule } from './auth/crypto/crypto.module';
 import { LoggingInterceptor } from './utils/log/logging.interceptor';
 import { LoggerService } from './utils/log/logger.service';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { TestController } from './test.controller';
 
 @Module({
   imports: [
@@ -43,7 +44,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     PrismaModule,
     CryptoModule,
   ],
-  controllers: [],
+  controllers: [TestController],
   providers: [
     LoggerService,
     {
