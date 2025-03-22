@@ -167,6 +167,7 @@ const initVocal = () => {
 
   return recognition;
 };
+
 const handlePlay = () => {
   isPlaying.value = !isPlaying.value;
   if (isPlaying.value) {

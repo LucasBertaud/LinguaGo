@@ -4,11 +4,11 @@
     subtitle="Exercez-vous à votre rythme et progressez dans votre apprentissage."
   />
   <section class="text-gray-600 body-font">
-    <div class="container py-24 mx-auto flex flex-wrap flex-col pt-4">
-      <div
-        class="flex mx-auto flex-wrap mb-6"
-        v-if="!networkObserver.isOffline()"
-      >
+    <div
+      class="container py-24 mx-auto flex flex-wrap flex-col pt-4"
+      v-if="!networkObserver.isOffline()"
+    >
+      <div class="flex mx-auto flex-wrap mb-6">
         <router-link
           v-for="level in levels"
           :key="level.id"
@@ -24,6 +24,29 @@
       </div>
       <div class="flex flex-col text-center w-full">
         <router-view></router-view>
+      </div>
+    </div>
+    <div v-else>
+      <div
+        class="flex items-start p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 w-full sm:w-110"
+        role="alert"
+      >
+        <svg
+          class="shrink-0 inline w-4 h-4 me-3"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path
+            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"
+          />
+        </svg>
+        <span class="sr-only">Info</span>
+        <div>
+          <span class="font-medium">Vous êtes hors-ligne !</span> Veuillez vous
+          connecter à internet pour accéder aux exercices.
+        </div>
       </div>
     </div>
   </section>
