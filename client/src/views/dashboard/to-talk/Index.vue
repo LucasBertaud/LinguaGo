@@ -64,11 +64,14 @@ const isLoading = ref(false);
 const isSpeechAPIAvailable = ref<boolean>(false);
 
 const checkIfSpeechApiIsSupported = () => {
-  if (!("webkitSpeechRecognition" in window)) {
+  if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
     return (isSpeechAPIAvailable.value = false);
   }
   if ("brave" in navigator) {
     return (isSpeechAPIAvailable.value = false);
+  }
+  if (/CriOS/.test(navigator.userAgent)) {
+    return false;
   }
   return (isSpeechAPIAvailable.value = true);
 };
